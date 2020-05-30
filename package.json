@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/chriscauley/chriscauley.github.com"
+    "url": "https://github.com/chriscauley/sudoku"
   },
   "dependencies": {
     "@babel/core": "^7.0.0-0",
