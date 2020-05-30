@@ -3,8 +3,7 @@
   "author": "chriscauley <chris@lablackey.com>",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf docs; D=docs yarn _static; parcel build client/index.html -d docs",
-    "_static": "mkdir -p $D;rm -rf $D/src;cp -r client $D/src",
+    "build": "rm -rf docs; parcel build client/index.html -d docs --public-url /sudoku/",
     "develop": "DRAFT=1 parcel client/index.html -p 8169",
     "lint": "yarn eslint client"
   },
