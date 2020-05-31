@@ -51,9 +51,6 @@ $darkenSelected: 15%;
       &.y-2, &.y-5 {
         border-bottom-width: 3px;
       }
-      &.hover {
-        box-shadow: inset map.get($pallet, "hover") 0 0 0 3px;
-      }
       &.selected-1:before,
       &.selected--1:before,
       &.selected--9:after,
@@ -119,6 +116,20 @@ $darkenSelected: 15%;
   }
   .corner, .centre {
     font-size: 0.3em;
+  }
+}
+
+.board .cell {
+  $error: inset 0 0 8px red;
+  $hover: inset map.get($pallet, "hover") 0 0 0 3px;
+  &.error {
+    box-shadow: $error;
+  }
+  &.hover {
+    box-shadow: $hover;
+  }
+  &.error.hover {
+    box-shadow: $error, $hover;
   }
 }
 

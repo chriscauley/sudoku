@@ -16,6 +16,14 @@ export const getMode = ({ ctrlKey, shiftKey }, _default = 'answer') => {
   return _default
 }
 
+const Check = withGame((props) => {
+  return (
+    <div className={btn()} onClick={props.game.actions.check}>
+      check
+    </div>
+  )
+})
+
 const row = 'flex mb-4 flex-wrap'
 const noop = () => {}
 
@@ -62,6 +70,7 @@ class Controls extends React.Component {
             </div>
           ))}
           <Reset />
+          <Check />
         </div>
         <div className={row}>
           {keys.map((key) => (

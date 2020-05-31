@@ -96,6 +96,7 @@ export default class Board {
       )
     }
     this.sudoku = this.sudoku || range(this.geo.AREA).map(() => {})
+    this.clearErrors()
   }
 
   save() {
@@ -171,8 +172,8 @@ export default class Board {
     )
   }
 
-  toCells = (selected) =>
-    this.sudoku.map((question, index) => ({
+  toCells = (selected) => {
+    const cells = this.sudoku.map((question, index) => ({
       index,
       xy: this.geo.index2xy(index),
       question,
@@ -183,6 +184,9 @@ export default class Board {
       corner: this.corner[index] || [],
       colour: this.colour[index] || [],
     }))
+    this.errors.indexes.forEach((index) => (cells[index].error = true))
+    return cells
+  }
   getSelectedNeighbors = (index, selected) => {
     if (!selected[index]) {
       return []
@@ -190,6 +194,56 @@ export default class Board {
     return [-this.geo.W, 1, this.geo.W, -1].map((dindex) =>
       selected[index + dindex] ? 0 : `selected-${dindex}`,
     )
+  }
+
+  clearErrors() {
+    this.errors = {
+      reasons: [],
+      indexes: [],
+      count: 0,
+    }
+  }
+
+  check() {
+    this.clearErrors()
+    this._validateAnswers()
+    range(this.geo.W).forEach((i) => {
+      this._checkSudoku('row', i)
+      this._checkSudoku('col', i)
+      this._checkSudoku('box', i)
+    })
+  }
+
+  _validateAnswers() {
+    const allowed = {}
+    range(1, 10).map((i) => (allowed[i] = true))
+    range(this.geo.AREA).forEach((index) => {
+      const number = this.sudoku[index] || this.answer[index]
+      if (!allowed[number]) {
+        this.errors.count += 1
+        this.errors.reasons.push(`No final answer can be ${number}`)
+        this.errors.indexes.push(index)
+      }
+    })
+  }
+
+  _checkSudoku(type, type_no) {
+    const indexes = this.geo[`${type}2indexes`](type_no)
+    const bins = {}
+    indexes.forEach((index) => {
+      const number = this.sudoku[index] || this.answer[index]
+      bins[number] = bins[number] || []
+      bins[number].push(index)
+    })
+    Object.entries(bins).forEach(([number, indexes]) => {
+      if (indexes.length > 1) {
+        this.errors.count += indexes.length
+        this.errors.reasons.push(
+          `There are ${indexes.length} ${number}s in ${type} ${type_no}`,
+        )
+        this.errors.indexes = this.errors.indexes.concat(indexes)
+      }
+    })
   }
 }
 

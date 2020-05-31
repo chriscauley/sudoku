@@ -42,6 +42,10 @@ const actions = {
     store.state.board.reset()
     store.setState({ board: store.state.board, resetting: false })
   },
+  check(store) {
+    store.state.board.check()
+    store.setState({ rando: Math.random() })
+  },
 }
 
 const _withGame = ConfigHook('game', {
