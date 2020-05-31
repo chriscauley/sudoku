@@ -1,4 +1,4 @@
-import { cloneDeep, range, pick } from 'lodash'
+import { cloneDeep, range, pick, flatten } from 'lodash'
 import Storage from '@unrest/storage'
 
 const saved_games = new Storage('saved games')
@@ -19,6 +19,7 @@ class Geo {
     this.W = W
     this.H = H
     this.AREA = W * H
+    this.preCache()
   }
 
   pxy2xy = (pxy) => {
@@ -37,6 +38,35 @@ class Geo {
   pxy2index = (pxy) => this.xy2index(this.pxy2xy(pxy))
   xy2index = (xy) => xy[0] + this.W * xy[1]
   index2xy = (index) => [index % this.W, Math.floor(index / this.W)]
+
+  preCache = () => {
+    const { W, H, xy2index } = this
+
+    // sudoku specific
+    this._row2indexes = range(H).map((y) =>
+      range(W).map((x) => xy2index([x, y])),
+    )
+    this._col2indexes = range(W).map((x) =>
+      range(H).map((y) => xy2index([x, y])),
+    )
+
+    // this is highly sudoku specific for now since it relies on boxes being square
+    const box_count = 3 // boxes per row/col of game
+    const box_width = 3 // rows/columns per box
+    this._box2indexes = range(box_count * box_count).map((box) => {
+      const x0 = (box % box_count) * box_width
+      const y0 = Math.floor(box / box_count) * box_width
+      return flatten(
+        range(box_width).map((bx) =>
+          range(box_width).map((by) => xy2index([x0 + bx, y0 + by])),
+        ),
+      )
+    })
+  }
+  // these are sudoku specific
+  row2indexes = (y) => this._row2indexes[y]
+  col2indexes = (x) => this._col2indexes[x]
+  box2indexes = (box) => this._box2indexes[box]
 }
 
 export default class Board {
