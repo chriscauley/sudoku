@@ -180,3 +180,21 @@ $darkenSelected: 15%;
     width: 50%;
   }
 }
+
+.board .cell .arrow {
+  color: gray;
+  font-size: 0.5em;
+  position: absolute;
+  &.arrow-down {
+    bottom: -0.2em;
+  }
+  &.arrow-up {
+    top: -0.2em;
+  }
+  &.arrow-left {
+    left: -0.2em;
+  }
+  &.arrow-right {
+    right: -0.2em;
+  }
+}

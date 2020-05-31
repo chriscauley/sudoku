@@ -140,6 +140,7 @@ class CTC extends React.Component {
                   {cell.answer !== undefined && (
                     <span className="answer">{cell.answer}</span>
                   )}
+                  {cell.arrow && <span className={cell.arrow.className} />}
                 </div>
               ))}
             </div>

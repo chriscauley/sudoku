@@ -6,6 +6,13 @@ import Geo from './Geo'
 const saved_games = new Storage('saved games')
 // const made_games = new Storage('made games')
 
+const dxy2text = {
+  '1,0': 'right',
+  '-1,0': 'left',
+  '0,1': 'down',
+  '0,-1': 'up',
+}
+
 export default class Board {
   constructor(options) {
     window.B = this
@@ -26,12 +33,32 @@ export default class Board {
       colour: {},
       actions: [],
     })
+    this.extras = Object.assign(this.extras || {}, {
+      arrows: [],
+    })
     if (this.ctc && !this.sudoku) {
       this.sudoku = this.sudoku = []
       const { cells } = this.ctc
       cells.forEach((row) =>
         row.forEach((cell) => this.sudoku.push(cell.value)),
       )
+      if (this.ctc.arrows) {
+        this.extras.arrows = this.ctc.arrows.map((arrow) => {
+          const [xy1, xy2] = arrow.wayPoints
+          const xy = xy1.map((n) => Math.floor(n)).reverse()
+          const dxy = [-Math.sign(xy1[1] - xy2[1]), -Math.sign(xy1[0] - xy2[0])]
+          const dir = dxy2text[dxy]
+          return {
+            dindex: dxy[0] + dxy[1] * this.geo.W,
+            index: this.geo.xy2index(xy),
+            xy,
+            dxy,
+            className: `arrow arrow-${dir} dxy-${dxy.join(
+              '',
+            )} fa fa-chevron-${dir}`,
+          }
+        })
+      }
     }
     this.turn = this.actions.length
     this.sudoku = this.sudoku || range(this.geo.AREA).map(() => {})
@@ -141,6 +168,7 @@ export default class Board {
       colour: this.colour[index] || [],
     }))
     this.errors.indexes.forEach((index) => (cells[index].error = true))
+    this.extras.arrows.forEach((arrow) => (cells[arrow.index].arrow = arrow))
     return cells
   }
   getSelectedNeighbors = (index, selected) => {
