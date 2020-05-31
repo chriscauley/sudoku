@@ -150,6 +150,9 @@ class CTC extends React.Component {
               ref={clickRef}
             />
           </div>
+          <div>
+            {board.finish && 'Victory! Final '} game time: {board.getTime()}
+          </div>
         </div>
       </div>
     )

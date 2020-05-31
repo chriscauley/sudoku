@@ -27,6 +27,7 @@ export default class Board {
 
   reset() {
     Object.assign(this, cloneDeep(this.options), {
+      start: new Date().valueOf(),
       answer: {},
       corner: {},
       centre: {},
@@ -116,6 +117,8 @@ export default class Board {
   toJson() {
     return cloneDeep(
       pick(this, [
+        'start',
+        'finish',
         'sudoku',
         'answer',
         'corner',
@@ -196,6 +199,10 @@ export default class Board {
       this._checkSudoku('col', i)
       this._checkSudoku('box', i)
     })
+    if (this.errors.count === 0) {
+      this.finish = new Date().valueOf()
+      this.save()
+    }
   }
 
   _validateAnswers() {
@@ -279,6 +286,11 @@ export default class Board {
     this.redo()
     this.step_callback()
     this.timeout = setTimeout(this.stepReplay, 200)
+  }
+
+  getTime() {
+    const seconds = (this.finish - this.start) / 1000
+    return `${Math.floor(seconds / 60)}m ${Math.floor(seconds % 60)}s`
   }
 }
 
