@@ -125,14 +125,14 @@ export default class Board {
     }
     const { mode, indexes, value } = action
     if (mode !== 'delete') {
-      action.was = indexes.map((index) => this[mode][index])
+      action.was = cloneDeep(indexes.map((index) => this[mode][index]))
     }
     this.actions.push(action)
     this.turn++
     if (mode === 'delete') {
       // delete is not affected by the mode
       delete action.value
-      action.was = this.deleteCells(indexes)
+      action.was = cloneDeep(this.deleteCells(indexes))
     } else if (mode === 'centre' || mode === 'corner') {
       this._toggle(mode, indexes, value)
     } else if (mode === 'colour') {
@@ -150,15 +150,17 @@ export default class Board {
   }
 
   toJson() {
-    return pick(this, [
-      'sudoku',
-      'answer',
-      'corner',
-      'centre',
-      'colour',
-      'actions',
-      'frozen',
-    ])
+    return cloneDeep(
+      pick(this, [
+        'sudoku',
+        'answer',
+        'corner',
+        'centre',
+        'colour',
+        'actions',
+        'frozen',
+      ]),
+    )
   }
 
   _toggle(mode, indexes, value) {
@@ -267,8 +269,33 @@ export default class Board {
     this.frozen = this.frozen || this.toJson()
   }
 
+  redo() {
+    if (!this.frozen || this.frozen.actions.length === this.turn) {
+      return
+    }
+
+    this.doAction(this.frozen.actions[this.turn], true)
+  }
+
   undo() {
+    if (!this.actions.length) {
+      return
+    }
     this.freeze()
+    const action = this.actions.pop()
+    this.turn--
+    const was =
+      action.mode === 'delete' ? action.was : { [action.mode]: action.was }
+    Object.entries(was).map(([layer, values]) => {
+      action.indexes.forEach((index, i) => {
+        const is_empty = Array.isArray(values[i]) && values[i].length === 0
+        if (values[i] === null || is_empty) {
+          delete this[layer][index]
+        } else {
+          this[layer][index] = values[i]
+        }
+      })
+    })
   }
 
   replay(callback) {
@@ -284,7 +311,7 @@ export default class Board {
       return
     }
     clearTimeout(this.timeout)
-    this.doAction(this.frozen.actions[this.turn], true)
+    this.redo()
     this.step_callback()
     this.timeout = setTimeout(this.stepReplay, 200)
   }

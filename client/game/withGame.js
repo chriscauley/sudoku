@@ -50,6 +50,10 @@ const actions = {
     store.state.board.undo()
     store.setState({ rando: Math.random() })
   },
+  redo(store) {
+    store.state.board.redo()
+    store.setState({ rando: Math.random() })
+  },
   replay(store) {
     store.state.board.replay(() => store.setState({ rando: Math.random() }))
   },

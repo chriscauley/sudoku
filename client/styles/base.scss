@@ -19,6 +19,10 @@ $sel: 4px;
 $selected: $sel solid map.get($pallet, "selected");
 $darkenSelected: 15%;
 
+.Game {
+  user-select: none;
+}
+
 .board {
   padding-top: 100%;
   position: relative;
@@ -33,7 +37,6 @@ $darkenSelected: 15%;
   }
   .cell {
     height: 11.1111%;
-    user-select: none;
     width: 11.1111%;
   }
   .sudoku {

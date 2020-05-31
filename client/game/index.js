@@ -116,7 +116,7 @@ class CTC extends React.Component {
       cells[hover].hover = true
     }
     return (
-      <>
+      <div className="Game">
         <Controls
           keys={this.allowed_keys}
           onClick={this.setMode}
@@ -148,7 +148,7 @@ class CTC extends React.Component {
             ref={clickRef}
           />
         </div>
-      </>
+      </div>
     )
   }
 }

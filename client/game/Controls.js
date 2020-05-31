@@ -72,6 +72,7 @@ class Controls extends React.Component {
           <Reset />
           <ActionButton name="check" />
           <ActionButton name="undo" />
+          <ActionButton name="redo" />
           <ActionButton name="replay" />
         </div>
         <div className={row}>
