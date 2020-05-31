@@ -78,6 +78,7 @@ export default class Board {
 
     // load saved game if exists
     Object.assign(this, saved_games.get(this.slug) || {})
+    this.turn = this.actions.length
   }
 
   reset() {
@@ -95,11 +96,15 @@ export default class Board {
         row.forEach((cell) => this.sudoku.push(cell.value)),
       )
     }
+    this.turn = this.actions.length
     this.sudoku = this.sudoku || range(this.geo.AREA).map(() => {})
     this.clearErrors()
   }
 
   save() {
+    if (this.frozen) {
+      return
+    }
     const json = this.toJson()
     delete json.sudoku
     saved_games.set(this.slug, json)
@@ -113,13 +118,21 @@ export default class Board {
     // })
   }
 
-  doAction(action) {
+  doAction(action, safe = false) {
+    if (this.frozen && !safe) {
+      console.warn('unfreezing')
+      delete this.frozen
+    }
     const { mode, indexes, value } = action
+    if (mode !== 'delete') {
+      action.was = indexes.map((index) => this[mode][index])
+    }
     this.actions.push(action)
+    this.turn++
     if (mode === 'delete') {
       // delete is not affected by the mode
       delete action.value
-      this.deleteCells(indexes)
+      action.was = this.deleteCells(indexes)
     } else if (mode === 'centre' || mode === 'corner') {
       this._toggle(mode, indexes, value)
     } else if (mode === 'colour') {
@@ -144,6 +157,7 @@ export default class Board {
       'centre',
       'colour',
       'actions',
+      'frozen',
     ])
   }
 
@@ -167,9 +181,12 @@ export default class Board {
     if (!first_match) {
       layers = ['colour']
     }
-    layers.forEach((layer) =>
-      indexes.forEach((index) => delete this[layer][index]),
-    )
+    const was = {}
+    layers.forEach((layer) => {
+      was[layer] = indexes.map((index) => this[layer][index])
+      indexes.forEach((index) => delete this[layer][index])
+    })
+    return was
   }
 
   toCells = (selected) => {
@@ -244,6 +261,32 @@ export default class Board {
         this.errors.indexes = this.errors.indexes.concat(indexes)
       }
     })
+  }
+
+  freeze() {
+    this.frozen = this.frozen || this.toJson()
+  }
+
+  undo() {
+    this.freeze()
+  }
+
+  replay(callback) {
+    this.freeze()
+    this.step_callback = callback
+    this.reset()
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(this.stepReplay, 200)
+  }
+
+  stepReplay = () => {
+    if (this.turn === this.frozen.actions.length) {
+      return
+    }
+    clearTimeout(this.timeout)
+    this.doAction(this.frozen.actions[this.turn], true)
+    this.step_callback()
+    this.timeout = setTimeout(this.stepReplay, 200)
   }
 }
 

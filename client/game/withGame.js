@@ -46,6 +46,13 @@ const actions = {
     store.state.board.check()
     store.setState({ rando: Math.random() })
   },
+  undo(store) {
+    store.state.board.undo()
+    store.setState({ rando: Math.random() })
+  },
+  replay(store) {
+    store.state.board.replay(() => store.setState({ rando: Math.random() }))
+  },
 }
 
 const _withGame = ConfigHook('game', {

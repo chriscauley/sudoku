@@ -16,10 +16,10 @@ export const getMode = ({ ctrlKey, shiftKey }, _default = 'answer') => {
   return _default
 }
 
-const Check = withGame((props) => {
+const ActionButton = withGame((props) => {
   return (
-    <div className={btn()} onClick={props.game.actions.check}>
-      check
+    <div className={btn()} onClick={props.game.actions[props.name]}>
+      {props.name}
     </div>
   )
 })
@@ -70,7 +70,9 @@ class Controls extends React.Component {
             </div>
           ))}
           <Reset />
-          <Check />
+          <ActionButton name="check" />
+          <ActionButton name="undo" />
+          <ActionButton name="replay" />
         </div>
         <div className={row}>
           {keys.map((key) => (
