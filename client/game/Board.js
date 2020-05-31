@@ -33,11 +33,9 @@ export default class Board {
       centre: {},
       colour: {},
       actions: [],
+      extras: {},
     })
-    this.extras = Object.assign(this.extras || {}, {
-      arrows: [],
-    })
-    if (this.ctc && !this.sudoku) {
+    if (this.ctc) {
       this.sudoku = this.sudoku = []
       const { cells } = this.ctc
       cells.forEach((row) =>
@@ -57,6 +55,17 @@ export default class Board {
             className: `arrow arrow-${dir} dxy-${dxy.join(
               '',
             )} fa fa-chevron-${dir}`,
+          }
+        })
+      }
+      if (this.ctc.underlays) {
+        this.extras.underlays = this.ctc.underlays.map((underlay) => {
+          const xy = underlay.center.map((n) => Math.floor(n)).reverse()
+          return {
+            index: this.geo.xy2index(xy),
+            xy,
+            color: underlay.backgroundColor,
+            className: 'underlay',
           }
         })
       }
@@ -172,6 +181,9 @@ export default class Board {
     }))
     this.errors.indexes.forEach((index) => (cells[index].error = true))
     this.extras.arrows.forEach((arrow) => (cells[arrow.index].arrow = arrow))
+    this.extras.underlays.forEach(
+      (underlay) => (cells[underlay.index].underlay = underlay),
+    )
     return cells
   }
   getSelectedNeighbors = (index, selected) => {
@@ -289,7 +301,8 @@ export default class Board {
   }
 
   getTime() {
-    const seconds = (this.finish - this.start) / 1000
+    const { finish = new Date().valueOf(), start } = this
+    const seconds = (finish - start) / 1000
     return `${Math.floor(seconds / 60)}m ${Math.floor(seconds % 60)}s`
   }
 }

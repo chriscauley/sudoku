@@ -18,6 +18,7 @@ $pallet: (
 $sel: 4px;
 $selected: $sel solid map.get($pallet, "selected");
 $darkenSelected: 15%;
+$underlay: rgba(0,0,0, 0.15);
 
 .Game {
   user-select: none;
@@ -88,7 +89,7 @@ $darkenSelected: 15%;
   background: map.get($pallet, 1);
   position: relative;
   &.selected {
-    border-color: rgba(0,0,0, 0.25);
+    border-color: $underlay;
     background: darken(map.get($pallet, 1), $darkenSelected);
     z-index: 1;
   }
@@ -197,4 +198,19 @@ $darkenSelected: 15%;
   &.arrow-right {
     right: -0.2em;
   }
+}
+
+.board .cell .underlay {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 0.2em,
+    $underlay 0.2em,
+    $underlay 0.4em
+  );
+  height: 100%;
+  left: 0;
+  top: 0;
+  position: absolute;
+  width: 100%;
 }

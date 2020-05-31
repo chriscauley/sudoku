@@ -141,6 +141,9 @@ class CTC extends React.Component {
                     <span className="answer">{cell.answer}</span>
                   )}
                   {cell.arrow && <span className={cell.arrow.className} />}
+                  {cell.underlay && (
+                    <span className={cell.underlay.className} />
+                  )}
                 </div>
               ))}
             </div>
