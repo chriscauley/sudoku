@@ -5,11 +5,15 @@ const Index = () => {
   const maps = {
     j62Rm8qq9j: 'Simple',
     H9Jr7gQHtm: 'A Sudoku of Sublime Genius',
+    pLdgG4Q9R8: 'Thermo Sandwich',
   }
   return (
     <div>
       <h2>Select a map</h2>
       <ul>
+        <li>
+          <Link to={'/new/'}>New</Link>
+        </li>
         {Object.entries(maps).map(([slug, name]) => (
           <li key={slug}>
             <Link to={`/ctc/${slug}`}>

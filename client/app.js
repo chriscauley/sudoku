@@ -11,8 +11,13 @@ const App = () => {
       <Nav />
       <div className="app-content">
         <Route exact path="/" component={game.Index} />
+        <Route
+          exact
+          path="/new/"
+          render={(props) => <game.CTC {...props} slug={'new'} />}
+        />
         <Route exact path="/ctc/" component={game.Index} />
-        <Route exact path="/ctc/:slug" component={game.CTC} />
+        <Route exact path="/ctc/:ctc_slug" component={game.CTC} />
       </div>
     </HashRouter>
   )

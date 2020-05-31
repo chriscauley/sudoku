@@ -1,6 +1,8 @@
 import React from 'react'
 import css from '@unrest/css'
 
+import withGame from './withGame'
+
 const btn = (active) => css.button[active ? 'dark' : 'light']('mr-2')
 
 export const getMode = ({ ctrlKey, shiftKey }, _default = 'answer') => {
@@ -16,6 +18,21 @@ export const getMode = ({ ctrlKey, shiftKey }, _default = 'answer') => {
 
 const row = 'flex mb-4 flex-wrap'
 const noop = () => {}
+
+const Reset = withGame((props) => {
+  return props.game.resetting ? (
+    <div
+      className={css.button.danger('mr-2')}
+      onClick={props.game.actions.confirmReset}
+    >
+      confirm?
+    </div>
+  ) : (
+    <div className={btn()} onClick={props.game.actions.reset}>
+      reset
+    </div>
+  )
+})
 
 class Controls extends React.Component {
   state = {}
@@ -44,6 +61,7 @@ class Controls extends React.Component {
               {m}
             </div>
           ))}
+          <Reset />
         </div>
         <div className={row}>
           {keys.map((key) => (

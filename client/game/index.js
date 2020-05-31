@@ -30,6 +30,7 @@ const KEY_MAP = {}
   .split('')
   .forEach((key) => (KEY_MAP[key.toUpperCase()] = key))
 
+// this can be GameComponent now (or whatever)
 class CTC extends React.Component {
   state = {
     answer: {},
@@ -153,6 +154,4 @@ class CTC extends React.Component {
 export default {
   Index,
   CTC: withGame(CTC),
-  path: 'sudoku/ctc',
-  datetime: '2020-05-29T13:37:57.094Z',
 }

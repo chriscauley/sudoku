@@ -1,4 +1,8 @@
-import { defaults, pick } from 'lodash'
+import { cloneDeep, range, pick } from 'lodash'
+import Storage from '@unrest/storage'
+
+const saved_games = new Storage('saved games')
+// const made_games = new Storage('made games')
 
 class Geo {
   constructor(options) {
@@ -37,21 +41,45 @@ class Geo {
 
 export default class Board {
   constructor(options) {
-    defaults(this, options, {
+    window.B = this
+    this.options = options
+    this.geo = new Geo({ W: 9 })
+    this.reset()
+
+    // load saved game if exists
+    Object.assign(this, saved_games.get(this.slug) || {})
+  }
+
+  reset() {
+    Object.assign(this, cloneDeep(this.options), {
       answer: {},
       corner: {},
       centre: {},
       colour: {},
       actions: [],
     })
-    this.geo = new Geo({ W: 9 })
-    if (options.ctc && !this.sudoku) {
+    if (this.ctc && !this.sudoku) {
       this.sudoku = this.sudoku = []
-      const { cells } = options.ctc
+      const { cells } = this.ctc
       cells.forEach((row) =>
         row.forEach((cell) => this.sudoku.push(cell.value)),
       )
     }
+    this.sudoku = this.sudoku || range(this.geo.AREA).map(() => {})
+  }
+
+  save() {
+    const json = this.toJson()
+    delete json.sudoku
+    saved_games.set(this.slug, json)
+  }
+
+  save_new() {
+    const json = this.toJson()
+    json.sudoku = range(this.geo.AREA).map(() => {})
+    // Object.entries(json.answer).forEach(([key, value]) => {
+    //   console.log(key, value)
+    // })
   }
 
   doAction(action) {
@@ -74,10 +102,18 @@ export default class Board {
         }
       })
     }
+    this.save()
   }
 
   toJson() {
-    return pick(this, ['sudoku', 'answer', 'corner', 'centre', 'colour'])
+    return pick(this, [
+      'sudoku',
+      'answer',
+      'corner',
+      'centre',
+      'colour',
+      'actions',
+    ])
   }
 
   _toggle(mode, indexes, value) {
