@@ -123,30 +123,32 @@ class CTC extends React.Component {
           mode={this.state.mode}
           sendKey={this.sendKey}
         />
-        <div className="board">
-          <div className="sudoku">
-            {cells.map((cell) => (
-              <div key={cell.index} className={getClassName(cell)}>
-                {cell.question === undefined && cell.answer === undefined && (
-                  <>
-                    <div className="corner">{cell.corner.map((n) => n)}</div>
-                    <div className="centre">{cell.centre.map((n) => n)}</div>
-                  </>
-                )}
-                {cell.question !== undefined && (
-                  <span className="question">{cell.question}</span>
-                )}
-                {cell.answer !== undefined && (
-                  <span className="answer">{cell.answer}</span>
-                )}
-              </div>
-            ))}
+        <div>
+          <div className="board">
+            <div className="sudoku">
+              {cells.map((cell) => (
+                <div key={cell.index} className={getClassName(cell)}>
+                  {cell.question === undefined && cell.answer === undefined && (
+                    <>
+                      <div className="corner">{cell.corner.map((n) => n)}</div>
+                      <div className="centre">{cell.centre.map((n) => n)}</div>
+                    </>
+                  )}
+                  {cell.question !== undefined && (
+                    <span className="question">{cell.question}</span>
+                  )}
+                  {cell.answer !== undefined && (
+                    <span className="answer">{cell.answer}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div
+              className="clickMask"
+              onMouseMove={this.onMouseMove}
+              ref={clickRef}
+            />
           </div>
-          <div
-            className="clickMask"
-            onMouseMove={this.onMouseMove}
-            ref={clickRef}
-          />
         </div>
       </div>
     )

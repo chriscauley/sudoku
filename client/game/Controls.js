@@ -4,6 +4,8 @@ import css from '@unrest/css'
 import withGame from './withGame'
 
 const btn = (active) => css.button[active ? 'dark' : 'light']('mr-2')
+const row = 'flex mb-1 flex-wrap'
+const noop = () => {}
 
 export const getMode = ({ ctrlKey, shiftKey }, _default = 'answer') => {
   if (ctrlKey && shiftKey) {
@@ -23,9 +25,6 @@ const ActionButton = withGame((props) => {
     </div>
   )
 })
-
-const row = 'flex mb-4 flex-wrap'
-const noop = () => {}
 
 const Reset = withGame((props) => {
   return props.game.resetting ? (
@@ -64,16 +63,18 @@ class Controls extends React.Component {
     return (
       <div className="Controls" onClick={(e) => e.stopPropagation()}>
         <div className={row}>
+          <Reset />
+          <ActionButton name="check" />
+          <ActionButton name="redo" />
+          <ActionButton name="replay" />
+          <ActionButton name="undo" />
+        </div>
+        <div className={row}>
           {modes.map((m) => (
             <div className={btn(mode === m)} key={m} onClick={onClick(m)}>
               {m}
             </div>
           ))}
-          <Reset />
-          <ActionButton name="check" />
-          <ActionButton name="undo" />
-          <ActionButton name="redo" />
-          <ActionButton name="replay" />
         </div>
         <div className={row}>
           {keys.map((key) => (
