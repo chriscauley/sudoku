@@ -15,6 +15,8 @@ server/settings/.secret_key
 .htmlcov
 __pycache__
 ./unrest/*
+.ytcache
+unrest
 ur
 
 # misc

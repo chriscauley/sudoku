@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf docs; parcel build client/index.html -d docs --public-url /sudoku/",
-    "develop": "DRAFT=1 parcel client/index.html -p 8169",
+    "develop": "DRAFT=1 parcel client/index.html -p 8169 --public-url /static/",
     "lint": "yarn eslint client"
   },
   "repository": {
