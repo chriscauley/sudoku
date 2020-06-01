@@ -11,6 +11,7 @@ INSTALLED_APPS = [
 
     # this project
     'server',
+    'puzzle',
 
     # unrest
     'unrest',
