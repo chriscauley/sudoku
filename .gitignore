@@ -7,6 +7,7 @@ node_modules
 .media
 .static
 server/settings/local.py
+server/settings/.secret_key
 
 # python specific
 .venv
@@ -18,3 +19,6 @@ ur
 
 # misc
 .DS_Store
+
+.env
+client_secret*
