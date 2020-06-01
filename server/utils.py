@@ -9,7 +9,9 @@ def curl(url, force=False):
         pass
     fname = os.path.join(".ytcache", "{}.html".format(name))
     if force or not os.path.exists(fname):
-        text = requests.get(url).text
+        response = requests.get(url)
+        response.raise_for_status()
+        text = response.text
         with open(fname, "w") as _file:
             _file.write(text)
         print("downloading!", url)

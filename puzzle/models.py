@@ -14,6 +14,30 @@ class Puzzle(BaseModel):
             update_ctc(self)
         super().save(*args, **kwargs)
 
+    @staticmethod
+    def get_by_any(slug, source):
+        q = models.Q(external_id=slug) | models.Q(video_id=slug)
+        if slug.isdigit():
+            q = q | models.Q(id=slug)
+
+        puzzle = Puzzle.objects.filter(q).first()
+        if puzzle:
+            return puzzle
+        if not puzzle and source != 'ctc':
+            raise NotImplementedError()
+        video_url = f"https://www.youtube.com/watch?v={slug}"
+        try:
+            fetch_ctc(slug)
+        except Exception as e:
+            pass
+        else:
+            return Puzzle.objects.create(external_id=slug, source=source)
+        try:
+            curl(video_url)
+        except Exception as e:
+            raise e
+        else:
+            return Puzzle.objects.create(video_id=slug, source=source)
 
 import requests
 from server.utils import curl
@@ -21,8 +45,10 @@ from bs4 import BeautifulSoup
 
 CTC_URL = "https://firebasestorage.googleapis.com/v0/b/sudoku-sandbox.appspot.com/o/"
 def fetch_ctc(slug):
-    data = requests.get(f"{CTC_URL}{slug}").json()
-    return requests.get(f"{CTC_URL}{slug}?alt=media&token={data['downloadTokens']}").json()
+    request = requests.get(f"{CTC_URL}{slug}")
+    request.raise_for_status()
+    token = request.json()['downloadTokens']
+    return requests.get(f"{CTC_URL}{slug}?alt=media&token={token}").json()
 
 def update_ctc(puzzle):
     puzzle.data['ctc'] = fetch_ctc(puzzle.external_id)

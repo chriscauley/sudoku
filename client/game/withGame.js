@@ -1,31 +1,28 @@
 import React from 'react'
-import { get } from 'lodash'
+import { debounce } from 'lodash'
 import ConfigHook from '@unrest/react-config-hook'
+import RestHook from '@unrest/react-rest-hook'
 
-import fetchCTC from './fetchCTC'
 import Board from './Board'
+
+const withPuzzle = RestHook(
+  '/api/puzzle/${match.params.source}/${match.params.slug}/',
+)
 
 const schema = {}
 
 const uiSchema = {}
 
 const actions = {
-  loadCTC: (store, slug) => {
+  load: debounce((store, slug, props) => {
     if (slug && store.state.slug !== slug) {
+      const { ctc } = props.api.puzzle.data
       store.setState({ slug })
-      fetchCTC(slug).then((ctc) => store.actions.startGame({ ctc, slug }))
+      store.actions.startGame({ slug, ctc }, props)
     }
-  },
-  load: (store, slug) => {
-    if (slug && store.state.slug !== slug) {
-      store.setState({ slug })
-      store.actions.startGame({ slug })
-    }
-  },
+  }),
   startGame: (store, { ctc, slug }) => {
-    store.setState({
-      board: new Board({ ctc, slug }),
-    })
+    store.setState({ board: new Board({ ctc, slug }) })
   },
   doAction: (store, action) => {
     store.state.board.doAction(action)
@@ -59,7 +56,7 @@ const actions = {
   },
 }
 
-const _withGame = ConfigHook('game', {
+export const _withGame = ConfigHook('game', {
   schema,
   uiSchema,
   actions,
@@ -67,17 +64,18 @@ const _withGame = ConfigHook('game', {
 })
 
 export default (Component) => {
-  return _withGame(
-    (props) => {
-      const ctc_slug = get(props, 'match.params.ctc_slug')
-      const { slug } = props
-      props.game.actions.loadCTC(ctc_slug)
-      props.game.actions.load(slug)
+  return withPuzzle(
+    _withGame((props) => {
+      const { loading, puzzle } = props.api
+      if (loading || !puzzle) {
+        return null
+      }
+      const { slug } = props.match.params
+      props.game.actions.load(slug, props)
       if (!props.game.board) {
         return null
       }
       return <Component {...props} />
-    },
-    { propName: 'game' },
+    }),
   )
 }

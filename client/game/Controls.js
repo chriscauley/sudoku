@@ -1,7 +1,7 @@
 import React from 'react'
 import css from '@unrest/css'
 
-import withGame from './withGame'
+import { _withGame } from './withGame'
 
 const btn = (active) => css.button[active ? 'dark' : 'light']('mr-2')
 const row = 'flex mb-1 flex-wrap'
@@ -18,7 +18,7 @@ export const getMode = ({ ctrlKey, shiftKey }, _default = 'answer') => {
   return _default
 }
 
-const ActionButton = withGame((props) => {
+const ActionButton = _withGame((props) => {
   return (
     <div className={btn()} onClick={props.game.actions[props.name]}>
       {props.name}
@@ -26,7 +26,7 @@ const ActionButton = withGame((props) => {
   )
 })
 
-const Reset = withGame((props) => {
+const Reset = _withGame((props) => {
   return props.game.resetting ? (
     <div
       className={css.button.danger('mr-2')}
