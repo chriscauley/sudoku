@@ -1,12 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import RestHook from '@unrest/react-rest-hook'
 
-const Index = () => {
-  const maps = {
-    j62Rm8qq9j: 'Simple',
-    H9Jr7gQHtm: 'A Sudoku of Sublime Genius',
-    pLdgG4Q9R8: 'Thermo Sandwich',
-  }
+const withPuzzles = RestHook('/api/puzzle/')
+
+const Index = (props) => {
+  const {puzzles=[]} = props.api
   return (
     <div>
       <h2>Select a map</h2>
@@ -14,10 +13,10 @@ const Index = () => {
         <li>
           <Link to={'/new/'}>New</Link>
         </li>
-        {Object.entries(maps).map(([slug, name]) => (
-          <li key={slug}>
-            <Link to={`/ctc/${slug}`}>
-              {name} ({slug})
+        {puzzles.map((puzzle) => (
+          <li key={puzzle.id}>
+            <Link to={`/ctc/${puzzle.external_id}`}>
+              {puzzle.title} ({puzzle.external_id})
             </Link>
           </li>
         ))}
@@ -26,4 +25,4 @@ const Index = () => {
   )
 }
 
-export default Index
+export default withPuzzles(Index)
