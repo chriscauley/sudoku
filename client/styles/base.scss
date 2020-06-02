@@ -1,1 +1,14 @@
 @import "sudoku.scss";
+
+.hoverdown {
+  @apply relative z-10;
+  .hoverdown--target {
+    @apply absolute left-0 min-w-full z-10 hidden shadow-lg rounded overflow-hidden;
+    .btn { border-radius: 0; }
+    top: 100%;
+    white-space: pre;
+  }
+  &:hover .hoverdown--target {
+    display: block;
+  }
+}

@@ -39,8 +39,8 @@ const actions = {
     store.state.board.reset()
     store.setState({ board: store.state.board, resetting: false })
   },
-  check(store) {
-    store.state.board.check()
+  check(store, options) {
+    store.state.board.check(options)
     store.setState({ rando: Math.random() })
   },
   undo(store) {

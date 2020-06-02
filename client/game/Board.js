@@ -35,6 +35,23 @@ export default class Board {
       actions: [],
       extras: {},
     })
+
+    this.constraints = [
+      'row',
+      'col',
+      'box',
+      'complete',
+      'killer_sudoku',
+      'killer_total',
+    ]
+
+    this.required_constraints = {
+      row: true,
+      col: true,
+      box: true,
+      complete: true,
+    }
+
     if (this.ctc) {
       const { arrows = [], underlays = [], cages = [], cells = [] } = this.ctc
       this.sudoku = this.sudoku = []
@@ -241,15 +258,9 @@ export default class Board {
     parseInt(this.sudoku[index]) || parseInt(this.answer[index])
 
   check(options = {}) {
-    const {
-      row = true,
-      col = true,
-      box = true,
-      killer_sudoku = true,
-      killer_total = true,
-    } = options
+    const { row, col, box, complete, killer_sudoku, killer_total } = options
     this.clearErrors()
-    this._validateAnswers()
+    complete && this._validateAnswers()
     range(this.geo.W).forEach((i) => {
       row && this._checkSudoku('row', i)
       col && this._checkSudoku('col', i)
@@ -283,7 +294,8 @@ export default class Board {
         })
       })
 
-    if (this.errors.count === 0) {
+    // to qualify as a win they must check sudoku constraints (row, col, box)
+    if (row && col && box && this.errors.count === 0) {
       this.finish = new Date().valueOf()
       this.save()
     }
@@ -306,8 +318,10 @@ export default class Board {
     const bins = {}
     indexes.forEach((index) => {
       const number = this.sudoku[index] || this.answer[index]
-      bins[number] = bins[number] || []
-      bins[number].push(index)
+      if (number !== undefined) {
+        bins[number] = bins[number] || []
+        bins[number].push(index)
+      }
     })
     return bins
   }

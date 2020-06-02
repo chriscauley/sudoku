@@ -3,7 +3,7 @@ import css from '@unrest/css'
 
 import { _withGame } from './withGame'
 
-const btn = (active) => css.button[active ? 'dark' : 'light']('mr-2')
+const btn = (active) => css.button[active ? 'dark' : 'light']('mr-2 block')
 const row = 'flex mb-1 flex-wrap'
 const noop = () => {}
 
@@ -17,6 +17,57 @@ export const getMode = ({ ctrlKey, shiftKey }, _default = 'answer') => {
   }
   return _default
 }
+
+class BaseCheckControl extends React.Component {
+  state = {}
+  getState = () => {
+    return {
+      ...this.props.game.board.required_constraints,
+      ...this.state,
+    }
+  }
+  _onChange = (slug) => () => this.setState({ [slug]: !this.getState()[slug] })
+  getConstraints = (state) =>
+    this.props.game.board.constraints.map((slug) => ({
+      checked: !!state[slug],
+      onChange: this._onChange(slug),
+      slug,
+      title: slug.replace('_', ' '),
+    }))
+
+  check = () => this.props.game.actions.check(this.getState())
+  clear = () => this.props.game.actions.check()
+
+  render() {
+    const state = this.getState()
+    return (
+      <div className={'hoverdown'}>
+        <div className={btn()} onClick={this.check}>
+          check
+        </div>
+        <div className="hoverdown--target">
+          {this.getConstraints(state).map((c) => (
+            <label className={'w-full ' + btn(c.checked)} key={c.slug}>
+              <input
+                type="checkbox"
+                onChange={c.onChange}
+                checked={c.checked}
+                className="mr-2"
+              />
+              {c.title}
+            </label>
+          ))}
+          <hr />
+          <div className={'w-full ' + btn()} onClick={this.clear}>
+            clear
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+const CheckControl = _withGame(BaseCheckControl)
 
 const ActionButton = _withGame((props) => {
   return (
@@ -64,7 +115,7 @@ class Controls extends React.Component {
       <div className="Controls" onClick={(e) => e.stopPropagation()}>
         <div className={row}>
           <Reset />
-          <ActionButton name="check" />
+          <CheckControl />
           <ActionButton name="redo" />
           <ActionButton name="replay" />
           <ActionButton name="undo" />
