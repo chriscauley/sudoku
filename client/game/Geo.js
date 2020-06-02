@@ -1,6 +1,11 @@
-import { range, flatten, invert } from 'lodash'
+import { range, flatten, invert, inRange } from 'lodash'
 
 const mod = (a, b) => ((a % b) + b) % b
+
+const vector = {
+  add: (xy1, xy2) => [xy1[0] + xy2[0], xy1[1] + xy2[1]],
+  subtract: (xy1, xy2) => [xy1[0] - xy2[0], xy1[1] - xy2[1]],
+}
 
 export default class Geo {
   constructor(options) {
@@ -36,6 +41,8 @@ export default class Geo {
   pxy2index = (pxy) => this.xy2index(this.pxy2xy(pxy))
   xy2index = (xy) => xy[0] + this.W * xy[1]
   index2xy = (index) => [index % this.W, Math.floor(index / this.W)]
+  index2knight = (index) => this._index2knight[index]
+  index2king = (index) => this._index2king[index]
 
   preCache = () => {
     const { W, H, xy2index } = this
@@ -67,6 +74,8 @@ export default class Geo {
       right: 1,
     }
     this._dindex2text = invert(this._text2dindex)
+    this.cacheKing()
+    this.cacheKnight()
   }
   // these are sudoku specific
   row2indexes = (y) => this._row2indexes[y]
@@ -84,5 +93,38 @@ export default class Geo {
       x--
     }
     return this.xy2index([mod(x, this.W), mod(y, this.H)])
+  }
+
+  xyInGrid = (xy) => inRange(xy[0], 0, this.W) && inRange(xy[1], 0, this.H)
+
+  cacheKing = () => {
+    const distances = [-1, 0, 1]
+    const dxys = []
+    distances.forEach((dx) =>
+      distances.forEach((dy) => (dx || dy) && dxys.push([dx, dy])),
+    )
+    this._index2king = this._mapdxys(dxys)
+  }
+
+  cacheKnight = () => {
+    const longs = [2, -2]
+    const shorts = [1, -1]
+    const dxys = []
+    longs.forEach((long) =>
+      shorts.forEach((short) => {
+        dxys.push([long, short])
+        dxys.push([short, long])
+      }),
+    )
+    this._index2knight = this._mapdxys(dxys)
+  }
+
+  _mapdxys(dxys) {
+    const out = {}
+    range(this.AREA).forEach((index) => {
+      const xy = this.index2xy(index)
+      out[index] = dxys.map((dxy) => vector.add(xy, dxy)).filter(this.xyInGrid)
+    })
+    return out
   }
 }
