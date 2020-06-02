@@ -43,6 +43,7 @@ export default class Geo {
   index2xy = (index) => [index % this.W, Math.floor(index / this.W)]
   index2knight = (index) => this._index2knight[index]
   index2king = (index) => this._index2king[index]
+  index2queen = (index) => this._index2queen[index]
 
   preCache = () => {
     const { W, H, xy2index } = this
@@ -75,6 +76,7 @@ export default class Geo {
     }
     this._dindex2text = invert(this._text2dindex)
     this.cacheKing()
+    this.cacheQueen()
     this.cacheKnight()
   }
   // these are sudoku specific
@@ -119,11 +121,25 @@ export default class Geo {
     this._index2knight = this._mapdxys(dxys)
   }
 
+  cacheQueen = () => {
+    const dxys = []
+    range(1, this.W).forEach((d) => {
+      dxys.push([d, d])
+      dxys.push([d, -d])
+      dxys.push([-d, d])
+      dxys.push([-d, -d])
+    })
+    this._index2queen = this._mapdxys(dxys)
+  }
+
   _mapdxys(dxys) {
     const out = {}
     range(this.AREA).forEach((index) => {
       const xy = this.index2xy(index)
-      out[index] = dxys.map((dxy) => vector.add(xy, dxy)).filter(this.xyInGrid)
+      out[index] = dxys
+        .map((dxy) => vector.add(xy, dxy))
+        .filter(this.xyInGrid)
+        .map(this.xy2index)
     })
     return out
   }

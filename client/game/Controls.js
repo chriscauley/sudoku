@@ -32,7 +32,7 @@ class BaseCheckControl extends React.Component {
       checked: !!state[slug],
       onChange: this._onChange(slug),
       slug,
-      title: slug.replace('_', ' '),
+      title: slug.replace(/_/g, ' '),
     }))
 
   check = () => this.props.game.actions.check(this.getState())

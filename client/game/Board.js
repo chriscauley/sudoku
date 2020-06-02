@@ -3,6 +3,8 @@ import Storage from '@unrest/storage'
 
 import Geo from './Geo'
 
+const CHESS_PIECES = ['knight', 'king', 'queen']
+
 const saved_games = new Storage('saved games')
 // const made_games = new Storage('made games')
 
@@ -43,6 +45,10 @@ export default class Board {
       'complete',
       'killer_sudoku',
       'killer_total',
+      'anti_knight',
+      'anti_king',
+      // 'anti_queen', not currently used anywhere
+      'anti_9_queen',
     ]
 
     this.required_constraints = {
@@ -258,7 +264,15 @@ export default class Board {
     parseInt(this.sudoku[index]) || parseInt(this.answer[index])
 
   check(options = {}) {
-    const { row, col, box, complete, killer_sudoku, killer_total } = options
+    const {
+      row,
+      col,
+      box,
+      complete,
+      killer_sudoku,
+      killer_total,
+      anti_9_queen,
+    } = options
     this.clearErrors()
     complete && this._validateAnswers()
     range(this.geo.W).forEach((i) => {
@@ -294,11 +308,41 @@ export default class Board {
         })
       })
 
+    CHESS_PIECES.filter((piece) => options['anti_' + piece]).forEach((piece) =>
+      this._validateAntiChess(piece),
+    )
+
+    if (anti_9_queen) {
+      const indexes = range(this.geo.AREA).filter(
+        (index) => this.getAnswer(index) === 9,
+      )
+      this._validateAntiChess('queen', indexes)
+    }
+
     // to qualify as a win they must check sudoku constraints (row, col, box)
     if (row && col && box && this.errors.count === 0) {
       this.finish = new Date().valueOf()
       this.save()
     }
+  }
+
+  _validateAntiChess = (piece, indexes = range(this.geo.AREA)) => {
+    indexes.forEach((index) => {
+      const number = this.getAnswer(index)
+      if (number === undefined) {
+        return
+      }
+      this.geo['index2' + piece](index).forEach((index2) => {
+        const number2 = this.getAnswer(index2)
+        if (number2 === number) {
+          this.errors.count += 1
+          this.errors.reasons.push(
+            `There are ${number}s that can attack each other by ${piece}'s move.`,
+          )
+          this.errors.indexes.push(index)
+        }
+      })
+    })
   }
 
   _validateAnswers() {
