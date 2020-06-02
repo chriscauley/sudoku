@@ -125,7 +125,7 @@ class CTC extends React.Component {
         />
         <div>
           <div className="board">
-            <div className="sudoku">
+            <div className="sudoku cage-last display-boxes">
               {cells.map((cell) => (
                 <div key={cell.index} className={getClassName(cell)}>
                   {cell.question === undefined && cell.answer === undefined && (
@@ -141,6 +141,12 @@ class CTC extends React.Component {
                     <span className="answer">{cell.answer}</span>
                   )}
                   {cell.arrow && <span className={cell.arrow.className} />}
+                  {cell.cage && (
+                    <span
+                      className={cell.cage.className}
+                      data-text={cell.cage.text}
+                    />
+                  )}
                   {cell.underlay && (
                     <span className={cell.underlay.className} />
                   )}

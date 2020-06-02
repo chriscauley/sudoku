@@ -1,4 +1,4 @@
-import { range, flatten } from 'lodash'
+import { range, flatten, invert } from 'lodash'
 
 export default class Geo {
   constructor(options) {
@@ -58,6 +58,13 @@ export default class Geo {
         ),
       )
     })
+    this._text2dindex = {
+      top: -this.W,
+      bottom: this.W,
+      left: -1,
+      right: 1,
+    }
+    this._dindex2text = invert(this._text2dindex)
   }
   // these are sudoku specific
   row2indexes = (y) => this._row2indexes[y]

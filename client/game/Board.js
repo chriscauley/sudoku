@@ -36,39 +36,64 @@ export default class Board {
       extras: {},
     })
     if (this.ctc) {
+      const { arrows = [], underlays = [], cages = [], cells = [] } = this.ctc
       this.sudoku = this.sudoku = []
-      const { cells } = this.ctc
       cells.forEach((row) =>
         row.forEach((cell) => this.sudoku.push(cell.value)),
       )
-      if (this.ctc.arrows) {
-        this.extras.arrows = this.ctc.arrows.map((arrow) => {
-          const [xy1, xy2] = arrow.wayPoints
-          const xy = xy1.map((n) => Math.floor(n)).reverse()
-          const dxy = [-Math.sign(xy1[1] - xy2[1]), -Math.sign(xy1[0] - xy2[0])]
-          const dir = dxy2text[dxy]
-          return {
-            dindex: dxy[0] + dxy[1] * this.geo.W,
-            index: this.geo.xy2index(xy),
-            xy,
-            dxy,
-            className: `arrow arrow-${dir} dxy-${dxy.join(
-              '',
-            )} fa fa-chevron-${dir}`,
+      this.extras.arrows = arrows.map((arrow) => {
+        const [xy1, xy2] = arrow.wayPoints
+        const xy = xy1.map((n) => Math.floor(n)).reverse()
+        const dxy = [-Math.sign(xy1[1] - xy2[1]), -Math.sign(xy1[0] - xy2[0])]
+        const dir = dxy2text[dxy]
+        return {
+          dindex: dxy[0] + dxy[1] * this.geo.W,
+          index: this.geo.xy2index(xy),
+          xy,
+          dxy,
+          className: `arrow arrow-${dir} dxy-${dxy.join(
+            '',
+          )} fa fa-chevron-${dir}`,
+        }
+      })
+      this.extras.cages = cages.map((cage) => {
+        cage.indexes = {}
+        cage.first = { index: Infinity }
+        cage.last = { index: 0 }
+        cage.cells = cage.cells.map((xy) => {
+          xy = xy.reverse()
+          const index = this.geo.xy2index(xy)
+          const cell = { xy, index, className: 'cage' }
+          cage.indexes[index] = cell
+          if (cage.first.index > cell.index) {
+            cage.first = cell
           }
-        })
-      }
-      if (this.ctc.underlays) {
-        this.extras.underlays = this.ctc.underlays.map((underlay) => {
-          const xy = underlay.center.map((n) => Math.floor(n)).reverse()
-          return {
-            index: this.geo.xy2index(xy),
-            xy,
-            color: underlay.backgroundColor,
-            className: 'underlay',
+          if (cage.last.index < cell.index) {
+            cage.last = cell
           }
+          return cell
         })
-      }
+        cage.first.className += ' cage-first'
+        cage.last.className += ' cage-last'
+        cage.first.text = cage.last.text = cage.value
+        cage.cells.forEach((cell) => {
+          Object.entries(this.geo._text2dindex).forEach(([text, dindex]) => {
+            if (!cage.indexes[cell.index + dindex]) {
+              cell.className += ' cage-' + text
+            }
+          })
+        })
+        return cage
+      })
+      this.extras.underlays = underlays.map((underlay) => {
+        const xy = underlay.center.map((n) => Math.floor(n)).reverse()
+        return {
+          index: this.geo.xy2index(xy),
+          xy,
+          color: underlay.backgroundColor,
+          className: 'underlay',
+        }
+      })
     }
     this.turn = this.actions.length
     this.sudoku = this.sudoku || range(this.geo.AREA).map(() => {})
@@ -181,6 +206,11 @@ export default class Board {
     }))
     this.errors.indexes.forEach((index) => (cells[index].error = true))
     this.extras.arrows.forEach((arrow) => (cells[arrow.index].arrow = arrow))
+    this.extras.cages.forEach((cage) =>
+      cage.cells.forEach(
+        (cage_cell) => (cells[cage_cell.index].cage = cage_cell),
+      ),
+    )
     this.extras.underlays.forEach(
       (underlay) => (cells[underlay.index].underlay = underlay),
     )
