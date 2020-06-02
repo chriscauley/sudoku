@@ -27,6 +27,7 @@ const getClassName = ({
 const KEY_MAP = {}
 
 ')!@#$%^&*('.split('').forEach((key, i) => (KEY_MAP[key] = i.toString()))
+const ARROWS = ['ArrowUp', 'ArrowRight', 'ArrowLeft', 'ArrowDown']
 
 'abcdefghijklmnopqrstuvwxyz'
   .split('')
@@ -40,7 +41,8 @@ class CTC extends React.Component {
   }
   constructor(props) {
     super(props)
-    this.allowed_keys = '1234567890'.split('')
+    this.game_keys = '1234567890'.split('')
+    this.allowed_keys = ARROWS.concat(this.game_keys)
     this.listeners = ['keydown', 'mousedown', 'mouseup']
     this.listeners.forEach((s) => document.addEventListener(s, this[s]))
   }
@@ -56,7 +58,21 @@ class CTC extends React.Component {
       e.preventDefault()
     }
     const mode = getMode(e, this.state.mode)
+    if (ARROWS.includes(value)) {
+      return this.sendArrow(value, e.ctrlKey)
+    }
     this.sendKey(value, mode)
+  }
+
+  sendArrow(value, ctrlKey) {
+    if (this.state.cursor === undefined) {
+      return
+    }
+    const direction = value.toLowerCase().replace('arrow', '')
+    const cursor = this.geo.moveByText(this.state.cursor, direction)
+    const selected = ctrlKey ? this.state.selected : {}
+    selected[cursor] = true
+    this.setState({ selected, cursor, hover: null })
   }
 
   sendKey = (value, mode) => {
@@ -88,7 +104,7 @@ class CTC extends React.Component {
       selected = { [index]: true }
       removing = false
     }
-    this.setState({ dragging: true, removing, selected })
+    this.setState({ dragging: true, removing, selected, cursor: index })
   }
 
   _move = (pxy) => {
@@ -107,25 +123,28 @@ class CTC extends React.Component {
   setMode = (mode) => () => this.setState({ mode })
 
   render() {
-    const { hover, selected } = this.state
+    const { hover, selected, cursor } = this.state
     const { board } = this.props.game
     this.geo = board.geo
     board.geo.element = clickRef.current
     const cells = board.toCells(selected)
+    if (cells[cursor]) {
+      cells[cursor].cursor = true
+    }
     if (cells[hover]) {
       cells[hover].hover = true
     }
     return (
       <div className="Game">
         <Controls
-          keys={this.allowed_keys}
+          keys={this.game_keys}
           onClick={this.setMode}
           mode={this.state.mode}
           sendKey={this.sendKey}
         />
         <div>
           <div className="board">
-            <div className="sudoku cage-last display-boxes">
+            <div className="sudoku cage-last display-boxes display-cells">
               {cells.map((cell) => (
                 <div key={cell.index} className={getClassName(cell)}>
                   {cell.question === undefined && cell.answer === undefined && (
@@ -150,6 +169,7 @@ class CTC extends React.Component {
                   {cell.underlay && (
                     <span className={cell.underlay.className} />
                   )}
+                  {cell.cursor && <span className="cursor" />}
                 </div>
               ))}
             </div>

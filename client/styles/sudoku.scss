@@ -27,11 +27,12 @@ $underlay: rgba(0,0,0, 0.15);
 .board {
   --box-border: 0;
   --cell-border: 0;
-  .display-boxes {
-    --box-border: 3px;
-  }
   .display-cells {
     --cell-border: 1px;
+    --box-border: 1px;
+  }
+  .display-boxes, .display-boxes.display-cells {
+    --box-border: 3px;
   }
   $box-border: var(--box-border);
   $cell-border: var(--cell-border);
@@ -99,6 +100,16 @@ $underlay: rgba(0,0,0, 0.15);
       }
     }
   }
+}
+
+.board .cell .cursor {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 20%;
+    width: 60%;
+    height: 90%;
+    border-bottom: black 3px solid;
 }
 
 .board .cell .cage {

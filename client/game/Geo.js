@@ -1,5 +1,7 @@
 import { range, flatten, invert } from 'lodash'
 
+const mod = (a, b) => ((a % b) + b) % b
+
 export default class Geo {
   constructor(options) {
     if (!options.W) {
@@ -70,4 +72,17 @@ export default class Geo {
   row2indexes = (y) => this._row2indexes[y]
   col2indexes = (x) => this._col2indexes[x]
   box2indexes = (box) => this._box2indexes[box]
+  moveByText = (index, text) => {
+    let [x, y] = this.index2xy(index)
+    if (text === 'up') {
+      y--
+    } else if (text === 'down') {
+      y++
+    } else if (text === 'right') {
+      x++
+    } else if (text === 'left') {
+      x--
+    }
+    return this.xy2index([mod(x, this.W), mod(y, this.H)])
+  }
 }
