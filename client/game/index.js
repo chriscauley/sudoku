@@ -166,10 +166,10 @@ class CTC extends React.Component {
                       data-text={cell.cage.text}
                     />
                   )}
-                  {cell.underlay && (
-                    <span className={cell.underlay.className} />
-                  )}
                   {cell.cursor && <span className="cursor" />}
+                  {cell.underlays.map((underlay, i) => (
+                    <span key={i} className={underlay.className} />
+                  ))}
                 </div>
               ))}
             </div>

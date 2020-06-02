@@ -285,6 +285,8 @@ $underlay: rgba(0,0,0, 0.15);
   }
 }
 
+
+
 .board .cell .underlay {
   background: repeating-linear-gradient(
     -45deg,
@@ -298,4 +300,16 @@ $underlay: rgba(0,0,0, 0.15);
   top: 0;
   position: absolute;
   width: 100%;
+  &.wall {
+    border: black 2px solid;
+    background: $underlay;
+  }
+  &.horizontal {
+    height: 20%;
+    margin-top: -10%;
+  }
+  &.vertical {
+    width: 20%;
+    margin-left: -10%;
+  }
 }

@@ -3,6 +3,10 @@ import Storage from '@unrest/storage'
 
 import Geo from './Geo'
 
+const css = {
+  xy: (xy) => `x-${xy[0]} y-${xy[1]}`,
+}
+
 const CHESS_PIECES = ['knight', 'king', 'queen']
 
 const saved_games = new Storage('saved games')
@@ -13,6 +17,33 @@ const dxy2text = {
   '-1,0': 'left',
   '0,1': 'down',
   '0,-1': 'up',
+}
+
+// example puzzles:
+// 7Qh3tBm4mj - ceiling and floor
+const buildUnderlays = (underlays, geo) => {
+  return underlays.map((underlay) => {
+    const center = underlay.center.reverse()
+    const ratio = underlay.width / underlay.height
+    const xy = center.map((n) => Math.floor(n))
+    const index = geo.xy2index(xy)
+    let type = 'square'
+    let orientation = ''
+    if (ratio < 1) {
+      type = 'wall'
+      orientation = 'vertical'
+    } else if (ratio > 1) {
+      type = 'wall'
+      orientation = 'horizontal'
+    }
+    return {
+      index,
+      offset: [xy[0] - center[0], xy[1] - center[1]],
+      xy,
+      color: underlay.backgroundColor,
+      className: `underlay ${orientation} ${type} ${css.xy(xy)}`,
+    }
+  })
 }
 
 export default class Board {
@@ -109,15 +140,7 @@ export default class Board {
         })
         return cage
       })
-      this.extras.underlays = underlays.map((underlay) => {
-        const xy = underlay.center.map((n) => Math.floor(n)).reverse()
-        return {
-          index: this.geo.xy2index(xy),
-          xy,
-          color: underlay.backgroundColor,
-          className: 'underlay',
-        }
-      })
+      this.extras.underlays = buildUnderlays(underlays, this.geo)
     }
     this.turn = this.actions.length
     this.sudoku = this.sudoku || range(this.geo.AREA).map(() => {})
@@ -227,6 +250,7 @@ export default class Board {
       centre: this.centre[index] || [],
       corner: this.corner[index] || [],
       colour: this.colour[index] || [],
+      underlays: [],
     }))
     this.errors.indexes.forEach((index) => (cells[index].error = true))
     this.extras.arrows.forEach((arrow) => (cells[arrow.index].arrow = arrow))
@@ -235,8 +259,8 @@ export default class Board {
         (cage_cell) => (cells[cage_cell.index].cage = cage_cell),
       ),
     )
-    this.extras.underlays.forEach(
-      (underlay) => (cells[underlay.index].underlay = underlay),
+    this.extras.underlays.forEach((underlay) =>
+      cells[underlay.index].underlays.push(underlay),
     )
     return cells
   }
