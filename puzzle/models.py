@@ -4,13 +4,20 @@ from django.contrib.postgres.fields import JSONField
 from unrest.models import BaseModel, _choices
 
 class Puzzle(BaseModel):
+    FLAG_CHOICES = _choices([
+        'new',
+        'needs_constraints',
+        'no_puzzle',
+        'valid',
+    ])
     source = models.CharField(max_length=16, default="ctc")
     title = models.CharField(max_length=256, null=True, blank=True)
     external_id = models.CharField(max_length=32, null=True, blank=True)
     video_id = models.CharField(max_length=32, null=True, blank=True)
     data = JSONField(default=dict)
+    flag = models.CharField(max_length=16, default="new", choices=FLAG_CHOICES)
     def save(self, *args, **kwargs):
-        if not self.data and self.source == "ctc":
+        if not self.data and self.source == "ctc" and self.external_id:
             update_ctc(self)
         super().save(*args, **kwargs)
 
@@ -39,6 +46,7 @@ class Puzzle(BaseModel):
         else:
             return Puzzle.objects.create(video_id=slug, source=source)
 
+import re
 import requests
 from server.utils import curl
 from bs4 import BeautifulSoup
@@ -51,6 +59,8 @@ def fetch_ctc(slug):
     return requests.get(f"{CTC_URL}{slug}?alt=media&token={token}").json()
 
 def update_ctc(puzzle):
+    if not puzzle.external_id:
+        return
     puzzle.data['ctc'] = fetch_ctc(puzzle.external_id)
     if puzzle.video_id:
         video_url = f"https://www.youtube.com/watch?v={puzzle.video_id}"
@@ -58,14 +68,12 @@ def update_ctc(puzzle):
         soup = BeautifulSoup(html, features="html.parser")
         title = soup.find("meta", {'property': 'og:title'})
         puzzle.title = title = title and title['content']
-        puzzle.save()
 
 def refresh_ctc():
     match_slug = re.compile(r'.*cracking-the-cryptic.web.app/sudoku/(\w+)')
-
-    # This needs to update based off of last download time
-    feed = curl('https://www.youtube.com/feeds/videos.xml?channel_id=UCC-UOdK8-mIjxBQm_ot1T-Q')
-    soup = BeautifulSoup(feed, features="html.parser")
+    response = requests.get('https://www.youtube.com/feeds/videos.xml?channel_id=UCC-UOdK8-mIjxBQm_ot1T-Q')
+    text = response.text
+    soup = BeautifulSoup(text, features="html.parser")
     for entry in soup.find_all('entry'):
         links = entry.find_all('link')
         if len(links) != 1:

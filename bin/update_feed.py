@@ -5,7 +5,9 @@ import os
 import re
 import requests
 
-from puzzle.models import Puzzle, update_ctc
+from puzzle.models import Puzzle, update_ctc, refresh_ctc
 
 for puzzle in Puzzle.objects.all():
     update_ctc(puzzle)
+    puzzle.save()
+refresh_ctc()
