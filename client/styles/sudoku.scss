@@ -102,7 +102,8 @@ $underlay: rgba(0,0,0, 0.15);
 }
 
 .board .cell .cage {
-  $width: 1px;
+  --cage-width: 1px;
+  $width: var(--cage-width);
   $color: black;
   position: absolute;
   height: 100%;
@@ -115,6 +116,10 @@ $underlay: rgba(0,0,0, 0.15);
     display: block;
     height: 100%;
     width: 100%;
+  }
+  &.error:before {
+    --cage-width: 2px;
+    border-color: red;
   }
   &.cage-left {
     padding-left: 2px;

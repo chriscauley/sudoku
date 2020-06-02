@@ -1,4 +1,4 @@
-import { cloneDeep, range, pick } from 'lodash'
+import { cloneDeep, range, pick, sum } from 'lodash'
 import Storage from '@unrest/storage'
 
 import Geo from './Geo'
@@ -57,14 +57,14 @@ export default class Board {
         }
       })
       this.extras.cages = cages.map((cage) => {
-        cage.indexes = {}
+        cage.indexes = []
         cage.first = { index: Infinity }
         cage.last = { index: 0 }
         cage.cells = cage.cells.map((xy) => {
           xy = xy.reverse()
           const index = this.geo.xy2index(xy)
           const cell = { xy, index, className: 'cage' }
-          cage.indexes[index] = cell
+          cage.indexes.push(index)
           if (cage.first.index > cell.index) {
             cage.first = cell
           }
@@ -78,9 +78,10 @@ export default class Board {
         cage.first.text = cage.last.text = cage.value
         cage.cells.forEach((cell) => {
           Object.entries(this.geo._text2dindex).forEach(([text, dindex]) => {
-            if (!cage.indexes[cell.index + dindex]) {
+            if (!cage.indexes.includes(cell.index + dindex)) {
               cell.className += ' cage-' + text
             }
+            cell._className = cell.className
           })
         })
         return cage
@@ -231,16 +232,57 @@ export default class Board {
       indexes: [],
       count: 0,
     }
+    this.extras.cages.forEach((cage) =>
+      cage.cells.forEach((cell) => (cell.className = cell._className)),
+    )
   }
 
-  check() {
+  getAnswer = (index) =>
+    parseInt(this.sudoku[index]) || parseInt(this.answer[index])
+
+  check(options = {}) {
+    const {
+      row = true,
+      col = true,
+      box = true,
+      killer_sudoku = true,
+      killer_total = true,
+    } = options
     this.clearErrors()
     this._validateAnswers()
     range(this.geo.W).forEach((i) => {
-      this._checkSudoku('row', i)
-      this._checkSudoku('col', i)
-      this._checkSudoku('box', i)
+      row && this._checkSudoku('row', i)
+      col && this._checkSudoku('col', i)
+      box && this._checkSudoku('box', i)
     })
+
+    // validate killer cages
+    const _err = (cage) =>
+      cage.cells.forEach((cell) => (cell.className += ' error'))
+    killer_total &&
+      this.extras.cages.forEach((cage) => {
+        const total = sum(cage.indexes.map(this.getAnswer))
+        if (total !== parseInt(cage.value)) {
+          this.errors.reasons.push(`Cage should be ${cage.value}, got ${total}`)
+          this.errors.count++
+          _err(cage)
+        }
+      })
+
+    killer_sudoku &&
+      this.extras.cages.forEach((cage) => {
+        const bins = this._binAnswers(cage.indexes)
+        Object.entries(bins).forEach(([number, indexes]) => {
+          if (indexes.length > 1) {
+            this.errors.reasons.push(
+              `There are ${indexes.length} ${number}s in a killer cage.`,
+            )
+            this.errors.count++
+            _err(cage)
+          }
+        })
+      })
+
     if (this.errors.count === 0) {
       this.finish = new Date().valueOf()
       this.save()
@@ -260,14 +302,18 @@ export default class Board {
     })
   }
 
-  _checkSudoku(type, type_no) {
-    const indexes = this.geo[`${type}2indexes`](type_no)
+  _binAnswers(indexes) {
     const bins = {}
     indexes.forEach((index) => {
       const number = this.sudoku[index] || this.answer[index]
       bins[number] = bins[number] || []
       bins[number].push(index)
     })
+    return bins
+  }
+
+  _checkSudoku(type, type_no) {
+    const bins = this._binAnswers(this.geo[`${type}2indexes`](type_no))
     Object.entries(bins).forEach(([number, indexes]) => {
       if (indexes.length > 1) {
         this.errors.count += indexes.length
