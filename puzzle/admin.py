@@ -7,6 +7,12 @@ from puzzle.models import Puzzle
 class PuzzleAdmin(admin.ModelAdmin):
     list_display = ["video_id", "external_id", "_link", "flag"]
     list_editable = ["flag"]
+    list_filter = ["flag"]
     def _link(self, obj):
         video_url = f"https://www.youtube.com/watch?v={obj.video_id}"
-        return mark_safe(f'<a href="{video_url}">{obj.video_id}</a>')
+        return mark_safe(f'<a href="{video_url}" target="_new">{obj.video_id}</a>')
+    readonly_fields = ['_link', 'description', 'data']
+
+    def description(self, obj):
+        text = obj.data.get("description").replace("\n","<br/>")
+        return mark_safe(text)
