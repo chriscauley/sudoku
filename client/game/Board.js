@@ -31,17 +31,21 @@ const buildUnderlays = (underlays, geo) => {
     let orientation = ''
     if (ratio < 1) {
       type = 'wall'
-      orientation = 'vertical'
+      orientation = 'h-split'
     } else if (ratio > 1) {
       type = 'wall'
-      orientation = 'horizontal'
+      orientation = 'v-split'
     }
+    const className = `underlay ${orientation} ${type} ${css.xy(xy)}`
     return {
       index,
       offset: [xy[0] - center[0], xy[1] - center[1]],
       xy,
+      type,
+      orientation,
       color: underlay.backgroundColor,
-      className: `underlay ${orientation} ${type} ${css.xy(xy)}`,
+      className,
+      _className: className,
     }
   })
 }
@@ -80,6 +84,7 @@ export default class Board {
       'anti_king',
       // 'anti_queen', not currently used anywhere
       'anti_9_queen',
+      'consecutive_pairs',
     ]
 
     this.required_constraints = {
@@ -274,6 +279,9 @@ export default class Board {
   }
 
   clearErrors() {
+    this.extras.underlays.forEach(
+      (underlay) => (underlay.className = underlay._className),
+    )
     this.errors = {
       reasons: [],
       indexes: [],
@@ -342,6 +350,20 @@ export default class Board {
       )
       this._validateAntiChess('queen', indexes)
     }
+
+    options.consecutive_pairs &&
+      this.extras.underlays.forEach((underlay) => {
+        const { index, orientation } = underlay
+        const index2 = index - (orientation === 'h-split' ? 1 : this.geo.W)
+        const diff = Math.abs(this.getAnswer(index) - this.getAnswer(index2))
+        if (!isNaN(diff) && diff !== 1) {
+          this.errors.count += 1
+          this.errors.reasons.push(
+            'Cells separated by bars must be consecutive pairs',
+          )
+          underlay.className += ' error'
+        }
+      })
 
     // to qualify as a win they must check sudoku constraints (row, col, box)
     if (row && col && box && this.errors.count === 0) {

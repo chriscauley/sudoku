@@ -180,6 +180,7 @@ $underlay: rgba(0,0,0, 0.15);
   }
   .corner {
     @apply top-0 left-0 absolute;
+    line-height: 1;
   }
   @for $i from 0 through 9 {
     &.colour-#{$i} {
@@ -285,9 +286,8 @@ $underlay: rgba(0,0,0, 0.15);
   }
 }
 
-
-
 .board .cell .underlay {
+  $wall: 7%;
   background: repeating-linear-gradient(
     -45deg,
     transparent,
@@ -304,12 +304,16 @@ $underlay: rgba(0,0,0, 0.15);
     border: black 2px solid;
     background: $underlay;
   }
-  &.horizontal {
-    height: 20%;
-    margin-top: -10%;
+  &.v-split {
+    height: 2 * $wall;
+    margin-top: - $wall;
   }
-  &.vertical {
-    width: 20%;
-    margin-left: -10%;
+  &.h-split {
+    width: 2 * $wall;
+    margin-left: - $wall;
+  }
+  &.error {
+    background: rgba(255,0,0,0.5);
+    border-color: red;
   }
 }
