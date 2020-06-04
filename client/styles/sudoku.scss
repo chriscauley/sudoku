@@ -48,9 +48,6 @@ $thermo: #ddd;
     top: 0;
     width: 100%;
   }
-  .clickMask {
-    z-index: 100;
-  }
   .cell {
     height: 11.1111%;
     width: 11.1111%;
@@ -114,7 +111,6 @@ $thermo: #ddd;
     width: 60%;
     height: 90%;
     border-bottom: black 3px solid;
-    z-index: 20;
 }
 
 .board .cell .cage {
@@ -181,7 +177,6 @@ $thermo: #ddd;
   &.selected {
     border-color: $underlay;
     background: darken(map.get($pallet, 1), $darkenSelected);
-    z-index: 2;
   }
   .corner {
     @apply top-0 left-0 absolute;
@@ -211,9 +206,6 @@ $thermo: #ddd;
   }
   .corner, .centre {
     font-size: 0.3em;
-  }
-  .answer, .corner, .centre {
-    z-index: 20;
   }
 }
 
@@ -347,7 +339,6 @@ $thermo: #ddd;
     top: 50%;
     transform-origin: $t / 2;
     width: 90%;
-    z-index: 1;
   }
   &.to-right:after, &.from-right:before {
     transform: rotate(0deg);
@@ -380,5 +371,25 @@ $thermo: #ddd;
 
 .Controls {
   position: relative;
-  z-index: 101;
+}
+
+/* I find it useful to keep all z-indexes together */
+.board .cell  {
+  &.selected {
+    &:before, &:after {
+      z-index: 1;
+    }
+  }
+  .cursor, .answer, .corner, .centre {
+    z-index: 20;
+  }
+  .to:after, .from:before {
+    z-index: 10;
+  }
+}
+.Controls {
+  z-index: 100;
+}
+.clickMask {
+  z-index: 50;
 }
