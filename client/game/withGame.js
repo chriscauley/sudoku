@@ -40,7 +40,13 @@ const actions = {
     store.setState({ board: store.state.board, resetting: false })
   },
   check(store, options) {
-    store.state.board.check(options)
+    const constraints = []
+    Object.entries(options).forEach(([key, value]) => {
+      if (value) {
+        constraints.push(key)
+      }
+    })
+    store.state.board.check(constraints)
     store.setState({ rando: Math.random() })
   },
   undo(store) {

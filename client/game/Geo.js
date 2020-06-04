@@ -59,13 +59,17 @@ export default class Geo {
 
   preCache = () => {
     const { W, H, xy2index } = this
+    this.indexes = range(this.AREA)
+    this.i_rows = range(H)
+    this.i_cols = range(W)
+    this.i_boxes = range(H)
 
     // sudoku specific
     this._row2indexes = range(H).map((y) =>
-      range(W).map((x) => xy2index([x, y])),
+      this.i_rows.map((x) => xy2index([x, y])),
     )
     this._col2indexes = range(W).map((x) =>
-      range(H).map((y) => xy2index([x, y])),
+      this.i_cols.map((y) => xy2index([x, y])),
     )
 
     // this is highly sudoku specific for now since it relies on boxes being square

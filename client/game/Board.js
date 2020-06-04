@@ -1,13 +1,12 @@
-import { cloneDeep, range, pick, sum, last, uniqBy } from 'lodash'
+import { cloneDeep, range, pick, last, uniqBy } from 'lodash'
 import Storage from '@unrest/storage'
 
 import Geo, { vector } from './Geo'
+import Checker from './Checker'
 
 const css = {
   xy: (xy) => `x-${xy[0]} y-${xy[1]}`,
 }
-
-const CHESS_PIECES = ['knight', 'king', 'queen']
 
 const saved_games = new Storage('saved games')
 // const made_games = new Storage('made games')
@@ -59,6 +58,7 @@ export default class Board {
     window.B = this
     this.options = options
     this.geo = new Geo({ W: 9 })
+    this.checker = new Checker(this)
     this.reset()
 
     // load saved game if exists
@@ -67,6 +67,7 @@ export default class Board {
   }
 
   reset() {
+    this.checker.reset()
     Object.assign(this, cloneDeep(this.options), {
       start: new Date().valueOf(),
       answer: {},
@@ -97,7 +98,7 @@ export default class Board {
       col: true,
       box: true,
       complete: true,
-      thermo: true,
+      anti_knight: true,
     }
 
     if (this.ctc) {
@@ -410,6 +411,20 @@ export default class Board {
     )
   }
 
+  check(constraints) {
+    this.clearErrors()
+
+    // to qualify as a win they must check sudoku constraints (row, col, box)
+    const required = ['row', 'col', 'box', 'complete']
+    const valid = !required.find((type) => !constraints[type])
+
+    this.checker.check({ constraints })
+    if (valid && this.errors.count === 0) {
+      this.finish = new Date().valueOf()
+      this.save()
+    }
+  }
+
   clearErrors() {
     this.extras.underlays.forEach(
       (underlay) => (underlay.className = underlay._className),
@@ -417,170 +432,9 @@ export default class Board {
     this.extras.lines.forEach((line) =>
       line.points.forEach((point) => (point.className = point._className)),
     )
-    this.errors = {
-      reasons: [],
-      indexes: [],
-      count: 0,
-    }
     this.extras.cages.forEach((cage) =>
       cage.cells.forEach((cell) => (cell.className = cell._className)),
     )
-  }
-
-  getAnswer = (index) =>
-    parseInt(this.sudoku[index]) || parseInt(this.answer[index])
-
-  check(options = {}) {
-    const {
-      row,
-      col,
-      box,
-      complete,
-      killer_sudoku,
-      killer_total,
-      anti_9_queen,
-    } = options
-    this.clearErrors()
-    complete && this._validateAnswers()
-    range(this.geo.W).forEach((i) => {
-      row && this._checkSudoku('row', i)
-      col && this._checkSudoku('col', i)
-      box && this._checkSudoku('box', i)
-    })
-
-    // validate killer cages
-    const _err = (cage) =>
-      cage.cells.forEach((cell) => (cell.className += ' error'))
-    killer_total &&
-      this.extras.cages.forEach((cage) => {
-        const total = sum(cage.indexes.map(this.getAnswer))
-        if (total !== parseInt(cage.value)) {
-          this.errors.reasons.push(`Cage should be ${cage.value}, got ${total}`)
-          this.errors.count++
-          _err(cage)
-        }
-      })
-
-    killer_sudoku &&
-      this.extras.cages.forEach((cage) => {
-        const bins = this._binAnswers(cage.indexes)
-        Object.entries(bins).forEach(([number, indexes]) => {
-          if (indexes.length > 1) {
-            this.errors.reasons.push(
-              `There are ${indexes.length} ${number}s in a killer cage.`,
-            )
-            this.errors.count++
-            _err(cage)
-          }
-        })
-      })
-
-    CHESS_PIECES.filter((piece) => options['anti_' + piece]).forEach((piece) =>
-      this._validateAntiChess(piece),
-    )
-
-    if (anti_9_queen) {
-      const indexes = range(this.geo.AREA).filter(
-        (index) => this.getAnswer(index) === 9,
-      )
-      this._validateAntiChess('queen', indexes)
-    }
-
-    options.consecutive_pairs &&
-      this.extras.underlays.forEach((underlay) => {
-        const { index, orientation } = underlay
-        const index2 = index - (orientation === 'h-split' ? 1 : this.geo.W)
-        const diff = Math.abs(this.getAnswer(index) - this.getAnswer(index2))
-        if (!isNaN(diff) && diff !== 1) {
-          this.errors.count += 1
-          this.errors.reasons.push(
-            'Cells separated by bars must be consecutive pairs',
-          )
-          underlay.className += ' error'
-        }
-      })
-
-    options.thermo &&
-      this.extras.lines.forEach((line) => {
-        let last
-        line.points.forEach((point) => {
-          const answer = this.getAnswer(point.index)
-          if (last && answer <= this.getAnswer(last.index)) {
-            this.errors.count += 1
-            this.errors.reasons.push(
-              `Numbers along a thermometer must go up from the bulb`,
-            )
-            this.errors.indexes.push(last.index)
-            this.errors.indexes.push(point.index)
-          }
-          if (answer) {
-            last = point
-          }
-        })
-      })
-
-    // to qualify as a win they must check sudoku constraints (row, col, box)
-    if (row && col && box && this.errors.count === 0) {
-      this.finish = new Date().valueOf()
-      this.save()
-    }
-  }
-
-  _validateAntiChess = (piece, indexes = range(this.geo.AREA)) => {
-    indexes.forEach((index) => {
-      const number = this.getAnswer(index)
-      if (number === undefined) {
-        return
-      }
-      this.geo['index2' + piece](index).forEach((index2) => {
-        const number2 = this.getAnswer(index2)
-        if (number2 === number) {
-          this.errors.count += 1
-          this.errors.reasons.push(
-            `There are ${number}s that can attack each other by ${piece}'s move.`,
-          )
-          this.errors.indexes.push(index)
-        }
-      })
-    })
-  }
-
-  _validateAnswers() {
-    const allowed = {}
-    range(1, 10).map((i) => (allowed[i] = true))
-    range(this.geo.AREA).forEach((index) => {
-      const number = this.sudoku[index] || this.answer[index]
-      if (!allowed[number]) {
-        this.errors.count += 1
-        this.errors.reasons.push(`No final answer can be ${number}`)
-        this.errors.indexes.push(index)
-      }
-    })
-  }
-
-  _binAnswers(indexes) {
-    const bins = {}
-    indexes.forEach((index) => {
-      const number = this.sudoku[index] || this.answer[index]
-      if (number !== undefined) {
-        bins[number] = bins[number] || []
-        bins[number].push(index)
-      }
-    })
-    return bins
-  }
-
-  _checkSudoku(type, type_no) {
-    const bins = this._binAnswers(this.geo[`${type}2indexes`](type_no))
-    Object.entries(bins).forEach(([number, indexes]) => {
-      if (indexes.length > 1) {
-        this.errors.count += indexes.length
-        this.errors.reasons.push(
-          `There are ${indexes.length} ${number}s in ${type} ${type_no}`,
-        )
-        this.errors.indexes = this.errors.indexes.concat(indexes)
-      }
-    })
   }
 
   freeze() {
