@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 
 from puzzle.models import Puzzle
-import puzzle.forms
+#import puzzle.forms
 
 list_attrs = ['id', 'external_id', 'video_id', 'title']
 detail_attrs = list_attrs + ['data']
