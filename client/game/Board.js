@@ -164,27 +164,59 @@ export default class Board {
       const underlain = {}
       const broken_lines = []
       this.extras.underlays.forEach((u) => (underlain[u.index] = true))
-      this.extras.lines = lines.map((line) => {
+
+      const { W, H } = this.geo
+      const processedLines = lines.map((line) => {
         const { wayPoints } = line
+        const points = wayPoints.map((wp) => {
+          const xy = wp.map((i) => Math.floor(i)).reverse()
+          return { xy, index: this.geo.xy2index(xy) }
+        })
+        if (points.length === 2 && points[0].index + points[1].index === 90) {
+          const diff = Math.abs(points[0].index - points[1].index)
+          let xys = [],
+            direction
+          if (diff === 90) {
+            xys = vector.connect([0, 0], [W - 1, H - 1])
+            direction = 'up'
+          } else if (diff === 72) {
+            xys = vector.connect([0, H - 1], [W - 1, 0])
+            direction = 'down'
+          }
+          return {
+            type: 'diagonal',
+            direction,
+            points: xys.map((xy) => ({
+              xy,
+              index: this.geo.xy2index(xy),
+              className: 'line-diagonal ' + direction,
+            })),
+          }
+        }
+        return { points, type: 'thermo' }
+      })
+
+      this.extras.lines = processedLines.map((line) => {
         let last_xy
         const line_xys = []
-        wayPoints.forEach((wp) => {
-          const xy = wp.reverse().map((i) => Math.floor(i))
-          if (last_xy) {
-            vector
-              .connect(last_xy, xy)
-              .slice(1)
-              .map((xy) => line_xys.push(xy))
-          } else {
-            line_xys.push(xy)
-          }
-          last_xy = xy
-        })
-        line.points = line_xys.map((xy) => ({
-          index: this.geo.xy2index(xy),
-          className: 'line',
-          xy,
-        }))
+        if (line.type === 'thermo') {
+          line.points.forEach((point) => {
+            if (last_xy) {
+              vector
+                .connect(last_xy, point.xy)
+                .slice(1)
+                .map((xy) => line_xys.push(xy))
+            } else {
+              line_xys.push(point.xy)
+            }
+            last_xy = point.xy
+          })
+          line.points = line_xys.map((xy) => ({
+            index: this.geo.xy2index(xy),
+            className: 'line-thermo',
+            xy,
+          }))
+        }
 
         // sometimes lines are entered wrong or broken up in CTC
         if (!underlain[line.points[0].index]) {
@@ -227,18 +259,20 @@ export default class Board {
       })
 
       this.extras.lines.forEach((line) => {
-        let last_point
-        line.points.forEach((point) => {
-          if (last_point) {
-            point.className +=
-              ' from from-' +
-              dxy2text[vector.sign(vector.subtract(last_point.xy, point.xy))]
-            last_point.className +=
-              ' to to-' +
-              dxy2text[vector.sign(vector.subtract(point.xy, last_point.xy))]
-          }
-          last_point = point
-        })
+        if (line.type === 'thermo') {
+          let last_point
+          line.points.forEach((point) => {
+            if (last_point) {
+              point.className +=
+                ' from from-' +
+                dxy2text[vector.sign(vector.subtract(last_point.xy, point.xy))]
+              last_point.className +=
+                ' to to-' +
+                dxy2text[vector.sign(vector.subtract(point.xy, last_point.xy))]
+            }
+            last_point = point
+          })
+        }
         line.points.forEach((point) => (point._className = point.className))
       })
     }
@@ -363,7 +397,7 @@ export default class Board {
       cells[underlay.index].underlays.push(underlay),
     )
     this.extras.lines.forEach((line) => {
-      line.points.forEach((point) => (cells[point.index].line = point))
+      line.points.forEach((point) => cells[point.index].underlays.push(point))
     })
     return cells
   }

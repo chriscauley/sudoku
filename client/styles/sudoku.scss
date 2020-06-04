@@ -325,7 +325,7 @@ $thermo: #ddd;
   width: 100% - 2 * $bulb-shrink;
 }
 
-.board .cell .line {
+.board .cell .line-thermo {
   $t: 0.25em;
   &.from:before, &.to:after {
     background: $thermo;
@@ -369,6 +369,38 @@ $thermo: #ddd;
   }
 }
 
+.line-diagonal {
+  $w: 2%;
+  $color: rgb(210, 59, 231);
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  &.down {
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 50% - $w/2,
+      $color 50% - $w/2,
+      $color 50% + $w/2,
+      transparent 50% + $w/2,
+      transparent,
+    );
+  }
+  &.up {
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 50% - $w/2,
+      $color 50% - $w/2,
+      $color 50% + $w/2,
+      transparent 50% + $w/2,
+      transparent,
+    );
+  }
+}
+
 .Controls {
   position: relative;
 }
@@ -380,11 +412,14 @@ $thermo: #ddd;
       z-index: 1;
     }
   }
-  .cursor, .answer, .corner, .centre {
+  .question, .answer, .corner, .centre {
     z-index: 20;
   }
   .to:after, .from:before {
     z-index: 10;
+  }
+  .cursor {
+    z-index: 110;
   }
 }
 .Controls {
