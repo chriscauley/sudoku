@@ -173,6 +173,7 @@ class CTC extends React.Component {
                       className={underlay.className}
                     />
                   ))}
+                  {cell.line && <span className={cell.line.className} />}
                 </div>
               ))}
             </div>

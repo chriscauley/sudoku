@@ -2,9 +2,21 @@ import { range, flatten, invert, inRange } from 'lodash'
 
 const mod = (a, b) => ((a % b) + b) % b
 
-const vector = {
+const _fromTo = (start, end, steps) => {
+  const step = (end - start) / steps
+  return range(steps).map((i) => i * step + start)
+}
+
+export const vector = {
   add: (xy1, xy2) => [xy1[0] + xy2[0], xy1[1] + xy2[1]],
   subtract: (xy1, xy2) => [xy1[0] - xy2[0], xy1[1] - xy2[1]],
+  sign: (vec) => vec.map((i) => Math.sign(i)),
+  connect: (xy1, xy2) => {
+    const steps = Math.max(Math.abs(xy1[0] - xy2[0]), Math.abs(xy1[1] - xy2[1]))
+    const xs = _fromTo(xy1[0], xy2[0], steps)
+    const ys = _fromTo(xy1[1], xy2[1], steps)
+    return xs.map((x, i) => [x, ys[i]]).concat([xy2])
+  },
 }
 
 export default class Geo {

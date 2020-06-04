@@ -1,7 +1,7 @@
-import { cloneDeep, range, pick, sum } from 'lodash'
+import { cloneDeep, range, pick, sum, last, uniqBy } from 'lodash'
 import Storage from '@unrest/storage'
 
-import Geo from './Geo'
+import Geo, { vector } from './Geo'
 
 const css = {
   xy: (xy) => `x-${xy[0]} y-${xy[1]}`,
@@ -17,6 +17,10 @@ const dxy2text = {
   '-1,0': 'left',
   '0,1': 'down',
   '0,-1': 'up',
+  '1,1': 'downright',
+  '-1,1': 'downleft',
+  '-1,-1': 'upleft',
+  '1,-1': 'upright',
 }
 
 // example puzzles:
@@ -85,6 +89,7 @@ export default class Board {
       // 'anti_queen', not currently used anywhere
       'anti_9_queen',
       'consecutive_pairs',
+      'thermo',
     ]
 
     this.required_constraints = {
@@ -92,11 +97,18 @@ export default class Board {
       col: true,
       box: true,
       complete: true,
+      thermo: true,
     }
 
     if (this.ctc) {
-      const { arrows = [], underlays = [], cages = [], cells = [] } = this.ctc
-      this.sudoku = this.sudoku = []
+      const {
+        arrows = [],
+        underlays = [],
+        cages = [],
+        cells = [],
+        lines = [],
+      } = this.ctc
+      this.sudoku = []
       cells.forEach((row) =>
         row.forEach((cell) => this.sudoku.push(cell.value)),
       )
@@ -145,7 +157,90 @@ export default class Board {
         })
         return cage
       })
+
       this.extras.underlays = buildUnderlays(underlays, this.geo)
+
+      // lines need to know where underlays are to point thermometers
+      const underlain = {}
+      const broken_lines = []
+      this.extras.underlays.forEach((u) => (underlain[u.index] = true))
+      this.extras.lines = lines.map((line) => {
+        const { wayPoints } = line
+        let last_xy
+        const line_xys = []
+        wayPoints.forEach((wp) => {
+          const xy = wp.reverse().map((i) => Math.floor(i))
+          if (last_xy) {
+            vector
+              .connect(last_xy, xy)
+              .slice(1)
+              .map((xy) => line_xys.push(xy))
+          } else {
+            line_xys.push(xy)
+          }
+          last_xy = xy
+        })
+        line.points = line_xys.map((xy) => ({
+          index: this.geo.xy2index(xy),
+          className: 'line',
+          xy,
+        }))
+
+        // sometimes lines are entered wrong or broken up in CTC
+        if (!underlain[line.points[0].index]) {
+          if (underlain[last(line.points).index]) {
+            // the thermometer was input backwards in ctc puzzle
+            line.points.reverse()
+          } else {
+            broken_lines.push(line)
+          }
+        }
+
+        line.head = line.points[0].index
+        line.tail = last(line.points).index
+        return line
+      })
+
+      const mergeLines = (trash, keep) => {
+        keep.points = keep.points.concat(trash.points)
+        keep.tail = trash.tail
+        this.extras.lines = this.extras.lines.filter((line) => line !== trash)
+        keep.points = uniqBy(keep.points, 'index')
+      }
+
+      // fix broken lines
+      broken_lines.forEach((broken) => {
+        this.extras.lines.forEach((line) => {
+          if (line === broken) {
+            return
+          }
+          if (line.tail === broken.head) {
+            mergeLines(broken, line)
+          } else if (line.tail === broken.head) {
+            broken.points.reverse()[(broken.head, broken.tail)] = [
+              broken.tail,
+              broken.head,
+            ]
+            mergeLines(broken, line)
+          }
+        })
+      })
+
+      this.extras.lines.forEach((line) => {
+        let last_point
+        line.points.forEach((point) => {
+          if (last_point) {
+            point.className +=
+              ' from from-' +
+              dxy2text[vector.sign(vector.subtract(last_point.xy, point.xy))]
+            last_point.className +=
+              ' to to-' +
+              dxy2text[vector.sign(vector.subtract(point.xy, last_point.xy))]
+          }
+          last_point = point
+        })
+        line.points.forEach((point) => (point._className = point.className))
+      })
     }
     this.turn = this.actions.length
     this.sudoku = this.sudoku || range(this.geo.AREA).map(() => {})
@@ -267,6 +362,9 @@ export default class Board {
     this.extras.underlays.forEach((underlay) =>
       cells[underlay.index].underlays.push(underlay),
     )
+    this.extras.lines.forEach((line) => {
+      line.points.forEach((point) => (cells[point.index].line = point))
+    })
     return cells
   }
   getSelectedNeighbors = (index, selected) => {
@@ -281,6 +379,9 @@ export default class Board {
   clearErrors() {
     this.extras.underlays.forEach(
       (underlay) => (underlay.className = underlay._className),
+    )
+    this.extras.lines.forEach((line) =>
+      line.points.forEach((point) => (point.className = point._className)),
     )
     this.errors = {
       reasons: [],
@@ -363,6 +464,25 @@ export default class Board {
           )
           underlay.className += ' error'
         }
+      })
+
+    options.thermo &&
+      this.extras.lines.forEach((line) => {
+        let last
+        line.points.forEach((point) => {
+          const answer = this.getAnswer(point.index)
+          if (last && answer <= this.getAnswer(last.index)) {
+            this.errors.count += 1
+            this.errors.reasons.push(
+              `Numbers along a thermometer must go up from the bulb`,
+            )
+            this.errors.indexes.push(last.index)
+            this.errors.indexes.push(point.index)
+          }
+          if (answer) {
+            last = point
+          }
+        })
       })
 
     // to qualify as a win they must check sudoku constraints (row, col, box)
