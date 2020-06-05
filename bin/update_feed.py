@@ -6,7 +6,8 @@ import os
 import re
 import requests
 
-from puzzle.models import Puzzle, update_ctc, refresh_ctc
+from puzzle.ctc import update_ctc, refresh_ctc
+from puzzle.models import Puzzle
 
 # with open('.ctc.json', 'r') as f:
 #     video_urls = json.loads(f.read())
@@ -28,4 +29,4 @@ for puzzle in Puzzle.objects.filter(external_id__contains="..."):
 # print(Puzzle.objects.filter(external_id=None).count())
 
 
-# refresh_ctc()
+refresh_ctc(Puzzle)
