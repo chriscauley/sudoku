@@ -76,6 +76,7 @@ export default class Board {
       colour: {},
       actions: [],
       extras: {},
+      constraints: ['row', 'col', 'box', 'complete'],
     })
     delete this.solve
 
@@ -92,9 +93,8 @@ export default class Board {
       'anti_9_queen',
       'consecutive_pairs',
       'thermo',
+      'unique_diagonals',
     ]
-
-    this.constraints = ['row', 'col', 'box', 'complete', 'thermo']
 
     if (this.ctc) {
       const {
@@ -164,12 +164,12 @@ export default class Board {
       const { W, H } = this.geo
       const processedLines = lines.map((line) => {
         const { wayPoints } = line
-        const points = wayPoints.map((wp) => {
+        const cells = wayPoints.map((wp) => {
           const xy = wp.map((i) => Math.floor(i)).reverse()
           return { xy, index: this.geo.xy2index(xy) }
         })
-        if (points.length === 2 && points[0].index + points[1].index === 90) {
-          const diff = Math.abs(points[0].index - points[1].index)
+        if (cells.length === 2 && cells[0].index + cells[1].index === 90) {
+          const diff = Math.abs(cells[0].index - cells[1].index)
           let xys = [],
             direction
           if (diff === 90) {
@@ -182,21 +182,21 @@ export default class Board {
           return {
             type: 'diagonal',
             direction,
-            points: xys.map((xy) => ({
+            cells: xys.map((xy) => ({
               xy,
               index: this.geo.xy2index(xy),
               className: 'line-diagonal ' + direction,
             })),
           }
         }
-        return { points, type: 'thermo' }
+        return { cells, type: 'thermo' }
       })
 
       this.extras.lines = processedLines.map((line) => {
         let last_xy
         const line_xys = []
         if (line.type === 'thermo') {
-          line.points.forEach((point) => {
+          line.cells.forEach((point) => {
             if (last_xy) {
               vector
                 .connect(last_xy, point.xy)
@@ -207,7 +207,7 @@ export default class Board {
             }
             last_xy = point.xy
           })
-          line.points = line_xys.map((xy) => ({
+          line.cells = line_xys.map((xy) => ({
             index: this.geo.xy2index(xy),
             className: 'line-thermo',
             xy,
@@ -215,25 +215,25 @@ export default class Board {
         }
 
         // sometimes lines are entered wrong or broken up in CTC
-        if (!underlain[line.points[0].index]) {
-          if (underlain[last(line.points).index]) {
+        if (!underlain[line.cells[0].index]) {
+          if (underlain[last(line.cells).index]) {
             // the thermometer was input backwards in ctc puzzle
-            line.points.reverse()
+            line.cells.reverse()
           } else {
             broken_lines.push(line)
           }
         }
 
-        line.head = line.points[0].index
-        line.tail = last(line.points).index
+        line.head = line.cells[0].index
+        line.tail = last(line.cells).index
         return line
       })
 
       const mergeLines = (trash, keep) => {
-        keep.points = keep.points.concat(trash.points)
+        keep.cells = keep.cells.concat(trash.cells)
         keep.tail = trash.tail
         this.extras.lines = this.extras.lines.filter((line) => line !== trash)
-        keep.points = uniqBy(keep.points, 'index')
+        keep.cells = uniqBy(keep.cells, 'index')
       }
 
       // fix broken lines
@@ -245,10 +245,8 @@ export default class Board {
           if (line.tail === broken.head) {
             mergeLines(broken, line)
           } else if (line.tail === broken.head) {
-            broken.points.reverse()[(broken.head, broken.tail)] = [
-              broken.tail,
-              broken.head,
-            ]
+            broken.cells.reverse()
+            ;[broken.head, broken.tail] = [broken.tail, broken.head]
             mergeLines(broken, line)
           }
         })
@@ -257,7 +255,7 @@ export default class Board {
       this.extras.lines.forEach((line) => {
         if (line.type === 'thermo') {
           let last_point
-          line.points.forEach((point) => {
+          line.cells.forEach((point) => {
             if (last_point) {
               point.className +=
                 ' from from-' +
@@ -269,7 +267,7 @@ export default class Board {
             last_point = point
           })
         }
-        line.points.forEach((point) => (point._className = point.className))
+        line.cells.forEach((point) => (point._className = point.className))
       })
     }
     this.turn = this.actions.length
@@ -394,7 +392,7 @@ export default class Board {
       cells[underlay.index].underlays.push(underlay),
     )
     this.extras.lines.forEach((line) => {
-      line.points.forEach((point) => cells[point.index].underlays.push(point))
+      line.cells.forEach((point) => cells[point.index].underlays.push(point))
     })
     return cells
   }
@@ -432,7 +430,7 @@ export default class Board {
       (underlay) => (underlay.className = underlay._className),
     )
     this.extras.lines.forEach((line) =>
-      line.points.forEach((point) => (point.className = point._className)),
+      line.cells.forEach((point) => (point.className = point._className)),
     )
     this.extras.cages.forEach((cage) =>
       cage.cells.forEach((cell) => (cell.className = cell._className)),

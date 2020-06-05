@@ -1,7 +1,8 @@
 import { range, sum } from 'lodash'
 
-const _err = (cage) =>
-  cage.cells.forEach((cell) => (cell.className += ' error'))
+const _err = (cage, test = () => true) => {
+  cage.cells.filter(test).forEach((cell) => (cell.className += ' error'))
+}
 
 export default class Checker {
   constructor(board) {
@@ -54,7 +55,7 @@ export default class Checker {
   thermo() {
     this.board.extras.lines.forEach((line) => {
       let last
-      line.points.forEach((point) => {
+      line.cells.forEach((point) => {
         const answer = this.answers[point.index]
         if (last && answer <= this.answers[last.index]) {
           this.errors.count += 1
@@ -160,5 +161,21 @@ export default class Checker {
       .map((a, i) => (a === 9 ? i : undefined))
       .filter((i) => i !== undefined)
     this._validateAntiChess('queen', indexes)
+  }
+
+  unique_diagonals() {
+    const lines = this.board.extras.lines.filter((l) => l.type === 'diagonal')
+    lines.forEach((line) => {
+      const bins = this._binAnswers(line.cells.map((p) => p.index))
+      Object.entries(bins).forEach(([answer, indexes]) => {
+        if (!isNaN(answer) && indexes.length > 1) {
+          this.errors.reasons.push(
+            `There are ${indexes.length} ${answer}s on a diagonal.`,
+          )
+          this.errors.count++
+          _err(line, (c) => indexes.includes(c.index))
+        }
+      })
+    })
   }
 }
