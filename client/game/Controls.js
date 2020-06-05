@@ -1,5 +1,6 @@
 import React from 'react'
 import css from '@unrest/css'
+import auth from '@unrest/react-auth'
 
 import { _withGame } from './withGame'
 
@@ -65,8 +66,17 @@ const ActionButton = _withGame((props) => {
   )
 })
 
-const SubmitButton = _withGame(({ game }) =>
-  game.board.solve ? <ActionButton name="submit" /> : null,
+const SubmitButton = auth.connect(
+  _withGame(({ game, auth }) => {
+    const { solves = [] } = auth.user || {}
+    if (
+      !game.board.solve ||
+      solves.find((s) => s.puzzle_id === game.board.puzzle_id)
+    ) {
+      return null
+    }
+    return <ActionButton name="submit" />
+  }),
 )
 
 const Reset = _withGame((props) => {

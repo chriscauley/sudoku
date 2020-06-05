@@ -184,7 +184,7 @@ class CTC extends React.Component {
             />
           </div>
           <div>
-            {board.finish && 'Victory! Final '} game time: {board.getTime()}
+            {board.solve && 'Victory! Final '} game time: {board.getTime()}
           </div>
         </div>
       </div>
