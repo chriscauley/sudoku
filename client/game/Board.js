@@ -25,7 +25,7 @@ const dxy2text = {
 // example puzzles:
 // 7Qh3tBm4mj - ceiling and floor
 const buildUnderlays = (underlays, geo) => {
-  return underlays.map((underlay) => {
+  underlays = underlays.map((underlay) => {
     const center = underlay.center.reverse()
     const ratio = underlay.width / underlay.height
     const xy = center.map((n) => Math.floor(n))
@@ -51,6 +51,17 @@ const buildUnderlays = (underlays, geo) => {
       _className: className,
     }
   })
+
+  const underlay_indexes = {}
+  underlays.forEach((u) => (underlay_indexes[u.index] = u))
+  underlays.forEach((underlay) => {
+    underlay.next_to = geo
+      .index2pawn(underlay.index)
+      .map((i) => underlay_indexes[i])
+      .filter(Boolean)
+    underlay.is_end = underlay.next_to.length === 1
+  })
+  return underlays
 }
 
 export default class Board {
