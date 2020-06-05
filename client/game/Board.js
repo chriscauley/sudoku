@@ -105,6 +105,8 @@ export default class Board {
       'consecutive_pairs',
       'thermo',
       'unique_diagonals',
+      'consecutive_regions',
+      'increasing_or_decreasing',
     ]
 
     if (this.ctc) {

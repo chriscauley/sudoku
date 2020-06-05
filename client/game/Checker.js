@@ -173,9 +173,69 @@ export default class Checker {
             `There are ${indexes.length} ${answer}s on a diagonal.`,
           )
           this.errors.count++
-          _err(line, (c) => indexes.includes(c.index))
+          indexes.forEach((i) => this.errors.indexes.push(i))
         }
       })
+    })
+  }
+
+  // TODO not currently used, keep this? delete July 1, 2020 if not used
+  consecutive_regions() {
+    this.board.extras.underlays.forEach((underlay) => {
+      const answer = this.answers[underlay.index]
+      if (isNaN(answer)) {
+        return
+      }
+      underlay.next_to.forEach((u2) => {
+        const answer2 = this.answers[u2.index]
+        if (!isNaN(answer2) && Math.abs(answer - answer2) !== 1) {
+          this.errors.count++
+          this.errors.indexes.push(underlay.index)
+          this.errors.indexes.push(u2.index)
+        }
+      })
+    })
+  }
+
+  increasing_or_decreasing() {
+    const ends = this.board.extras.underlays.filter((u) => u.is_end)
+    const checked = {}
+    ends.forEach((end) => {
+      if (checked[end.index]) {
+        return
+      }
+      let last = end
+      let i = 0
+      const indexes = []
+      while (i < this.geo.AREA) {
+        indexes.push(last.index)
+        checked[last.index] = true
+        const next = last.next_to.find((u) => !checked[u.index])
+        if (!next) {
+          break
+        }
+        last = next
+        i++
+      }
+      const answers = indexes
+        .map((i) => this.answers[i])
+        .filter((a) => !isNaN(a))
+      if (answers.length < 2) {
+        return
+      }
+      last = answers[0]
+      const signs = answers.slice(1).map((answer) => {
+        const sign = Math.sign(answer - last)
+        last = answer
+        return sign
+      })
+      if (Math.abs(sum(signs)) !== signs.length) {
+        this.errors.indexes = this.errors.indexes.concat(indexes)
+        this.errors.count += 1
+        this.errors.reasons.push(
+          'Not all numbers in a region are increasing or decreasing',
+        )
+      }
     })
   }
 }
