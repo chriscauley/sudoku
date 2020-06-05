@@ -54,6 +54,7 @@ export default class Geo {
   xy2index = (xy) => xy[0] + this.W * xy[1]
   index2xy = (index) => [index % this.W, Math.floor(index / this.W)]
   index2knight = (index) => this._index2knight[index]
+  index2pawn = (index) => this._index2pawn[index]
   index2king = (index) => this._index2king[index]
   index2queen = (index) => this._index2queen[index]
 
@@ -94,6 +95,7 @@ export default class Geo {
     this.cacheKing()
     this.cacheQueen()
     this.cacheKnight()
+    this.cachePawn()
   }
   // these are sudoku specific
   row2indexes = (y) => this._row2indexes[y]
@@ -135,6 +137,16 @@ export default class Geo {
       }),
     )
     this._index2knight = this._mapdxys(dxys)
+  }
+
+  cachePawn = () => {
+    const ds = [1, -1]
+    const dxys = []
+    ds.forEach((d) => {
+      dxys.push([d, 0])
+      dxys.push([0, d])
+    })
+    this._index2pawn = this._mapdxys(dxys)
   }
 
   cacheQueen = () => {
