@@ -24,10 +24,15 @@ class Puzzle(BaseModel):
     publish_date = models.DateField(null=True, blank=True)
     data = JSONField(default=dict)
     flag = models.CharField(max_length=16, default="new", choices=FLAG_CHOICES)
+
     def save(self, *args, **kwargs):
         if not self.data.get('ctc') and self.source == "ctc" and self.external_id:
             update_ctc(self)
         super().save(*args, **kwargs)
+
+    def validate(self, answer):
+        # trust everyone until we can hook this up to server side node
+        return True
 
     @staticmethod
     def get_by_any(slug, source):
@@ -61,3 +66,11 @@ class Puzzle(BaseModel):
         puzzle.save()
         return puzzle
 
+    class Meta:
+        ordering = ['-publish_date']
+
+class Solve(BaseModel):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    puzzle = models.ForeignKey('Puzzle', on_delete=models.CASCADE)
+    data = JSONField(default=dict)
+    valid = models.BooleanField(default=False)

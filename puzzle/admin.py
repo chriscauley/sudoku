@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from puzzle.models import Puzzle
+from puzzle.models import Puzzle, Solve
 
 @admin.register(Puzzle)
 class PuzzleAdmin(admin.ModelAdmin):
@@ -16,3 +16,7 @@ class PuzzleAdmin(admin.ModelAdmin):
     def description(self, obj):
         text = obj.data.get("description").replace("\n","<br/>")
         return mark_safe(text)
+
+@admin.register(Solve)
+class SolveAdmin(admin.ModelAdmin):
+    list_display = ['puzzle_id', 'user_id']

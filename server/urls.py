@@ -6,6 +6,9 @@ from django.urls import path, re_path, include
 from unrest.views import spa
 from puzzle.views import list_puzzles, puzzle_detail
 
+# /api/schema/SolveForm
+from puzzle import forms
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/puzzle/', list_puzzles),

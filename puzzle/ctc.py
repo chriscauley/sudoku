@@ -65,3 +65,4 @@ def refresh_ctc(Puzzle):
                 puzzle.external_id = slug[0]
         puzzle.save()
         print("New Puzzle:",slug)
+
