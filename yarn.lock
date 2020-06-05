@@ -1304,15 +1304,19 @@
   resolved "https://registry.yarnpkg.com/@unrest/core/-/core-0.0.1.tgz#2b6dbea8f42b59706f2bec644a7b1d0bb83b53c3"
   integrity sha512-/pw5hxEeqJ42wsjm7ulIkmhg4PpcDlT6v1PZOGkjxRuqfzC4qWGiWoEq8jencaW8WOmYCjP6BZ578kixJghNLw==
 
-"@unrest/css@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@unrest/css/-/css-0.0.3.tgz#97404edf53d412daf8651ff7c995d9aafeba55f6"
-  integrity sha512-W6PA/XMD3+PVI+6+ZnobVO1fsqvz4876JdcCsqSp7PcOuOStvGrcr00VmZuOzKcjIdkGhWNFVYPfsmVDZgXJ/A==
+"@unrest/css@chriscauley/unrest-css":
+  version "0.0.5"
+  resolved "https://codeload.github.com/chriscauley/unrest-css/tar.gz/3b06178306949c592df063987a0bb4d729b27d7a"
 
 "@unrest/random@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@unrest/random/-/random-0.0.2.tgz#18b9541043accd36fb39ebd0286ff154564b8c70"
   integrity sha512-apUNVqvzPO1QLdAIkDHXn79dy1MlYyopQWBva9+sZ13HomIwRin0KvjgUSt+Fi997DWsqI+MJ7kLTRfVQvA1Dw==
+
+"@unrest/react-auth@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@unrest/react-auth/-/react-auth-0.0.3.tgz#afd401b36f6bb72bd3ca365c820194bd9499f4f9"
+  integrity sha512-7JZG+bbaM9oXicBr6eePZPbvM5xyLEUH+pZ4SXrdzTxoeU5OcXqFBNAQvstzXafuPF5NrYhiZYv3iZbnA+BpIA==
 
 "@unrest/react-config-hook@^0.0.1":
   version "0.0.1"
@@ -1324,15 +1328,11 @@
   resolved "https://registry.yarnpkg.com/@unrest/react-jsonschema-form/-/react-jsonschema-form-0.0.2.tgz#cb620eff33702d3452c72b81eaeb7b324e728fa1"
   integrity sha512-4eTFUO4/waCkTujfPC1J2s4Ht3ryXN4wm8RBQ9sHX1ZhSPvLJc0lMLQCrs8TkYA4hC1A05LMyjsmTRZipz9y0Q==
 
-"@unrest/react-rest-hook@^0.0.2":
+"@unrest/react-rest-hook@chriscauley/unrest-react-rest-hook":
   version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@unrest/react-rest-hook/-/react-rest-hook-0.0.2.tgz#f1ad0a63c1775da9137dda2e4543ed1650d2cc81"
-  integrity sha512-HAA0bENBGZQqwru2ZR0gM2VyVaF2HbFh+n/T3yX2ul9Gy1HAuBp3ZRrwTbhZ11F+jscdH6UxiXPxHgaXO0BPIA==
+  resolved "https://codeload.github.com/chriscauley/unrest-react-rest-hook/tar.gz/9b673599f4d104d0990eb46b0da39b14240a6242"
   dependencies:
     lodash "^4.17.15"
-    react ">=15"
-    react-dom "^16.13.1"
-    react-router-dom "^5.1.2"
     use-global-hook "^0.1.12"
 
 "@unrest/storage@^0.1.0":
@@ -6345,7 +6345,7 @@ react-is@^16.12.0, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-i
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-jsonschema-form@2.0.0-alpha.1:
+react-jsonschema-form@^2.0.0-alpha.1:
   version "2.0.0-alpha.1"
   resolved "https://registry.yarnpkg.com/react-jsonschema-form/-/react-jsonschema-form-2.0.0-alpha.1.tgz#385802d483dbc425091e70ad30ab6550900f9e67"
   integrity sha512-AYpV2/dKMSNwddzrBCJjuGdbZ5jd6mD17f3tq3dzWXiK1lwb0H485u80VlKuiyvTosaMjwWtyvXhO7jXtUu7oA==

@@ -3,6 +3,7 @@ import { debounce } from 'lodash'
 import ConfigHook from '@unrest/react-config-hook'
 import RestHook from '@unrest/react-rest-hook'
 
+import submitSolve from './submitSolve'
 import Board from './Board'
 
 const withPuzzle = RestHook(
@@ -17,12 +18,13 @@ const actions = {
   load: debounce((store, slug, props) => {
     if (slug && store.state.slug !== slug) {
       const { ctc } = props.api.puzzle.data
+      const puzzle_id = props.api.puzzle.id
       store.setState({ slug })
-      store.actions.startGame({ slug, ctc }, props)
+      store.actions.startGame({ puzzle_id, slug, ctc }, props)
     }
   }),
-  startGame: (store, { ctc, slug }) => {
-    store.setState({ board: new Board({ ctc, slug }) })
+  startGame: (store, options) => {
+    store.setState({ board: new Board(options) })
   },
   doAction: (store, action) => {
     store.state.board.doAction(action)
@@ -39,13 +41,7 @@ const actions = {
     store.state.board.reset()
     store.setState({ board: store.state.board, resetting: false })
   },
-  check(store, options) {
-    const constraints = []
-    Object.entries(options).forEach(([key, value]) => {
-      if (value) {
-        constraints.push(key)
-      }
-    })
+  check(store, constraints) {
     store.state.board.check(constraints)
     store.setState({ rando: Math.random() })
   },
@@ -59,6 +55,25 @@ const actions = {
   },
   replay(store) {
     store.state.board.replay(() => store.setState({ rando: Math.random() }))
+  },
+  submit(store) {
+    const { board } = store.state
+    const answer = board.geo.indexes.map((i) =>
+      parseInt(board.answer[i] || board.sudoku[i]),
+    )
+    const { constraints, puzzle_id } = board
+    submitSolve({ constraints, puzzle: puzzle_id, answer }).then(() =>
+      store.setState({ rando: Math.random() }),
+    )
+  },
+  toggleConstraint(store, slug) {
+    const { board } = store.state
+    if (board.constraints.includes(slug)) {
+      board.constraints = board.constraints.filter((c) => c !== slug)
+    } else {
+      board.constraints.push(slug)
+    }
+    store.setState({ rando: Math.random() })
   },
 }
 

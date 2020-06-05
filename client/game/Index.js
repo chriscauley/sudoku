@@ -2,13 +2,26 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import css from '@unrest/css'
 import RestHook from '@unrest/react-rest-hook'
+import auth from '@unrest/react-auth'
+
+import { saved_games } from './Board'
 
 const withPuzzles = RestHook('/api/puzzle/')
 
 const PuzzleLink = (props) => {
-  const { external_id, video_id, title } = props
+  const { external_id, video_id, title, solved } = props
+  const local_solve = saved_games.keys.includes(external_id)
+  const icon = (s) => css.icon(s + ' text-xl mr-2')
   return (
     <div className="mb-2">
+      {solved ? (
+        <i
+          className={icon('check text-green-500')}
+          title={`solved ${solved}`}
+        />
+      ) : (
+        local_solve && <span className={icon('warning text-yellow-500')} />
+      )}
       {external_id ? (
         <Link to={`/puzzle/ctc/${external_id}/`} className={css.link()}>
           {title} #{external_id}
@@ -24,8 +37,12 @@ const PuzzleLink = (props) => {
   )
 }
 
-const Index = (props) => {
+const Index = auth.connect((props) => {
   const { puzzles = [] } = props.api
+  const solve_map = {}
+  if (props.auth.user) {
+    props.auth.user.solves.forEach((s) => (solve_map[s.puzzle_id] = s.created))
+  }
   return (
     <div>
       <h2>Select a map</h2>
@@ -35,12 +52,12 @@ const Index = (props) => {
         </li>
         {puzzles.map((puzzle) => (
           <li key={puzzle.id}>
-            <PuzzleLink {...puzzle} />
+            <PuzzleLink {...puzzle} solved={solve_map[puzzle.id]} />
           </li>
         ))}
       </ul>
     </div>
   )
-}
+})
 
 export default withPuzzles(Index)

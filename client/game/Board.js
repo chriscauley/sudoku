@@ -8,7 +8,7 @@ const css = {
   xy: (xy) => `x-${xy[0]} y-${xy[1]}`,
 }
 
-const saved_games = new Storage('saved games')
+export const saved_games = new Storage('saved games')
 // const made_games = new Storage('made games')
 
 const dxy2text = {
@@ -77,8 +77,9 @@ export default class Board {
       actions: [],
       extras: {},
     })
+    delete this.solve
 
-    this.constraints = [
+    this.available_constraints = [
       'row',
       'col',
       'box',
@@ -93,13 +94,7 @@ export default class Board {
       'thermo',
     ]
 
-    this.required_constraints = {
-      row: true,
-      col: true,
-      box: true,
-      complete: true,
-      anti_knight: true,
-    }
+    this.constraints = ['row', 'col', 'box', 'complete', 'thermo']
 
     if (this.ctc) {
       const {
@@ -334,7 +329,6 @@ export default class Board {
     return cloneDeep(
       pick(this, [
         'start',
-        'finish',
         'sudoku',
         'answer',
         'corner',
@@ -342,6 +336,8 @@ export default class Board {
         'colour',
         'actions',
         'frozen',
+        'solve',
+        'constraints',
       ]),
     )
   }
@@ -416,11 +412,17 @@ export default class Board {
 
     // to qualify as a win they must check sudoku constraints (row, col, box)
     const required = ['row', 'col', 'box', 'complete']
-    const valid = !required.find((type) => !constraints[type])
+    const valid = !required.find((type) => !constraints.includes(type))
 
     this.checker.check({ constraints })
     if (valid && this.errors.count === 0) {
-      this.finish = new Date().valueOf()
+      this.solve = {
+        ms: (this.finish || new Date().valueOf()) - this.start,
+        constraints,
+        answer: this.geo.indexes.map((i) =>
+          parseInt(this.answer[i] || this.sudoku[i]),
+        ),
+      }
       this.save()
     }
   }
@@ -489,8 +491,8 @@ export default class Board {
   }
 
   getTime() {
-    const { finish = new Date().valueOf(), start } = this
-    const seconds = (finish - start) / 1000
+    const { solve = {}, start } = this
+    const seconds = (solve.ms ? solve.ms : new Date().valueOf() - start) / 1000
     return `${Math.floor(seconds / 60)}m ${Math.floor(seconds % 60)}s`
   }
 }
