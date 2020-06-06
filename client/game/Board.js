@@ -25,6 +25,11 @@ const dxy2text = {
 // example puzzles:
 // 7Qh3tBm4mj - ceiling and floor
 const buildUnderlays = (underlays, geo) => {
+  const color_map = {
+    '#A3E048': 'green',
+    '#F7D038': 'yellow',
+    '#34BBE6': 'blue',
+  }
   underlays = underlays.map((underlay) => {
     const center = underlay.center.reverse()
     const ratio = underlay.width / underlay.height
@@ -39,14 +44,17 @@ const buildUnderlays = (underlays, geo) => {
       type = 'wall'
       orientation = 'v-split'
     }
-    const className = `underlay ${orientation} ${type} ${css.xy(xy)}`
+    const color = color_map[underlay.backgroundColor] || 'gray'
+    const className = `underlay ${orientation} ${type} ${css.xy(
+      xy,
+    )} color-${color}`
     return {
       index,
       offset: [xy[0] - center[0], xy[1] - center[1]],
       xy,
       type,
       orientation,
-      color: underlay.backgroundColor,
+      color,
       className,
       _className: className,
     }
@@ -75,6 +83,9 @@ export default class Board {
     // load saved game if exists
     Object.assign(this, saved_games.get(this.slug) || {})
     this.turn = this.actions.length
+    if (this.finish) {
+      this.makeSolve()
+    }
   }
 
   reset() {
@@ -107,6 +118,7 @@ export default class Board {
       'unique_diagonals',
       'consecutive_regions',
       'increasing_or_decreasing',
+      'other',
     ]
 
     if (this.ctc) {
@@ -427,13 +439,7 @@ export default class Board {
 
     this.checker.check({ constraints })
     if (valid && this.errors.count === 0) {
-      this.solve = {
-        ms: (this.finish || new Date().valueOf()) - this.start,
-        constraints,
-        answer: this.geo.indexes.map((i) =>
-          parseInt(this.answer[i] || this.sudoku[i]),
-        ),
-      }
+      this.makeSolve()
       this.save()
     }
   }
@@ -505,6 +511,16 @@ export default class Board {
     const { solve = {}, start } = this
     const seconds = (solve.ms ? solve.ms : new Date().valueOf() - start) / 1000
     return `${Math.floor(seconds / 60)}m ${Math.floor(seconds % 60)}s`
+  }
+
+  makeSolve() {
+    this.solve = {
+      ms: (this.finish || new Date().valueOf()) - this.start,
+      constraints: this.constraints,
+      answer: this.geo.indexes.map((i) =>
+        parseInt(this.answer[i] || this.sudoku[i]),
+      ),
+    }
   }
 }
 

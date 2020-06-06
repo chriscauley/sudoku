@@ -9,7 +9,8 @@ import { saved_games } from './Board'
 const withPuzzles = RestHook('/api/puzzle/')
 
 const PuzzleLink = (props) => {
-  const { external_id, video_id, title, solved } = props
+  const { external_id, video_id, solved, videos } = props
+  const first_video = videos[0] || {}
   const local_solve = saved_games.keys.includes(external_id)
   const icon = (s) => css.icon(s + ' text-xl mr-2')
   return (
@@ -24,10 +25,10 @@ const PuzzleLink = (props) => {
       )}
       {external_id ? (
         <Link to={`/puzzle/ctc/${external_id}/`} className={css.link()}>
-          {title} #{external_id}
+          {first_video.title} #{external_id}
         </Link>
       ) : (
-        <span>{title} (no puzzle)</span>
+        <span>{first_video.title} (no puzzle)</span>
       )}
       <a
         href={`https://www.youtube.com/watch?v=${video_id}`}

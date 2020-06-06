@@ -1,4 +1,5 @@
 @use 'sass:map';
+@use 'sass:color';
 
 $pallet: (
   0: #000,
@@ -114,7 +115,7 @@ $thermo: #ddd;
 }
 
 .board .cell .cage {
-  --cage-width: 1px;
+  --cage-width: 2px;
   $width: var(--cage-width);
   $color: black;
   position: absolute;
@@ -287,17 +288,29 @@ $thermo: #ddd;
 }
 
 .board .cell .underlay {
+  --underlay-color: #ccc;
+  &.color-green {
+    --underlay-color: #A3E048;
+  }
+  &.color-yellow {
+    --underlay-color: #F7D038;
+  }
+  &.color-blue {
+    --underlay-color: #34BBE6;
+  }
+
   $wall: 7%;
   background: repeating-linear-gradient(
     -45deg,
     transparent,
     transparent 0.2em,
-    $underlay 0.2em,
-    $underlay 0.4em
+    var(--underlay-color) 0.2em,
+    var(--underlay-color) 0.4em
   );
   height: 100%;
   left: 0;
   top: 0;
+  opacity: 0.3;
   position: absolute;
   width: 100%;
   &.wall {
@@ -317,12 +330,14 @@ $thermo: #ddd;
     border-color: red;
   }
   /* thermo */
-  $bulb-shrink: 5%;
-  background: $thermo;
-  border-radius: 100%;
-  height: 100% - 2 * $bulb-shrink;
-  margin: $bulb-shrink;
-  width: 100% - 2 * $bulb-shrink;
+  &.thermo {
+    $bulb-shrink: 5%;
+    background: $thermo;
+    border-radius: 100%;
+    height: 100% - 2 * $bulb-shrink;
+    margin: $bulb-shrink;
+    width: 100% - 2 * $bulb-shrink;
+  }
 }
 
 .board .cell .line-thermo {

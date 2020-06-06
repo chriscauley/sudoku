@@ -21,8 +21,9 @@ def list_puzzles(request):
 
 def puzzle_detail(request, source, slug):
     puzzle = Puzzle.objects.filter(source=source, external_id=slug).first()
+    videos = [v.to_json(video_attrs + ['description']) for v in puzzle.video_set.all()]
     puzzle = puzzle.to_json(list_attrs + ['data'])
-    puzzle.videos = [v.to_json(video_attrs + ['description']) for v in puzzle.video_set.all()]
+    puzzle['videos'] = videos
     return JsonResponse({ 'puzzle': puzzle })
 
 def user_solves(request):

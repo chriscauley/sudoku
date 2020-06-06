@@ -238,4 +238,6 @@ export default class Checker {
       }
     })
   }
+
+  other() {}
 }
