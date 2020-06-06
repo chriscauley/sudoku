@@ -1,17 +1,25 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from puzzle.models import Puzzle, Solve
+from puzzle.models import Puzzle, Solve, Video
+
+@admin.register(Video)
+class VideoAdmin(admin.ModelAdmin):
+    search_fields = ['title', 'external_id']
+
 
 @admin.register(Puzzle)
 class PuzzleAdmin(admin.ModelAdmin):
-    list_display = ["video_id", "external_id", "_link", "flag"]
+    list_display = ["external_id", "_links", "flag"]
+    search_fields = ['video__title', 'video__external_id', 'external_id']
     list_editable = ["flag"]
     list_filter = ["flag"]
-    def _link(self, obj):
-        video_url = f"https://www.youtube.com/watch?v={obj.video_id}"
-        return mark_safe(f'<a href="{video_url}" target="_new">{obj.video_id}</a>')
-    readonly_fields = ['_link', 'description', 'data']
+    def _links(self, obj):
+        videos = obj.video_set.all()
+        link = '<a href="https://www.youtube.com/watch?v={}" target="_new">{}</a>'
+        links = [link.format(v.external_id, v.title) for v in videos]
+        return mark_safe('<br/>'.join(links))
+    readonly_fields = ['_links', 'description', 'data']
 
     def description(self, obj):
         text = obj.data.get("description").replace("\n","<br/>")
@@ -19,4 +27,8 @@ class PuzzleAdmin(admin.ModelAdmin):
 
 @admin.register(Solve)
 class SolveAdmin(admin.ModelAdmin):
-    list_display = ['puzzle_id', 'user_id']
+    list_display = ['puzzle_name', 'puzzle_id', 'user_id']
+    def puzzle_name(self, obj):
+        video = obj.puzzle.video_set.all().first()
+        return video and video.title
+    readonly_fields = ['created']

@@ -6,6 +6,17 @@ from unrest.models import BaseModel, _choices
 from puzzle.ctc import fetch_ctc, update_ctc
 from server.utils import curl
 
+class Video(BaseModel):
+    source = models.CharField(max_length=16, default="youtube")
+    title = models.CharField(max_length=256)
+    external_id = models.CharField(max_length=32)
+    puzzle = models.ForeignKey('Puzzle', on_delete=models.SET_NULL, null=True, blank=True)
+    description = models.TextField(blank=True, default='')
+    publish_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
 class Puzzle(BaseModel):
     FLAG_CHOICES = _choices([
         'new',
@@ -18,9 +29,7 @@ class Puzzle(BaseModel):
         'external_ctc'
     ])
     source = models.CharField(max_length=16, default="ctc")
-    title = models.CharField(max_length=256, null=True, blank=True)
     external_id = models.CharField(max_length=32, null=True, blank=True)
-    video_id = models.CharField(max_length=32, null=True, blank=True)
     publish_date = models.DateField(null=True, blank=True)
     data = JSONField(default=dict)
     flag = models.CharField(max_length=16, default="new", choices=FLAG_CHOICES)

@@ -1,19 +1,29 @@
 from django.http import JsonResponse
+from collections import defaultdict
 
-from puzzle.models import Puzzle
+from puzzle.models import Puzzle, Video
 from unrest.user.views import user_json
 
-list_attrs = ['id', 'external_id', 'video_id', 'title', 'publish_date']
-detail_attrs = list_attrs + ['data']
+list_attrs = ['id', 'external_id', 'publish_date']
+
+video_attrs = ['external_id', 'title']
 
 def list_puzzles(request):
+    videos = Video.objects.all().values('external_id', 'title', 'puzzle_id')
+    video_map = defaultdict(list)
+    for video in videos:
+        video_map[video.pop('puzzle_id')].append(video)
     puzzles = Puzzle.objects.exclude(flag='no_puzzle')
     puzzles = [p.to_json(list_attrs) for p in puzzles]
+    for puzzle in puzzles:
+        puzzle['videos'] = video_map[puzzle['id']]
     return JsonResponse({'puzzles': puzzles})
 
 def puzzle_detail(request, source, slug):
-    puzzle = Puzzle.get_by_any(source=source, slug=slug)
-    return JsonResponse({ 'puzzle': puzzle.to_json(detail_attrs)})
+    puzzle = Puzzle.objects.filter(source=source, external_id=slug).first()
+    puzzle = puzzle.to_json(list_attrs + ['data'])
+    puzzle.videos = [v.to_json(video_attrs + ['description']) for v in puzzle.video_set.all()]
+    return JsonResponse({ 'puzzle': puzzle })
 
 def user_solves(request):
     attrs = ['puzzle_id', 'created']

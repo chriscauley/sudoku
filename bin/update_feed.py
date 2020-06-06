@@ -6,8 +6,18 @@ import os
 import re
 import requests
 
-from puzzle.ctc import update_ctc, refresh_ctc
-from puzzle.models import Puzzle
+from puzzle.ctc import update_ctc, refresh_ctc, update_video
+from puzzle.models import Puzzle, Video
+
+def print_counts():
+    print("Puzzles:", Puzzle.objects.count())
+    print("Videos:", Video.objects.count())
+
+print("start")
+
+# for video in Video.objects.all():
+#     update_video(video, Puzzle)
+#     video.save()
 
 # with open('.ctc.json', 'r') as f:
 #     video_urls = json.loads(f.read())
@@ -16,10 +26,10 @@ from puzzle.models import Puzzle
 # for v in video_ids:
 #     p, new = Puzzle.objects.get_or_create(video_id=v)
 
-for puzzle in Puzzle.objects.filter(external_id__contains="..."):
-    puzzle.external_id = None
-    update_ctc(puzzle)
-    puzzle.save()
+# for puzzle in Puzzle.objects.filter(external_id__contains="..."):
+#     puzzle.external_id = None
+#     update_ctc(puzzle)
+#     puzzle.save()
 
 # for puzzle in Puzzle.objects.all().order_by("-id"):
 #     update_ctc(puzzle)
@@ -29,4 +39,6 @@ for puzzle in Puzzle.objects.filter(external_id__contains="..."):
 # print(Puzzle.objects.filter(external_id=None).count())
 
 
-refresh_ctc(Puzzle)
+refresh_ctc(Video, Puzzle)
+print("done")
+print_counts()
