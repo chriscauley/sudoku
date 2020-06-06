@@ -9,7 +9,7 @@ import { saved_games } from './Board'
 const withPuzzles = RestHook('/api/puzzle/')
 
 const PuzzleLink = (props) => {
-  const { external_id, video_id, solved, videos } = props
+  const { external_id, video_id, solved, videos, id, is_superuser } = props
   const first_video = videos[0] || {}
   const local_solve = saved_games.keys.includes(external_id)
   const icon = (s) => css.icon(s + ' text-xl mr-2')
@@ -34,15 +34,19 @@ const PuzzleLink = (props) => {
         href={`https://www.youtube.com/watch?v=${video_id}`}
         className={css.icon('youtube mx-2')}
       />
+      {is_superuser && (
+        <a href={`/admin/puzzle/puzzle/${id}`} className={css.icon('admin')} />
+      )}
     </div>
   )
 }
 
 const Index = auth.connect((props) => {
   const { puzzles = [] } = props.api
+  const { user = {} } = props.auth
   const solve_map = {}
-  if (props.auth.user) {
-    props.auth.user.solves.forEach((s) => (solve_map[s.puzzle_id] = s.created))
+  if (user.solves) {
+    user.solves.forEach((s) => (solve_map[s.puzzle_id] = s.created))
   }
   return (
     <div>
@@ -53,7 +57,11 @@ const Index = auth.connect((props) => {
         </li>
         {puzzles.map((puzzle) => (
           <li key={puzzle.id}>
-            <PuzzleLink {...puzzle} solved={solve_map[puzzle.id]} />
+            <PuzzleLink
+              {...puzzle}
+              solved={solve_map[puzzle.id]}
+              is_superuser={user.is_superuser}
+            />
           </li>
         ))}
       </ul>
