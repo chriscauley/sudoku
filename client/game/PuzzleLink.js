@@ -5,8 +5,44 @@ import css from '@unrest/css'
 
 import { saved_games } from './Board'
 
+const allowed_constraints = ['anti_knight', 'anti_queen', 'anti_king', 'sudoku']
+
+const groups = {
+  sudoku: ['row', 'col', 'box', 'complete'],
+  killer: ['consecutive_regions', 'unique_regions'],
+}
+
+const group_keys = Object.keys(groups)
+
+const Constraints = ({ constraints }) => {
+  const counts = {}
+  constraints = constraints.filter((c) => {
+    if (allowed_constraints.includes(c)) {
+      return true
+    }
+    const group = group_keys.find((key) => groups[key].includes(c)) || 'other'
+    counts[group] = (counts[group] || 0) + 1
+    return false
+  })
+  group_keys.forEach((key) => {
+    if (counts[key] >= groups[key].length) {
+      constraints.unshift(key)
+    }
+  })
+  return (
+    <>
+      {constraints.map((c) => (
+        <span className={`constraint constraint-${c} mr-2`} key={c} />
+      ))}
+      {counts.other > 0 && (
+        <span className="other_constraint">+{counts.other}</span>
+      )}
+    </>
+  )
+}
+
 const PuzzleLink = (props) => {
-  const { external_id, videos, id, Tag = Link, has_constraints } = props
+  const { external_id, videos, id, Tag = Link, constraints } = props
   const { solves = [], is_superuser } = props.auth.user || {}
   const solved = solves.find((s) => s.puzzle_id === id)
 
@@ -15,6 +51,7 @@ const PuzzleLink = (props) => {
   const icon = (s) => css.icon(s + ' text-xl mr-2')
   return (
     <div className="mb-2">
+      <Constraints constraints={constraints} />
       {solved ? (
         <i
           className={icon('check text-green-500')}
@@ -43,12 +80,7 @@ const PuzzleLink = (props) => {
         className={icon('external-link')}
       />
       {is_superuser && (
-        <>
-          {has_constraints && (
-            <i className={icon('thumbs-up text-green-500')} />
-          )}
-          <a href={`/admin/puzzle/puzzle/${id}`} className={icon('admin')} />
-        </>
+        <a href={`/admin/puzzle/puzzle/${id}`} className={icon('admin')} />
       )}
     </div>
   )

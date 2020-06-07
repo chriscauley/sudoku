@@ -26,7 +26,12 @@ export default class Checker {
         parseInt(this.board.answer[index]),
     )
     const { constraints = [] } = options
-    constraints.forEach((constraint) => this[constraint]())
+    constraints.forEach((constraint) => {
+      if (typeof this[constraint] !== 'function') {
+        throw 'Cannot find checker function ' + constraint
+      }
+      this[constraint]()
+    })
   }
 
   row = () => this.geo.i_rows.forEach((i) => this._checkSudoku('row', i))

@@ -34,7 +34,7 @@ class Puzzle(BaseModel):
     data = JSONField(default=dict)
     flag = models.CharField(max_length=16, default="new", choices=FLAG_CHOICES)
 
-    has_constraints = property(lambda s: bool(s.data.get('required_constraints')))
+    constraints = property(lambda s: s.data.get('required_constraints', []))
 
     def save(self, *args, **kwargs):
         if not self.data.get('ctc') and self.source == "ctc" and self.external_id:
