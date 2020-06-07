@@ -58,21 +58,42 @@ $thermo: #ddd;
     border-width: 3px;
     .cell {
       align-items: center;
-      border: black solid;
-      border-width: 0 $cell-border $cell-border 0;
       display: flex;
       justify-content: center;
+    }
+    .cell .number {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+
+      border: black solid;
+      border-width: 0 $cell-border $cell-border 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .cell {
       &.x-2, &.x-5 {
-        border-right-width: $box-border;
+        .number {
+          border-right-width: $box-border;
+        }
       }
       &.y-2, &.y-5 {
-        border-bottom-width: $box-border;
+        .number {
+          border-bottom-width: $box-border;
+        }
       }
       &.x-8 {
-        border-right-width: 0;
+        .number {
+          border-right-width: 0;
+        }
       }
       &.y-8 {
-        border-bottom-width: 0;
+        .number {
+          border-bottom-width: 0;
+        }
       }
       &.selected-1:before,
       &.selected--1:before,
@@ -173,22 +194,30 @@ $thermo: #ddd;
 }
 
 .board .cell {
-  background: map.get($pallet, 1);
   position: relative;
   &.selected {
     border-color: $underlay;
-    background: darken(map.get($pallet, 1), $darkenSelected);
+    .colour {
+      background: darken(map.get($pallet, 1), $darkenSelected);
+    }
   }
   .corner {
     @apply top-0 left-0 absolute;
     line-height: 1;
   }
+  .colour {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+  }
   @for $i from 0 through 9 {
-    &.colour-#{$i} {
+    .colour-#{$i} {
       background: map.get($pallet, $i);
-      &.selected {
-        background: darken(map.get($pallet, $i), $darkenSelected);
-      }
+    }
+    &.selected .colour-#{$i} {
+      background: darken(map.get($pallet, $i), $darkenSelected);
     }
   }
 }
@@ -312,7 +341,7 @@ $thermo: #ddd;
   height: 100%;
   left: 0;
   top: 0;
-  opacity: 0.3;
+  opacity: 0.4;
   position: absolute;
   width: 100%;
   &.wall {
@@ -322,10 +351,12 @@ $thermo: #ddd;
   &.v-split {
     height: 2 * $wall;
     margin-top: - $wall;
+    opacity: 1;
   }
   &.h-split {
     width: 2 * $wall;
     margin-left: - $wall;
+    opacity: 1;
   }
   &.error {
     background: rgba(255,0,0,0.5);
@@ -429,9 +460,12 @@ $thermo: #ddd;
 
 /* I find it useful to keep all z-indexes together */
 .board .cell  {
+  .colour {
+    z-index: 0;
+  }
   &.selected {
     &:before, &:after {
-      z-index: 1;
+      z-index: 5;
     }
   }
   .question, .answer, .corner, .centre {
@@ -449,4 +483,13 @@ $thermo: #ddd;
 }
 .clickMask {
   z-index: 50;
+}
+.board ._canvas {
+  background-size: 100%;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }

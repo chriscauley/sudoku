@@ -265,6 +265,32 @@ export default class Board {
 
     // uncomment to debug
     // this.geo.indexes.forEach((index) => (this.corner[index] = [index]))
+    this.draw()
+  }
+
+  draw() {
+    const canvas = document.createElement('canvas')
+    canvas.width = canvas.height = 1000
+    const sx = canvas.width / this.geo.W
+    const sy = canvas.height / this.geo.H
+    const ctx = canvas.getContext('2d')
+    ctx.lineWidth = sx / 7
+    ctx.lineCap = 'round'
+    this.ctc.lines.forEach((line) => {
+      const wayPoints = line.wayPoints.map((wp) => wp.reverse())
+      const wp0 = wayPoints[0]
+      if (!wp0) {
+        return
+      }
+      ctx.beginPath()
+      ctx.moveTo(wp0[0] * sx, wp0[1] * sy)
+      ctx.strokeStyle = line.color
+      wayPoints.slice(1).forEach((wp) => {
+        ctx.lineTo(wp[0] * sx, wp[1] * sy)
+      })
+      ctx.stroke()
+    })
+    this.bg_image = `url(${canvas.toDataURL()})`
   }
 
   reset() {
@@ -485,9 +511,9 @@ export default class Board {
       answer: this.answer[index],
       centre: this.centre[index] || [],
       corner: this.corner[index] || [],
-      colour: this.colour[index] || [],
+      colour: this.colour[index],
       underlays: [],
-      extras: [],
+      extras: [{ className: 'colour colour-' + this.colour[index] }],
     }))
     this.errors.indexes.forEach((index) => (cells[index].error = true))
     this.extras.cages.forEach((cage) =>
@@ -499,9 +525,6 @@ export default class Board {
     this.extras.underlays.forEach((underlay) =>
       cells[underlay.index].extras.push(underlay),
     )
-    this.extras.lines.forEach((line) => {
-      line.cells.forEach((point) => cells[point.index].extras.push(point))
-    })
     return cells
   }
   getSelectedNeighbors = (index, selected) => {

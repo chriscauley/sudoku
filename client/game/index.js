@@ -17,10 +17,9 @@ const getClassName = ({
   selected,
   selectedNeighbors,
   answer,
-  colour,
   error,
 }) =>
-  classnames(`cell x-${xy[0]} y-${xy[1]} colour-${colour}`, selectedNeighbors, {
+  classnames(`cell x-${xy[0]} y-${xy[1]}`, selectedNeighbors, {
     selected,
     hover,
     answer: answer !== undefined,
@@ -168,6 +167,10 @@ class CTC extends React.Component {
         <div>
           <div className="board">
             <div className="sudoku cage-last display-boxes display-cells">
+              <div
+                className="_canvas"
+                style={{ backgroundImage: board.bg_image }}
+              />
               {cells.map((cell) => (
                 <div key={cell.index} className={getClassName(cell)}>
                   {cell.question === undefined && cell.answer === undefined && (
@@ -176,11 +179,10 @@ class CTC extends React.Component {
                       <div className="centre">{cell.centre.join('')}</div>
                     </>
                   )}
-                  {cell.question !== undefined && (
-                    <span className="question">{cell.question}</span>
-                  )}
-                  {cell.answer !== undefined && (
-                    <span className="answer">{cell.answer}</span>
+                  {cell.question !== undefined ? (
+                    <span className="question number">{cell.question}</span>
+                  ) : (
+                    <span className="answer number">{cell.answer}</span>
                   )}
                   {cell.cage && (
                     <span
@@ -188,8 +190,8 @@ class CTC extends React.Component {
                       data-text={cell.cage.text}
                     />
                   )}
-                  {cell.extras.map((extra) => (
-                    <span key={extra.className} className={extra.className} />
+                  {cell.extras.map((extra, i) => (
+                    <span key={i} className={extra.className} />
                   ))}
                 </div>
               ))}
