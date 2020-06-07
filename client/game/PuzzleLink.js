@@ -6,9 +6,9 @@ import css from '@unrest/css'
 import { saved_games } from './Board'
 
 const PuzzleLink = (props) => {
-  const { external_id, videos, id, Tag=Link, has_constraints } = props
-  const { solves=[], is_superuser } = props.auth.user || {}
-  const solved = solves.find(s => s.puzzle_id === id)
+  const { external_id, videos, id, Tag = Link, has_constraints } = props
+  const { solves = [], is_superuser } = props.auth.user || {}
+  const solved = solves.find((s) => s.puzzle_id === id)
 
   const title = videos.length ? videos[0].title : '???'
   const local_solve = saved_games.keys.includes(external_id)
@@ -38,7 +38,9 @@ const PuzzleLink = (props) => {
       ))}
       {is_superuser && (
         <>
-          {has_constraints && <i className={icon('thumbs-up text-green-500')}/>}
+          {has_constraints && (
+            <i className={icon('thumbs-up text-green-500')} />
+          )}
           <a href={`/admin/puzzle/puzzle/${id}`} className={icon('admin')} />
         </>
       )}

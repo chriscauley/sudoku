@@ -1,7 +1,6 @@
 import classnames from 'classnames'
 import React from 'react'
 import { debounce } from 'lodash'
-import css from '@unrest/css'
 import auth from '@unrest/react-auth'
 
 import Index from './Index'

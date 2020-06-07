@@ -189,35 +189,40 @@ export default class Board {
       this.extras.underlays.forEach((u) => (underlain[u.index] = true))
 
       const { W, H } = this.geo
-      const processedLines = lines.map((line) => {
-        const { wayPoints } = line
-        const cells = wayPoints.map((wp) => {
-          const xy = wp.map((i) => Math.floor(i)).reverse()
-          return { xy, index: this.geo.xy2index(xy) }
+      const processedLines = lines
+        .filter((l) => l.wayPoints.length)
+        .map((line) => {
+          const { wayPoints } = line
+          const cells = wayPoints.map((wp) => {
+            const xy = wp.map((i) => Math.floor(i)).reverse()
+            return { xy, index: this.geo.xy2index(xy) }
+          })
+          if (cells.length === 2 && cells[0].index + cells[1].index === 90) {
+            const diff = Math.abs(cells[0].index - cells[1].index)
+            let xys = [],
+              direction
+            if (diff === 90) {
+              xys = vector.connect([0, 0], [W - 1, H - 1])
+              direction = 'up'
+            } else if (diff === 72) {
+              xys = vector.connect([0, H - 1], [W - 1, 0])
+              direction = 'down'
+            } else {
+              // not actually a diagonal, just two cells that sum to 90
+              return { cells, type: 'thermo' }
+            }
+            return {
+              type: 'diagonal',
+              direction,
+              cells: xys.map((xy) => ({
+                xy,
+                index: this.geo.xy2index(xy),
+                className: 'line-diagonal ' + direction,
+              })),
+            }
+          }
+          return { cells, type: 'thermo' }
         })
-        if (cells.length === 2 && cells[0].index + cells[1].index === 90) {
-          const diff = Math.abs(cells[0].index - cells[1].index)
-          let xys = [],
-            direction
-          if (diff === 90) {
-            xys = vector.connect([0, 0], [W - 1, H - 1])
-            direction = 'up'
-          } else if (diff === 72) {
-            xys = vector.connect([0, H - 1], [W - 1, 0])
-            direction = 'down'
-          }
-          return {
-            type: 'diagonal',
-            direction,
-            cells: xys.map((xy) => ({
-              xy,
-              index: this.geo.xy2index(xy),
-              className: 'line-diagonal ' + direction,
-            })),
-          }
-        }
-        return { cells, type: 'thermo' }
-      })
 
       this.extras.lines = processedLines.map((line) => {
         let last_xy
