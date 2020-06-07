@@ -165,42 +165,44 @@ class CTC extends React.Component {
           sendKey={this.sendKey}
         />
         <div>
-          <div className="board">
-            <div className="sudoku cage-last display-boxes display-cells">
+          <div className="gutter">
+            <div className="board">
+              <div className="sudoku cage-last display-boxes display-cells">
+                <div
+                  className="_canvas"
+                  style={{ backgroundImage: board.bg_image }}
+                />
+                {cells.map((cell) => (
+                  <div key={cell.index} className={getClassName(cell)}>
+                    {cell.question === undefined && cell.answer === undefined && (
+                      <>
+                        <div className="corner">{cell.corner.join('')}</div>
+                        <div className="centre">{cell.centre.join('')}</div>
+                      </>
+                    )}
+                    {cell.question !== undefined ? (
+                      <span className="question number">{cell.question}</span>
+                    ) : (
+                      <span className="answer number">{cell.answer}</span>
+                    )}
+                    {cell.cage && (
+                      <span
+                        className={cell.cage.className}
+                        data-text={cell.cage.text}
+                      />
+                    )}
+                    {cell.extras.map((extra, i) => (
+                      <span key={i} className={extra.className} />
+                    ))}
+                  </div>
+                ))}
+              </div>
               <div
-                className="_canvas"
-                style={{ backgroundImage: board.bg_image }}
+                className="clickMask"
+                onMouseMove={this.onMouseMove}
+                ref={clickRef}
               />
-              {cells.map((cell) => (
-                <div key={cell.index} className={getClassName(cell)}>
-                  {cell.question === undefined && cell.answer === undefined && (
-                    <>
-                      <div className="corner">{cell.corner.join('')}</div>
-                      <div className="centre">{cell.centre.join('')}</div>
-                    </>
-                  )}
-                  {cell.question !== undefined ? (
-                    <span className="question number">{cell.question}</span>
-                  ) : (
-                    <span className="answer number">{cell.answer}</span>
-                  )}
-                  {cell.cage && (
-                    <span
-                      className={cell.cage.className}
-                      data-text={cell.cage.text}
-                    />
-                  )}
-                  {cell.extras.map((extra, i) => (
-                    <span key={i} className={extra.className} />
-                  ))}
-                </div>
-              ))}
             </div>
-            <div
-              className="clickMask"
-              onMouseMove={this.onMouseMove}
-              ref={clickRef}
-            />
           </div>
         </div>
       </div>
