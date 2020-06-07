@@ -75,6 +75,7 @@ const buildUnderlays = (underlays, geo) => {
 export default class Board {
   constructor(options) {
     window.B = this
+    options.required_constraints = options.required_constraints || []
     this.options = options
     this.geo = new Geo({ W: 9 })
     this.checker = new Checker(this)
@@ -117,6 +118,7 @@ export default class Board {
       'thermo',
       'unique_diagonals',
       'consecutive_regions',
+      'unique_regions',
       'increasing_or_decreasing',
       'other',
     ]

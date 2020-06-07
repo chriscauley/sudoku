@@ -8,3 +8,7 @@ export default ({ answer, puzzle, constraints }) => {
     constraints,
   }).then(() => auth.connect.markStale())
 }
+
+export const submitPuzzle = (id, data) => {
+  return post(`/api/schema/PuzzleAdminForm/${id}/`, data)
+}

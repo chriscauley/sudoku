@@ -3,7 +3,7 @@ import { debounce } from 'lodash'
 import ConfigHook from '@unrest/react-config-hook'
 import RestHook from '@unrest/react-rest-hook'
 
-import submitSolve from './submitSolve'
+import submitSolve, { submitPuzzle } from './submitSolve'
 import Board from './Board'
 
 const withPuzzle = RestHook(
@@ -17,10 +17,12 @@ const uiSchema = {}
 const actions = {
   load: debounce((store, slug, props) => {
     if (slug && store.state.slug !== slug) {
-      const { ctc } = props.api.puzzle.data
       const puzzle_id = props.api.puzzle.id
       store.setState({ slug })
-      store.actions.startGame({ puzzle_id, slug, ctc }, props)
+      store.actions.startGame(
+        { puzzle_id, slug, ...props.api.puzzle.data },
+        props,
+      )
     }
   }),
   startGame: (store, options) => {
@@ -74,6 +76,12 @@ const actions = {
       board.constraints.push(slug)
     }
     store.setState({ rando: Math.random() })
+  },
+  savePuzzle(store, data) {
+    submitPuzzle(store.state.board.puzzle_id, data).then(() => {
+      Object.assign(store.state.board, data)
+      store.setState({ rando: Math.random() })
+    })
   },
 }
 

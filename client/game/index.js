@@ -1,10 +1,14 @@
 import classnames from 'classnames'
 import React from 'react'
 import { debounce } from 'lodash'
+import css from '@unrest/css'
+import auth from '@unrest/react-auth'
 
 import Index from './Index'
 import withGame from './withGame'
+import PuzzleLink from './PuzzleLink'
 import Controls, { getMode } from './Controls'
+import Markdown from 'react-markdown'
 
 const clickRef = React.createRef()
 
@@ -124,7 +128,9 @@ class CTC extends React.Component {
 
   render() {
     const { hover, selected, cursor } = this.state
+    const { puzzle } = this.props.api
     const { board } = this.props.game
+    const { user = {} } = this.props.auth
     this.geo = board.geo
     board.geo.element = clickRef.current
     const cells = board.toCells(selected)
@@ -136,6 +142,24 @@ class CTC extends React.Component {
     }
     return (
       <div className="Game">
+        <div className="my4 flex justify-between items-center">
+          <div className="mr-4">
+            {board.solve && 'Victory!'} @ {board.getTime()}
+          </div>
+          <div className="hoverdown">
+            <PuzzleLink {...puzzle} is_superuser={user.is_superuser} />
+            {puzzle.videos.length > 0 && (
+              <div className="hoverdown--target p-4 right-0 border">
+                <Markdown
+                  className="whitespace-normal"
+                  linkTarget={() => '_blank'}
+                >
+                  {puzzle.videos[0].description}
+                </Markdown>
+              </div>
+            )}
+          </div>
+        </div>
         <Controls
           keys={this.game_keys}
           onClick={this.setMode}
@@ -180,9 +204,6 @@ class CTC extends React.Component {
               ref={clickRef}
             />
           </div>
-          <div>
-            {board.solve && 'Victory! Final '} game time: {board.getTime()}
-          </div>
         </div>
       </div>
     )
@@ -191,5 +212,5 @@ class CTC extends React.Component {
 
 export default {
   Index,
-  CTC: withGame(CTC),
+  CTC: auth.connect(withGame(CTC)),
 }

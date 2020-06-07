@@ -19,44 +19,54 @@ export const getMode = ({ ctrlKey, shiftKey }, _default = 'answer') => {
   return _default
 }
 
-const CheckControl = _withGame((props) => {
-  const { actions, board } = props.game
-  const { constraints } = board
-  const check = () => actions.check(constraints)
-  const clear = () => actions.check()
+const CheckControl = auth.connect(
+  _withGame((props) => {
+    const { actions, board } = props.game
+    const { user = {} } = props.auth
+    const { constraints } = board
+    const check = () => actions.check(constraints)
+    const clear = () => actions.check()
+    const saveConstraints = () =>
+      actions.savePuzzle({ required_constraints: constraints })
 
-  const options = board.available_constraints.map((slug) => ({
-    checked: constraints.includes(slug),
-    onChange: () => actions.toggleConstraint(slug),
-    slug,
-    title: slug.replace(/_/g, ' '),
-  }))
+    const options = board.available_constraints.map((slug) => ({
+      checked: constraints.includes(slug),
+      onChange: () => actions.toggleConstraint(slug),
+      slug,
+      title: slug.replace(/_/g, ' '),
+    }))
 
-  return (
-    <div className={'hoverdown'}>
-      <div className={btn()} onClick={check}>
-        check
-      </div>
-      <div className="hoverdown--target">
-        {options.map((c) => (
-          <label className={'w-full ' + btn(c.checked)} key={c.slug}>
-            <input
-              type="checkbox"
-              onChange={c.onChange}
-              checked={c.checked}
-              className="mr-2"
-            />
-            {c.title}
-          </label>
-        ))}
-        <hr />
-        <div className={'w-full ' + btn()} onClick={clear}>
-          clear
+    return (
+      <div className={'hoverdown'}>
+        <div className={btn()} onClick={check}>
+          check
+        </div>
+        <div className="hoverdown--target">
+          {options.map((c) => (
+            <label className={'w-full ' + btn(c.checked)} key={c.slug}>
+              <input
+                type="checkbox"
+                onChange={c.onChange}
+                checked={c.checked}
+                className="mr-2"
+              />
+              {c.title}
+            </label>
+          ))}
+          <hr />
+          <div className={'w-full ' + btn()} onClick={clear}>
+            clear
+          </div>
+          {user.is_superuser && (
+            <div className={'w-full ' + btn()} onClick={saveConstraints}>
+              Add Constraints - {board.required_constraints.length}
+            </div>
+          )}
         </div>
       </div>
-    </div>
-  )
-})
+    )
+  }),
+)
 
 const ActionButton = _withGame((props) => {
   return (
