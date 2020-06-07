@@ -1,4 +1,5 @@
-import { cloneDeep, range, pick, last, uniqBy } from 'lodash'
+import classNames from 'classnames'
+import { cloneDeep, range, pick } from 'lodash'
 import Storage from '@unrest/storage'
 
 import Geo, { vector } from './Geo'
@@ -22,20 +23,188 @@ const dxy2text = {
   '1,-1': 'upright',
 }
 
-// example puzzles:
-// 7Qh3tBm4mj - ceiling and floor
-const buildUnderlays = (underlays, geo) => {
+const extractColor = (color) => {
   const color_map = {
     '#A3E048': 'green',
     '#F7D038': 'yellow',
     '#34BBE6': 'blue',
+    '#CFCFCF': 'gray',
   }
+
+  color = color.toUpperCase()
+  if (!color_map[color]) {
+    console.warn('missing color', color)
+    return 'gray'
+  }
+  return color_map[color]
+}
+
+// currently only thermometers & diagonals
+// forked thermometer #H7n7NhH26M
+// lots of theremometers #J7pMMgrLL3
+const buildLines = (lines, board) => {
+  const thermometer_colors = {}
+  const forced_ends = {} // used in "shall we play a game" #Z4gGYPtBWNw
+
+  const { W, H } = board.geo
+  const processedLines = lines
+    .filter((l) => l.wayPoints.length)
+    .map((line) => {
+      const { wayPoints } = line
+      const color = extractColor(line.color)
+      const cells = wayPoints.map((wp) => {
+        const xy = wp.map((i) => Math.floor(i)).reverse()
+        const index = board.geo.xy2index(xy)
+        if (wp[0] % 0.5 || wp[1] % 0.5) {
+          forced_ends[index] = color
+        }
+        return { xy, index }
+      })
+      if (cells.length === 2 && cells[0].index + cells[1].index === 90) {
+        const diff = Math.abs(cells[0].index - cells[1].index)
+        let xys = [],
+          direction
+        if (diff === 90) {
+          xys = vector.connect([0, 0], [W - 1, H - 1])
+          direction = 'up'
+        } else if (diff === 72) {
+          xys = vector.connect([0, H - 1], [W - 1, 0])
+          direction = 'down'
+        } else {
+          // not actually a diagonal, just two cells that sum to 90
+          return { cells, type: 'thermo', color }
+        }
+        return {
+          type: 'diagonal',
+          direction,
+          cells: xys.map((xy) => ({
+            xy,
+            index: board.geo.xy2index(xy),
+            className: classNames('line-diagonal', direction, 'color-' + color),
+          })),
+        }
+      }
+      return { cells, type: 'thermo', color }
+    })
+
+  // fill in the cells between the old "waypoint" cells, which are just the corners
+  board.extras.lines = processedLines.map((line) => {
+    let last_xy
+    const line_xys = []
+    if (line.type === 'thermo') {
+      line.cells.forEach((point) => {
+        if (last_xy) {
+          vector
+            .connect(last_xy, point.xy)
+            .slice(1)
+            .map((xy) => line_xys.push(xy))
+        } else {
+          line_xys.push(point.xy)
+        }
+        last_xy = point.xy
+      })
+      line.cells = line_xys.map((xy) => ({
+        index: board.geo.xy2index(xy),
+        className: 'line-thermo ' + 'color-' + line.color,
+        xy,
+      }))
+    }
+
+    return line
+  })
+
+  // TODO replace lines with canvas, which will make this calss obsolete
+  board.extras.lines.forEach((line) => {
+    const color = line.color
+    line.cells.forEach((cell) => {
+      if (forced_ends[cell.index] === color) {
+        cell.className += ' forced_end'
+      }
+    })
+  })
+
+  board.extras.lines.forEach((line) => {
+    const { color } = line
+    thermometer_colors[color] = thermometer_colors[color] || {}
+    if (line.type === 'thermo') {
+      let last_point
+      line.cells.forEach((point) => {
+        const { index } = point
+        thermometer_colors[color][index] =
+          thermometer_colors[color][index] || []
+        if (last_point) {
+          point.className +=
+            ' from from-' +
+            dxy2text[vector.sign(vector.subtract(last_point.xy, point.xy))]
+          last_point.className +=
+            ' to to-' +
+            dxy2text[vector.sign(vector.subtract(point.xy, last_point.xy))]
+          thermometer_colors[color][index].push(last_point.index)
+          thermometer_colors[color][last_point.index].push(index)
+        }
+        last_point = point
+      })
+    }
+    line.cells.forEach((point) => (point._className = point.className))
+  })
+
+  buildThermometers(board, thermometer_colors, forced_ends)
+}
+
+const fixThermometer = (thermometer, u) => {
+  // right now this only handles single forked bulbs because that's the only exception I've encountered
+  const index2 = thermometer[u.index][0]
+  delete thermometer[u.index]
+  thermometer[index2].push(u.index)
+}
+
+const buildThermometers = (board, _colors, forced_ends) => {
+  // build out the "this cell is greater than these" map used in checking thermometers
+  const thermometers = {}
+  board.extras.thermometers = []
+  board.extras.underlays.forEach((u) => {
+    if (u.type !== 'thermo') {
+      return
+    }
+    thermometers[u.color] = thermometers[u.color] || []
+    const matched = thermometers[u.color].find((t) => t[u.index])
+    if (matched) {
+      fixThermometer(matched, u)
+      return
+    }
+    let depth = 0
+    const _thermo = {}
+    const thermometer = _colors[u.color]
+    const chase = (index, last) => {
+      depth++
+      let is_end = forced_ends[index] === u.color
+      !is_end &&
+        thermometer[index].forEach((index2) => {
+          if (index2 === last || depth > 100) {
+            return
+          }
+          _thermo[index2] = _thermo[index2] || []
+          _thermo[index2].push(index)
+          is_end = true
+          chase(index2, index)
+        })
+    }
+    chase(u.index, undefined, [])
+    thermometers[u.color].push(_thermo)
+    board.extras.thermometers.push(_thermo)
+  })
+}
+
+// example puzzles:
+// H7n7NhH26M - crazy thermometers
+// 7Qh3tBm4mj - ceiling and floor
+const buildUnderlays = (underlays, geo) => {
   underlays = underlays.map((underlay) => {
     const center = underlay.center.reverse()
     const ratio = underlay.width / underlay.height
     const xy = center.map((n) => Math.floor(n))
     const index = geo.xy2index(xy)
-    let type = 'square'
+    let type = underlay.rounded ? 'thermo' : 'square'
     let orientation = ''
     if (ratio < 1) {
       type = 'wall'
@@ -44,10 +213,12 @@ const buildUnderlays = (underlays, geo) => {
       type = 'wall'
       orientation = 'v-split'
     }
-    const color = color_map[underlay.backgroundColor] || 'gray'
-    const className = `underlay ${orientation} ${type} ${css.xy(
-      xy,
-    )} color-${color}`
+    const color = extractColor(underlay.backgroundColor)
+    const className = classNames(
+      `underlay ${orientation} ${type} color-${color}`,
+      css.xy(xy),
+      { rounded: underlay.rounded },
+    )
     return {
       index,
       offset: [xy[0] - center[0], xy[1] - center[1]],
@@ -63,6 +234,10 @@ const buildUnderlays = (underlays, geo) => {
   const underlay_indexes = {}
   underlays.forEach((u) => (underlay_indexes[u.index] = u))
   underlays.forEach((underlay) => {
+    if (!geo.xyInGrid(underlay.xy)) {
+      underlay.type = 'margin'
+      return
+    }
     underlay.next_to = geo
       .index2pawn(underlay.index)
       .map((i) => underlay_indexes[i])
@@ -87,6 +262,9 @@ export default class Board {
     if (this.finish) {
       this.makeSolve()
     }
+
+    // uncomment to debug
+    // this.geo.indexes.forEach((index) => (this.corner[index] = [index]))
   }
 
   reset() {
@@ -181,126 +359,17 @@ export default class Board {
         return cage
       })
 
-      this.extras.underlays = buildUnderlays(underlays, this.geo)
-
-      // lines need to know where underlays are to point thermometers
-      const underlain = {}
-      const broken_lines = []
-      this.extras.underlays.forEach((u) => (underlain[u.index] = true))
-
-      const { W, H } = this.geo
-      const processedLines = lines
-        .filter((l) => l.wayPoints.length)
-        .map((line) => {
-          const { wayPoints } = line
-          const cells = wayPoints.map((wp) => {
-            const xy = wp.map((i) => Math.floor(i)).reverse()
-            return { xy, index: this.geo.xy2index(xy) }
-          })
-          if (cells.length === 2 && cells[0].index + cells[1].index === 90) {
-            const diff = Math.abs(cells[0].index - cells[1].index)
-            let xys = [],
-              direction
-            if (diff === 90) {
-              xys = vector.connect([0, 0], [W - 1, H - 1])
-              direction = 'up'
-            } else if (diff === 72) {
-              xys = vector.connect([0, H - 1], [W - 1, 0])
-              direction = 'down'
-            } else {
-              // not actually a diagonal, just two cells that sum to 90
-              return { cells, type: 'thermo' }
-            }
-            return {
-              type: 'diagonal',
-              direction,
-              cells: xys.map((xy) => ({
-                xy,
-                index: this.geo.xy2index(xy),
-                className: 'line-diagonal ' + direction,
-              })),
-            }
-          }
-          return { cells, type: 'thermo' }
-        })
-
-      this.extras.lines = processedLines.map((line) => {
-        let last_xy
-        const line_xys = []
-        if (line.type === 'thermo') {
-          line.cells.forEach((point) => {
-            if (last_xy) {
-              vector
-                .connect(last_xy, point.xy)
-                .slice(1)
-                .map((xy) => line_xys.push(xy))
-            } else {
-              line_xys.push(point.xy)
-            }
-            last_xy = point.xy
-          })
-          line.cells = line_xys.map((xy) => ({
-            index: this.geo.xy2index(xy),
-            className: 'line-thermo',
-            xy,
-          }))
+      this.extras.margin_underlays = []
+      this.extras.underlays = []
+      buildUnderlays(underlays, this.geo).forEach((underlay) => {
+        if (underlay.type === 'margin') {
+          this.extras.margin_underlays.push(underlay)
+        } else {
+          this.extras.underlays.push(underlay)
         }
-
-        // sometimes lines are entered wrong or broken up in CTC
-        if (!underlain[line.cells[0].index]) {
-          if (underlain[last(line.cells).index]) {
-            // the thermometer was input backwards in ctc puzzle
-            line.cells.reverse()
-          } else {
-            broken_lines.push(line)
-          }
-        }
-
-        line.head = line.cells[0].index
-        line.tail = last(line.cells).index
-        return line
       })
 
-      const mergeLines = (trash, keep) => {
-        keep.cells = keep.cells.concat(trash.cells)
-        keep.tail = trash.tail
-        this.extras.lines = this.extras.lines.filter((line) => line !== trash)
-        keep.cells = uniqBy(keep.cells, 'index')
-      }
-
-      // fix broken lines
-      broken_lines.forEach((broken) => {
-        this.extras.lines.forEach((line) => {
-          if (line === broken) {
-            return
-          }
-          if (line.tail === broken.head) {
-            mergeLines(broken, line)
-          } else if (line.tail === broken.head) {
-            broken.cells.reverse()
-            ;[broken.head, broken.tail] = [broken.tail, broken.head]
-            mergeLines(broken, line)
-          }
-        })
-      })
-
-      this.extras.lines.forEach((line) => {
-        if (line.type === 'thermo') {
-          let last_point
-          line.cells.forEach((point) => {
-            if (last_point) {
-              point.className +=
-                ' from from-' +
-                dxy2text[vector.sign(vector.subtract(last_point.xy, point.xy))]
-              last_point.className +=
-                ' to to-' +
-                dxy2text[vector.sign(vector.subtract(point.xy, last_point.xy))]
-            }
-            last_point = point
-          })
-        }
-        line.cells.forEach((point) => (point._className = point.className))
-      })
+      buildLines(lines, this)
     }
     this.turn = this.actions.length
     this.sudoku = this.sudoku || range(this.geo.AREA).map(() => {})

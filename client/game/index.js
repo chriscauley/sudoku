@@ -23,7 +23,7 @@ const getClassName = ({
   classnames(`cell x-${xy[0]} y-${xy[1]} colour-${colour}`, selectedNeighbors, {
     selected,
     hover,
-    answer,
+    answer: answer !== undefined,
     error,
   })
 

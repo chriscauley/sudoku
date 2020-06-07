@@ -287,18 +287,20 @@ $thermo: #ddd;
   }
 }
 
-.board .cell .underlay {
+.board {
   --underlay-color: #ccc;
-  &.color-green {
+  .color-green {
     --underlay-color: #A3E048;
   }
-  &.color-yellow {
+  .color-yellow {
     --underlay-color: #F7D038;
   }
-  &.color-blue {
+  .color-blue {
     --underlay-color: #34BBE6;
   }
+}
 
+.board .cell .underlay {
   $wall: 7%;
   background: repeating-linear-gradient(
     -45deg,
@@ -330,12 +332,13 @@ $thermo: #ddd;
     border-color: red;
   }
   /* thermo */
-  &.thermo {
-    $bulb-shrink: 5%;
-    background: $thermo;
+  &.rounded {
+    $bulb-shrink: 15%;
+    background: var(--underlay-color);
     border-radius: 100%;
     height: 100% - 2 * $bulb-shrink;
     margin: $bulb-shrink;
+    opacity: 1;
     width: 100% - 2 * $bulb-shrink;
   }
 }
@@ -343,7 +346,7 @@ $thermo: #ddd;
 .board .cell .line-thermo {
   $t: 0.25em;
   &.from:before, &.to:after {
-    background: $thermo;
+    background: var(--underlay-color);
     border-radius: $t 0 0 $t;
     content: "";
     display: block;
@@ -355,6 +358,10 @@ $thermo: #ddd;
     transform-origin: $t / 2;
     width: 90%;
   }
+  &.forced_end:before {
+    border-left: white solid 15px;
+  }
+
   &.to-right:after, &.from-right:before {
     transform: rotate(0deg);
   }

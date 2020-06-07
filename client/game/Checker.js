@@ -53,21 +53,15 @@ export default class Checker {
   }
 
   thermo() {
-    this.board.extras.lines.forEach((line) => {
-      let last
-      line.cells.forEach((point) => {
-        const answer = this.answers[point.index]
-        if (last && answer <= this.answers[last.index]) {
-          this.errors.count += 1
-          this.errors.reasons.push(
-            `Numbers along a thermometer must go up from the bulb`,
-          )
-          this.errors.indexes.push(last.index)
-          this.errors.indexes.push(point.index)
-        }
-        if (answer) {
-          last = point
-        }
+    const reason =
+      'All numbers in thermometer should get larger from bulb to tip'
+    this.board.extras.thermometers.forEach((thermometer) => {
+      Object.entries(thermometer).forEach(([index, lessers]) => {
+        lessers.forEach((lesser_index) => {
+          if (this.answers[index] <= this.answers[lesser_index]) {
+            this.addError([index, lesser_index], reason)
+          }
+        })
       })
     })
   }
