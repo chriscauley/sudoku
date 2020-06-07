@@ -179,22 +179,82 @@ export default class Checker {
     })
   }
 
-  // TODO not currently used, keep this? delete July 1, 2020 if not used
-  consecutive_regions() {
-    this.board.extras.underlays.forEach((underlay) => {
-      const answer = this.answers[underlay.index]
-      if (isNaN(answer)) {
-        return
+  validateConsecutive(indexes, reason) {
+    const answers = indexes
+      .map((i) => this.answers[i])
+      .filter((a) => !isNaN(a))
+      .sort()
+    let last = answers[0]
+    answers.slice(1).find((next) => {
+      if (Math.abs(last - next) !== 1) {
+        this.addError(indexes, reason)
+        return true
       }
-      underlay.next_to.forEach((u2) => {
-        const answer2 = this.answers[u2.index]
-        if (!isNaN(answer2) && Math.abs(answer - answer2) !== 1) {
-          this.errors.count++
-          this.errors.indexes.push(underlay.index)
-          this.errors.indexes.push(u2.index)
-        }
-      })
+      last = next
     })
+  }
+
+  validateUnique(indexes, reason) {
+    const answers_used = {}
+    indexes.forEach((index) => {
+      const answer = this.answers[index]
+      if (!isNaN(answer) && answers_used[answer] !== undefined) {
+        this.addError([index, answers_used[answer]], reason)
+      }
+      answers_used[answer] = index
+    })
+  }
+
+  addError(indexes, reason) {
+    this.errors.count++
+    this.errors.indexes = this.errors.indexes.concat(indexes)
+    this.errors.reasons.push(reason)
+  }
+
+  consecutive_regions() {
+    this.getRegionIndexes().forEach((indexes) => {
+      this.validateConsecutive(
+        indexes,
+        'Regions can only contain consecutive digits',
+      )
+    })
+  }
+
+  unique_regions() {
+    this.getRegionIndexes().forEach((indexes) => {
+      this.validateUnique(indexes, 'Regions cannot repeat digits')
+    })
+  }
+
+  getRegionIndexes() {
+    if (this.board.extras.cages.length > 0) {
+      return this.board.extras.cages.map((cage) =>
+        cage.cells.map((cell) => cell.index),
+      )
+    }
+    const ends = this.board.extras.underlays.filter((u) => u.is_end)
+    const checked = {}
+    ends
+      .map((end) => {
+        if (checked[end.index]) {
+          return
+        }
+        let last = end
+        let i = 0
+        const indexes = []
+        while (i < this.geo.AREA) {
+          indexes.push(last.index)
+          checked[last.index] = true
+          const next = last.next_to.find((u) => !checked[u.index])
+          if (!next) {
+            break
+          }
+          last = next
+          i++
+        }
+        return indexes
+      })
+      .filter(Boolean)
   }
 
   increasing_or_decreasing() {
