@@ -1,8 +1,27 @@
 from django import forms
 
-from puzzle.models import Solve
+from puzzle.models import Solve, Puzzle
 from django.contrib.postgres.forms import SimpleArrayField
 from unrest import schema
+
+
+@schema.register
+class PuzzleAdminForm(forms.ModelForm):
+    required_constraints = SimpleArrayField(forms.CharField())
+    def clean(self):
+        if not self.request.user.is_staff:
+            raise ValidationError("Only staff are allowed to save puzzles")
+
+    def save(self, commit=True):
+        for attr, value in self.cleaned_data.items():
+            if value:
+                self.instance.data[attr] = value
+        return super().save(commit=commit)
+
+    class Meta:
+        model = Puzzle
+        fields = ('required_constraints',)
+
 
 @schema.register
 class SolveForm(forms.ModelForm):

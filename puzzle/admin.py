@@ -27,8 +27,12 @@ class PuzzleAdmin(admin.ModelAdmin):
 
 @admin.register(Solve)
 class SolveAdmin(admin.ModelAdmin):
-    list_display = ['puzzle_name', 'puzzle_id', 'user_id']
+    list_display = ['puzzle_name', '_constraints', 'puzzle_id', 'user_id']
     def puzzle_name(self, obj):
         video = obj.puzzle.video_set.all().first()
         return video and video.title
     readonly_fields = ['created']
+
+    def _constraints(self, obj):
+        constraints = obj.data.get('constraints', [])
+        return ', '.join([str(c) for c in constraints])

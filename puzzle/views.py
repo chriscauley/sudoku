@@ -4,7 +4,7 @@ from collections import defaultdict
 from puzzle.models import Puzzle, Video
 from unrest.user.views import user_json
 
-list_attrs = ['id', 'external_id', 'publish_date']
+list_attrs = ['id', 'external_id', 'publish_date', 'has_constraints']
 
 video_attrs = ['external_id', 'title']
 
