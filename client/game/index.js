@@ -134,10 +134,10 @@ class CTC extends React.Component {
     board.geo.element = clickRef.current
     const cells = board.toCells(selected)
     if (cells[cursor]) {
-      cells[cursor].cursor = true
+      cells[cursor].extras.push({ className: 'cursor' })
     }
     if (cells[hover]) {
-      cells[hover].hover = true
+      cells[hover].extras.push({ className: 'hover' })
     }
     return (
       <div className="Game">
@@ -172,8 +172,8 @@ class CTC extends React.Component {
                 <div key={cell.index} className={getClassName(cell)}>
                   {cell.question === undefined && cell.answer === undefined && (
                     <>
-                      <div className="corner">{cell.corner.map((n) => n)}</div>
-                      <div className="centre">{cell.centre.map((n) => n)}</div>
+                      <div className="corner">{cell.corner.join('')}</div>
+                      <div className="centre">{cell.centre.join('')}</div>
                     </>
                   )}
                   {cell.question !== undefined && (
@@ -182,18 +182,15 @@ class CTC extends React.Component {
                   {cell.answer !== undefined && (
                     <span className="answer">{cell.answer}</span>
                   )}
-                  {cell.arrow && <span className={cell.arrow.className} />}
                   {cell.cage && (
                     <span
                       className={cell.cage.className}
                       data-text={cell.cage.text}
                     />
                   )}
-                  {cell.cursor && <span className="cursor" />}
-                  {cell.underlays.map((underlay, i) => (
-                    <span key={i} className={underlay.className} />
+                  {cell.extras.map((extra) => (
+                    <span key={extra.className} className={extra.className} />
                   ))}
-                  {cell.line && <span className={cell.line.className} />}
                 </div>
               ))}
             </div>

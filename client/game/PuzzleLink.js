@@ -36,6 +36,12 @@ const PuzzleLink = (props) => {
           className={icon('youtube mx-2')}
         />
       ))}
+      <a
+        href={`https://cracking-the-cryptic.web.app/sudoku/${external_id}`}
+        target="_blank"
+        rel="noreferrer"
+        className={icon('external-link')}
+      />
       {is_superuser && (
         <>
           {has_constraints && (

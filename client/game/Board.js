@@ -313,21 +313,27 @@ export default class Board {
       cells.forEach((row) =>
         row.forEach((cell) => this.sudoku.push(cell.value)),
       )
-      this.extras.arrows = arrows.map((arrow) => {
-        const [xy1, xy2] = arrow.wayPoints
-        const xy = xy1.map((n) => Math.floor(n)).reverse()
-        const dxy = [-Math.sign(xy1[1] - xy2[1]), -Math.sign(xy1[0] - xy2[0])]
-        const dir = dxy2text[dxy]
-        return {
-          dindex: dxy[0] + dxy[1] * this.geo.W,
-          index: this.geo.xy2index(xy),
-          xy,
-          dxy,
-          className: `arrow arrow-${dir} dxy-${dxy.join(
-            '',
-          )} fa fa-chevron-${dir}`,
-        }
-      })
+
+      // #hg764Pd67f has lots of arrows in grid
+      // #p6Pb99bbDr has arrows not in grid
+      this.extras.arrows = arrows
+        .map((arrow) => {
+          const [xy1, xy2] = arrow.wayPoints
+          const xy = xy1.map((n) => Math.floor(n)).reverse()
+          const dxy = [-Math.sign(xy1[1] - xy2[1]), -Math.sign(xy1[0] - xy2[0])]
+          const dir = dxy2text[dxy]
+          return {
+            dindex: dxy[0] + dxy[1] * this.geo.W,
+            index: this.geo.xy2index(xy),
+            xy,
+            dxy,
+            className: `arrow arrow-${dir} dxy-${dxy.join(
+              '',
+            )} fa fa-chevron-${dir}`,
+          }
+        })
+        .filter((a) => this.geo.xyInGrid(a.xy))
+
       this.extras.cages = cages.map((cage) => {
         cage.indexes = []
         cage.first = { index: Infinity }
@@ -481,19 +487,20 @@ export default class Board {
       corner: this.corner[index] || [],
       colour: this.colour[index] || [],
       underlays: [],
+      extras: [],
     }))
     this.errors.indexes.forEach((index) => (cells[index].error = true))
-    this.extras.arrows.forEach((arrow) => (cells[arrow.index].arrow = arrow))
     this.extras.cages.forEach((cage) =>
       cage.cells.forEach(
         (cage_cell) => (cells[cage_cell.index].cage = cage_cell),
       ),
     )
+    this.extras.arrows.forEach((arrow) => cells[arrow.index].extras.push(arrow))
     this.extras.underlays.forEach((underlay) =>
-      cells[underlay.index].underlays.push(underlay),
+      cells[underlay.index].extras.push(underlay),
     )
     this.extras.lines.forEach((line) => {
-      line.cells.forEach((point) => cells[point.index].underlays.push(point))
+      line.cells.forEach((point) => cells[point.index].extras.push(point))
     })
     return cells
   }
