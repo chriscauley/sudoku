@@ -37,17 +37,16 @@ export default class Checker {
   anti_king = () => this._validateAntiChess('king')
   anti_queen = () => this._validateAntiChess('queen')
 
-  conservativePairs() {
+  consecutive_pairs() {
     this.board.extras.underlays.forEach((underlay) => {
       const { index, orientation } = underlay
       const index2 = index - (orientation === 'h-split' ? 1 : this.geo.W)
-      const diff = Math.abs(this.answers[index] - this.answer[index2])
+      const diff = Math.abs(this.answers[index] - this.answers[index2])
       if (!isNaN(diff) && diff !== 1) {
-        this.errors.count += 1
-        this.errors.reasons.push(
+        this.addError(
+          [index, index2],
           'Cells separated by bars must be consecutive pairs',
         )
-        underlay.className += ' error'
       }
     })
   }
