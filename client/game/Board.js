@@ -324,6 +324,7 @@ export default class Board {
       'consecutive_regions',
       'unique_regions',
       'increasing_or_decreasing',
+      'magic_square',
       'other',
     ]
 

@@ -4,6 +4,8 @@ const _err = (cage, test = () => true) => {
   cage.cells.filter(test).forEach((cell) => (cell.className += ' error'))
 }
 
+const _slice = (array, indexes) => indexes.map((i) => array[i])
+
 export default class Checker {
   constructor(board) {
     this.board = board
@@ -295,6 +297,46 @@ export default class Checker {
         )
       }
     })
+  }
+
+  // TODO highly sudoku specific
+  validateMagicSquare(indexes) {
+    const index_sets = [
+      ['row', range(3).map((i) => indexes.slice(i * 3, (i + 1) * 3))],
+      [
+        'column',
+        range(3).map((i) => [indexes[i], indexes[i + 3], indexes[i + 6]]),
+      ],
+      [
+        'diagonal',
+        [
+          _slice(indexes, [0, 4, 8]), //diagonal down
+          _slice(indexes, [2, 4, 6]), //diagonal up
+        ],
+      ],
+    ]
+    index_sets.forEach(([name, index_set]) => {
+      index_set.forEach((indexes) => {
+        const total = sum(indexes.map((i) => this.answers[i]))
+        if (!isNaN(total) && total !== 15) {
+          this.addError(
+            indexes,
+            `A ${name} in the magic square does not sum to 15`,
+          )
+        }
+      })
+    })
+  }
+
+  // TODO highly sudoku specific
+  magic_square() {
+    let indexes = this.board.extras.underlays.map((u) => u.index).sort()
+    if (indexes.length === 25) {
+      // this is a 5x5 magic square, cut it down
+      indexes = _slice(indexes, [0, 2, 4, 10, 12, 14, 20, 22, 24])
+    }
+    this.validateMagicSquare(indexes)
+    this.validateUnique(indexes, 'Magic square cannot contain repeat numbers')
   }
 
   other() {}
