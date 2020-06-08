@@ -4,7 +4,7 @@ from collections import defaultdict
 from puzzle.models import Puzzle, Video
 from unrest.user.views import user_json
 
-list_attrs = ['id', 'external_id', 'publish_date', 'constraints']
+list_attrs = ['id', 'external_id', 'publish_date', 'constraints', 'flag', 'screenshot']
 
 video_attrs = ['external_id', 'title']
 
@@ -13,7 +13,9 @@ def list_puzzles(request):
     video_map = defaultdict(list)
     for video in videos:
         video_map[video.pop('puzzle_id')].append(video)
-    puzzles = Puzzle.objects.exclude(flag='no_puzzle')
+    puzzles = Puzzle.objects.all()
+    if False: #TODO superusers should have access to all
+        puzzles = puzzles.filter(flag__in=['new', 'valid'])
     puzzles = [p.to_json(list_attrs) for p in puzzles]
     for puzzle in puzzles:
         puzzle['videos'] = video_map[puzzle['id']]

@@ -1,4 +1,5 @@
 from django import forms
+from django.core.files.storage import default_storage
 
 from puzzle.models import Solve, Puzzle
 from django.contrib.postgres.forms import SimpleArrayField
@@ -7,7 +8,13 @@ from unrest import schema
 
 @schema.register
 class PuzzleAdminForm(forms.ModelForm):
-    required_constraints = SimpleArrayField(forms.CharField())
+    required_constraints = SimpleArrayField(forms.CharField(), required=False)
+    screenshot = forms.FileField(required=False)
+    def clean_screenshot(self):
+        screenshot = self.cleaned_data.get('screenshot')
+        if screenshot:
+            saved = default_storage.save('screenshots/' + screenshot.name, screenshot)
+            return default_storage.url(saved)
     def clean(self):
         if not self.request.user.is_staff:
             raise ValidationError("Only staff are allowed to save puzzles")
@@ -20,7 +27,7 @@ class PuzzleAdminForm(forms.ModelForm):
 
     class Meta:
         model = Puzzle
-        fields = ('required_constraints',)
+        fields = ('required_constraints', 'screenshot')
 
 
 @schema.register

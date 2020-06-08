@@ -20,13 +20,15 @@ class Video(BaseModel):
 class Puzzle(BaseModel):
     FLAG_CHOICES = _choices([
         'new',
-        'needs_constraints',
-        'no_puzzle',
+        'no_rules',
         'valid',
         'bad_id',
-        'needs_id',
         'not_sudoku',
-        'external_ctc'
+        'external_ctc',
+        'not_9x9',
+        'bad_render',
+        'vanilla',
+        'maybe_not_9x9',
     ])
     source = models.CharField(max_length=16, default="ctc")
     external_id = models.CharField(max_length=32, null=True, blank=True)
@@ -35,8 +37,35 @@ class Puzzle(BaseModel):
     flag = models.CharField(max_length=16, default="new", choices=FLAG_CHOICES)
 
     constraints = property(lambda s: s.data.get('required_constraints', []))
+    screenshot = property(lambda s: s.data.get('screenshot'))
+
+    def update_status(self):
+        _auto = ['new', 'valid', 'no_rules', 'vanilla', 'maybe_not_9x9']
+        if self.flag not in _auto:
+            return
+        ctc = self.data.get('ctc')
+        if not ctc:
+            self.flag = 'bad_id'
+        if self.data.get('required_constraints'):
+            self.flag = 'valid'
+        else:
+            self.flag = 'no_rules'
+            vanilla = True
+            for attr in ['arrows', 'cages', 'lines', 'overlays', 'underlays']:
+                if self.data.get('ctc', {}).get(attr):
+                    vanilla = False
+            if vanilla:
+                self.flag = 'vanilla'
+            cell_count = sum([len(r) for r in ctc['cells']])
+            region_count = sum([len(r) for r in ctc['regions']])
+            if cell_count != 81 or region_count != 81:
+                self.flag = 'maybe_not_9x9'
 
     def save(self, *args, **kwargs):
+        self.update_status()
+        if not self.publish_date:
+            for video in self.video_set.all():
+                self.publish_date = self.publish_date or video.publish_date
         if not self.data.get('ctc') and self.source == "ctc" and self.external_id:
             update_ctc(self)
         super().save(*args, **kwargs)

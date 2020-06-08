@@ -10,7 +10,7 @@ class VideoAdmin(admin.ModelAdmin):
 
 @admin.register(Puzzle)
 class PuzzleAdmin(admin.ModelAdmin):
-    list_display = ["external_id", "_links", "flag"]
+    list_display = ["external_id", "publish_date", "_links", "flag"]
     search_fields = ['video__title', 'video__external_id', 'external_id']
     list_editable = ["flag"]
     list_filter = ["flag"]
@@ -19,11 +19,7 @@ class PuzzleAdmin(admin.ModelAdmin):
         link = '<a href="https://www.youtube.com/watch?v={}" target="_new">{}</a>'
         links = [link.format(v.external_id, v.title) for v in videos]
         return mark_safe('<br/>'.join(links))
-    readonly_fields = ['_links', 'description', 'data']
-
-    def description(self, obj):
-        text = obj.data.get("description").replace("\n","<br/>")
-        return mark_safe(text)
+    readonly_fields = ['_links', 'data']
 
 @admin.register(Solve)
 class SolveAdmin(admin.ModelAdmin):
