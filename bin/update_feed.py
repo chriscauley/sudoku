@@ -15,10 +15,22 @@ def print_counts():
 
 print("start")
 
-# for video in Video.objects.all():
-#     update_video(video, Puzzle)
-#     video.save()
+for video in Video.objects.filter(publish_date__isnull=True):
+    print(video.id)
+    update_video(video, Puzzle)
+    video.save()
 
+count = 0
+for puzzle in Puzzle.objects.all():
+    old_flag = puzzle.flag
+    puzzle.update_status()
+    if puzzle.flag != old_flag:
+        count += 1
+        print("Flag changed", old_flag, puzzle.flag)
+        puzzle.save()
+
+
+print(count, Puzzle.objects.count())
 # with open('.ctc.json', 'r') as f:
 #     video_urls = json.loads(f.read())
 
