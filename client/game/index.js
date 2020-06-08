@@ -1,10 +1,17 @@
 import classnames from 'classnames'
 import React from 'react'
 import { debounce } from 'lodash'
+import {
+  config as ur_config,
+  afterFetch,
+  handleError,
+} from '@unrest/core'
+import css from '@unrest/css'
 import auth from '@unrest/react-auth'
 
 import Index from './Index'
 import withGame from './withGame'
+import Hoverdown from './Hoverdown'
 import PuzzleLink from './PuzzleLink'
 import Controls, { getMode } from './Controls'
 import Markdown from 'react-markdown'
@@ -31,6 +38,8 @@ const KEY_MAP = {}
 ')!@#$%^&*('.split('').forEach((key, i) => (KEY_MAP[key] = i.toString()))
 const ARROWS = ['ArrowUp', 'ArrowRight', 'ArrowLeft', 'ArrowDown']
 
+const icon = (s, rest) => css.icon(s, 'px-2', rest)
+
 'abcdefghijklmnopqrstuvwxyz'
   .split('')
   .forEach((key) => (KEY_MAP[key.toUpperCase()] = key))
@@ -45,7 +54,7 @@ class CTC extends React.Component {
     super(props)
     this.game_keys = '1234567890'.split('')
     this.allowed_keys = ARROWS.concat(this.game_keys)
-    this.listeners = ['keydown', 'mousedown', 'mouseup']
+    this.listeners = ['keydown', 'mousedown', 'mouseup', 'paste']
     this.listeners.forEach((s) => document.addEventListener(s, this[s]))
   }
 
@@ -53,6 +62,23 @@ class CTC extends React.Component {
     this.listeners.forEach((s) => document.removeEventListener(s, this[s]))
   }
 
+  paste = e => {
+    for (var i = 0 ; i < e.clipboardData.items.length ; i++) {
+      var item = e.clipboardData.items[i];
+      if (!item.type.includes("image")) {
+        console.log("Discarding non-image paste data");
+        continue
+      }
+      const file = item.getAsFile()
+      const formData = new FormData()
+      formData.append('screenshot', file)
+      return fetch(`/api/schema/PuzzleAdminForm/${this.props.api.puzzle.id}/`, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-CSRFToken': ur_config.getCSRF() },
+      }).then(afterFetch, handleError).then(() => this.props.api.refetch(this.props))
+    }
+  }
   mouseup = () => this.setState({ dragging: false, removing: false })
   keydown = (e) => {
     const value = KEY_MAP[e.key] || e.key
@@ -144,19 +170,44 @@ class CTC extends React.Component {
           <div className="mr-4">
             {board.solve && 'Victory!'} @ {board.getTime()}
           </div>
-          <div className="hoverdown">
-            <PuzzleLink {...puzzle} is_superuser={user.is_superuser} />
-            {puzzle.videos.length > 0 && (
-              <div className="hoverdown--target p-4 right-0 border">
-                <Markdown
-                  className="whitespace-normal"
-                  linkTarget={() => '_blank'}
-                >
-                  {puzzle.videos[0].description}
-                </Markdown>
-              </div>
+          <PuzzleLink {...puzzle} is_superuser={user.is_superuser}>
+            {puzzle.videos.map(video => (
+              <Hoverdown
+                key={video.external_id}
+                className="fixed md right inline-block"
+                loaded={true}
+                content={
+                  <>
+                    <a
+                      className="link mb-4 border-b block text-lg"
+                      href={video.url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {video.title}
+                      <i className={css.icon('external-link ml-2')} />
+                    </a>
+                    <Markdown
+                      className="whitespace-normal"
+                      linkTarget={() => '_blank'}
+                    >
+                      {video.description}
+                    </Markdown>
+                  </>
+                }
+              >
+                <i className={icon('info')} />
+              </Hoverdown>
+            ))}
+            <Hoverdown className="fixed lg inline-block" content={<iframe src={puzzle.external_url} />}>
+              <i className={icon('puzzle-piece')} />
+            </Hoverdown>
+            {puzzle.screenshot && (
+              <Hoverdown className="fixed sm inline-block" content={<img src={puzzle.screenshot} />}>
+                <i className={icon('picture-o')} />
+              </Hoverdown>
             )}
-          </div>
+          </PuzzleLink>
         </div>
         <Controls
           keys={this.game_keys}

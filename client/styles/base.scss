@@ -6,15 +6,76 @@
   z-index: 300;
   .hoverdown--target {
     background: white;
-    @apply absolute left-0 min-w-full hidden shadow-lg rounded overflow-hidden;
-    .btn { border-radius: 0; }
+    @apply absolute right-0 hidden overflow-hidden;
+    @apply border p-4 pt-8 shadow-lg rounded;
+    max-width: 100vw;
     top: 100%;
     white-space: pre;
-    &.right-0 {
-      left: unset;
-    }
+    width: var(--hoverdown-width);
+    .btn { border-radius: 0; }
+  }
+  &.flush .hoverdown--target {
+    padding: 0;
+  }
+  &.left .hoverdown--target {
+    left: 0;
+    right: unset;
   }
   &:hover .hoverdown--target {
     display: block;
   }
+  &.closed:hover .hoverdown--target {
+    display: none;
+  }
+  &.sm {
+    --hoverdown-width: 450px;
+  }
+  &.md {
+    --hoverdown-width: 900px;
+  }
+  &.lg {
+    --hoverdown-width: 1200px;
+  }
+  &.full .hoverdown--target {
+    height: 60vh;
+    width: 100vw;
+  }
+  iframe {
+    min-height: 60vh;
+    height: 100%;
+    width: 100%;
+  }
+  .hoverdown--links {
+    @apply text-gray-500 top-0 right-0 p-2 text-lg;
+    position: absolute;
+    a { @apply p-2 }
+    .active { @apply text-black; }
+  }
+  &.fixed .hoverdown--target {
+    position: fixed;
+    top: unset;
+  }
+  &.pinned .hoverdown--target {
+    display: block;
+    position: relative;
+  }
+}
+
+.flag {
+  @apply mr-2 text-xl;
+}
+
+.flag.flag-no_rules:before {
+  @apply text-red-500;
+  content: "\f05e";
+}
+
+.flag.flag-vanilla:before {
+  content: "\f004";
+  display: inline-block;
+  transform: rotate(90deg);
+}
+
+.flag.flag-new:before {
+  content: "\f055";
 }

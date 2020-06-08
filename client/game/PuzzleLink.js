@@ -42,7 +42,7 @@ const Constraints = ({ constraints }) => {
 }
 
 const PuzzleLink = (props) => {
-  const { external_id, videos, id, Tag = Link, constraints } = props
+  const { external_id, videos, id, Tag = Link, constraints, flag, children } = props
   const { solves = [], is_superuser } = props.auth.user || {}
   const solved = solves.find((s) => s.puzzle_id === id)
 
@@ -51,6 +51,7 @@ const PuzzleLink = (props) => {
   const icon = (s) => css.icon(s + ' text-xl mr-2')
   return (
     <div className="mb-2">
+      <span className={'fa flag flag-' + flag} />
       <Constraints constraints={constraints} />
       {solved ? (
         <i
@@ -82,6 +83,7 @@ const PuzzleLink = (props) => {
       {is_superuser && (
         <a href={`/admin/puzzle/puzzle/${id}`} className={icon('admin')} />
       )}
+      {children}
     </div>
   )
 }

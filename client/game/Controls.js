@@ -37,7 +37,7 @@ const CheckControl = auth.connect(
     }))
 
     return (
-      <div className={'hoverdown'}>
+      <div className={'hoverdown left flush'}>
         <div className={btn()} onClick={check}>
           check
         </div>

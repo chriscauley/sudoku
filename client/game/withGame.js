@@ -3,12 +3,9 @@ import { debounce } from 'lodash'
 import ConfigHook from '@unrest/react-config-hook'
 import RestHook from '@unrest/react-rest-hook'
 
+import { withPuzzle } from './api'
 import submitSolve, { submitPuzzle } from './submitSolve'
 import Board from './Board'
-
-const withPuzzle = RestHook(
-  '/api/puzzle/${match.params.source}/${match.params.slug}/',
-)
 
 const schema = {}
 
