@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import RestHook from '@unrest/react-rest-hook'
 import { withPuzzles } from './api'
 
 import PuzzleLink from './PuzzleLink'

@@ -339,9 +339,7 @@ export default class Checker {
     this.validateUnique(indexes, 'Magic square cannot contain repeat numbers')
   }
 
-  sandwich() {
-    
-  }
+  sandwich() {}
 
   other() {}
 }

@@ -44,21 +44,21 @@ class Gutter {
     this.board = options.board
     this.g = options.g
     this.name = this.board.geo.g2text(this.g)
-    this.is_column = this.g %2 === 0
+    this.is_column = this.g % 2 === 0
     this.SIZE = this.board.geo[this.is_column ? 'H' : 'W']
-    this.values = range(this.SIZE).map(()=> undefined)
-    this.className = 'gutter gutter-'+this.name
+    this.values = range(this.SIZE).map(() => undefined)
+    this.className = 'gutter gutter-' + this.name
   }
   get = (index) => this.values[index]
-  set = (index, value) => this.values[index] = value
+  set = (index, value) => (this.values[index] = value)
 }
 
 const buildGutters = (underlays, board) => {
-  board.gutters = range(4).map(g => new Gutter({ board, g }))
-  const overlays = board.ctc.overlays.map(overlay => {
-    const xy = overlay.center.reverse().map(i => Math.floor(i))
+  board.gutters = range(4).map((g) => new Gutter({ board, g }))
+  board.ctc.overlays.map((overlay) => {
+    const xy = overlay.center.reverse().map((i) => Math.floor(i))
     if (board.geo.xyInGrid(xy)) {
-      throw "Overlay found in grid. Overlays currently only work for gutter."
+      throw 'Overlay found in grid. Overlays currently only work for gutter.'
     }
     const gi = board.geo.xy2gi(xy)
     if (!gi) {
@@ -333,7 +333,12 @@ export default class Board {
       colour: {},
       actions: [],
       extras: {},
-      constraints: this.required_constraints || ['row', 'col', 'box', 'complete'],
+      constraints: this.required_constraints || [
+        'row',
+        'col',
+        'box',
+        'complete',
+      ],
     })
     delete this.solve
 

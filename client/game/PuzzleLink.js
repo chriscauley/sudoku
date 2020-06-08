@@ -5,7 +5,14 @@ import css from '@unrest/css'
 
 import { saved_games } from './Board'
 
-const allowed_constraints = ['anti_knight', 'anti_queen', 'anti_king', 'sudoku', 'thermo', 'sandwich']
+const allowed_constraints = [
+  'anti_knight',
+  'anti_queen',
+  'anti_king',
+  'sudoku',
+  'thermo',
+  'sandwich',
+]
 
 const groups = {
   sudoku: ['row', 'col', 'box', 'complete'],
@@ -42,7 +49,15 @@ const Constraints = ({ constraints }) => {
 }
 
 const PuzzleLink = (props) => {
-  const { external_id, videos, id, Tag = Link, constraints, flag, children } = props
+  const {
+    external_id,
+    videos,
+    id,
+    Tag = Link,
+    constraints,
+    flag,
+    children,
+  } = props
   const { solves = [], is_superuser } = props.auth.user || {}
   const solved = solves.find((s) => s.puzzle_id === id)
 

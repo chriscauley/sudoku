@@ -1,11 +1,12 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
 import RestHook from '@unrest/react-rest-hook'
 
-import PuzzleLink from './PuzzleLink'
-
-
-const icon_constraints = ['anti_knight', 'anti_queen', 'anti_king', 'sudoku', 'killer']
+const icon_constraints = [
+  'anti_knight',
+  'anti_queen',
+  'anti_king',
+  'sudoku',
+  'killer',
+]
 const groups = {
   sudoku: ['row', 'col', 'box', 'complete'],
   killer: ['killer_sudoku', 'killer_total'],
@@ -13,8 +14,7 @@ const groups = {
 
 const group_keys = Object.keys(groups)
 
-
-const groupConstraints = puzzle => {
+const groupConstraints = (puzzle) => {
   const counts = {}
   puzzle.display_constraints = puzzle.constraints.filter((c) => {
     if (icon_constraints.includes(c)) {
@@ -31,20 +31,21 @@ const groupConstraints = puzzle => {
   })
 }
 
-const prepPuzzle = puzzle => {
+const prepPuzzle = (puzzle) => {
   puzzle.external_url = `https://cracking-the-cryptic.web.app/sudoku/${puzzle.external_id}`
-  puzzle.videos.forEach(v => {
+  puzzle.videos.forEach((v) => {
     v.url = `https://www.youtube.com/watch?v=${v.external_id}`
   })
   groupConstraints(puzzle)
 }
 
-export const withPuzzles = RestHook(
-  '/api/puzzle/',
-  { prepData: ({puzzles}) => { puzzles.map(prepPuzzle) }, }
-)
+export const withPuzzles = RestHook('/api/puzzle/', {
+  prepData: ({ puzzles }) => {
+    puzzles.map(prepPuzzle)
+  },
+})
 
 export const withPuzzle = RestHook(
   '/api/puzzle/${match.params.source}/${match.params.slug}/',
-  { prepData: ({puzzle}) => prepPuzzle(puzzle)},
+  { prepData: ({ puzzle }) => prepPuzzle(puzzle) },
 )

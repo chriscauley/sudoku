@@ -1,11 +1,7 @@
 import classnames from 'classnames'
 import React from 'react'
 import { debounce } from 'lodash'
-import {
-  config as ur_config,
-  afterFetch,
-  handleError,
-} from '@unrest/core'
+import { config as ur_config, afterFetch, handleError } from '@unrest/core'
 import css from '@unrest/css'
 import auth from '@unrest/react-auth'
 
@@ -62,11 +58,11 @@ class CTC extends React.Component {
     this.listeners.forEach((s) => document.removeEventListener(s, this[s]))
   }
 
-  paste = e => {
-    for (var i = 0 ; i < e.clipboardData.items.length ; i++) {
-      var item = e.clipboardData.items[i];
-      if (!item.type.includes("image")) {
-        console.log("Discarding non-image paste data");
+  paste = (e) => {
+    for (let i = 0; i < e.clipboardData.items.length; i++) {
+      const item = e.clipboardData.items[i]
+      if (!item.type.includes('image')) {
+        console.warn('Discarding non-image paste data')
         continue
       }
       const file = item.getAsFile()
@@ -76,7 +72,9 @@ class CTC extends React.Component {
         method: 'POST',
         body: formData,
         headers: { 'X-CSRFToken': ur_config.getCSRF() },
-      }).then(afterFetch, handleError).then(() => this.props.api.refetch(this.props))
+      })
+        .then(afterFetch, handleError)
+        .then(() => this.props.api.refetch(this.props))
     }
   }
   mouseup = () => this.setState({ dragging: false, removing: false })
@@ -171,7 +169,7 @@ class CTC extends React.Component {
             {board.solve && 'Victory!'} @ {board.getTime()}
           </div>
           <PuzzleLink {...puzzle} is_superuser={user.is_superuser}>
-            {puzzle.videos.map(video => (
+            {puzzle.videos.map((video) => (
               <Hoverdown
                 key={video.external_id}
                 className="fixed md right inline-block"
@@ -199,11 +197,17 @@ class CTC extends React.Component {
                 <i className={icon('info')} />
               </Hoverdown>
             ))}
-            <Hoverdown className="fixed lg inline-block" content={<iframe src={puzzle.external_url} />}>
+            <Hoverdown
+              className="fixed lg inline-block"
+              content={<iframe src={puzzle.external_url} />}
+            >
               <i className={icon('puzzle-piece')} />
             </Hoverdown>
             {puzzle.screenshot && (
-              <Hoverdown className="fixed sm inline-block" content={<img src={puzzle.screenshot} />}>
+              <Hoverdown
+                className="fixed sm inline-block"
+                content={<img src={puzzle.screenshot} />}
+              >
                 <i className={icon('picture-o')} />
               </Hoverdown>
             )}
@@ -218,9 +222,9 @@ class CTC extends React.Component {
         <div>
           <div className="game-area">
             <div className="board">
-              {board.gutters.map(g => (
+              {board.gutters.map((g) => (
                 <div className={g.className} key={g.g}>
-                  {g.values.map((v,i) =>(
+                  {g.values.map((v, i) => (
                     <span key={i}>{v}</span>
                   ))}
                 </div>

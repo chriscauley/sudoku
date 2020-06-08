@@ -1,7 +1,6 @@
 import React from 'react'
 import { debounce } from 'lodash'
 import ConfigHook from '@unrest/react-config-hook'
-import RestHook from '@unrest/react-rest-hook'
 
 import { withPuzzle } from './api'
 import submitSolve, { submitPuzzle } from './submitSolve'
