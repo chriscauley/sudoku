@@ -333,7 +333,7 @@ export default class Board {
       colour: {},
       actions: [],
       extras: {},
-      constraints: ['row', 'col', 'box', 'complete'],
+      constraints: this.required_constraints || ['row', 'col', 'box', 'complete'],
     })
     delete this.solve
 
@@ -355,6 +355,7 @@ export default class Board {
       'unique_regions',
       'increasing_or_decreasing',
       'magic_square',
+      'sandwich',
       'other',
     ]
 

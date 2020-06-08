@@ -5,11 +5,11 @@ import css from '@unrest/css'
 
 import { saved_games } from './Board'
 
-const allowed_constraints = ['anti_knight', 'anti_queen', 'anti_king', 'sudoku']
+const allowed_constraints = ['anti_knight', 'anti_queen', 'anti_king', 'sudoku', 'thermo', 'sandwich']
 
 const groups = {
   sudoku: ['row', 'col', 'box', 'complete'],
-  killer: ['consecutive_regions', 'unique_regions'],
+  killer: ['killer_sudoku', 'killer_total'],
 }
 
 const group_keys = Object.keys(groups)

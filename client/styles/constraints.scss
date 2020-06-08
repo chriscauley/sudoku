@@ -11,8 +11,13 @@
   background-image: url('../icons/sudoku.svg'),
 }
 
+.constraint-sandwich {
+  background-image: url('../icons/sandwich.svg'),
+}
+
 .constraint-killer {
-  background-image: url('../icons/killer.svg'),
+  background: none;
+  border: 3px dashed black;
 }
 
 .constraint-anti_knight {
@@ -35,3 +40,12 @@
   width: 1.5em;
 }
 
+/* these constraints use font-awesome */
+.constraint-thermo {
+  font: normal normal normal 1.5em FontAwesome;
+  height: 1em;
+  width: unset;
+}
+.constraint-thermo:before {
+  content: "\f2c7";
+}
