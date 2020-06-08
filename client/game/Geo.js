@@ -171,4 +171,20 @@ export default class Geo {
     })
     return out
   }
+
+  xy2gi = (xy) => {
+    if (xy[0] < 0) {
+      return [0, xy[1]]
+    } else if (xy[1] < 0) {
+      return [1, xy[0]]
+    } else if (xy[0] > this.W) {
+      return [2, xy[1]]
+    } else if (xy[1] > this.H) {
+      return [3, xy[0]]
+    }
+  }
+
+  _g2text = ['left', 'top', 'right', 'bottom']
+  gi2text = (gi) => this._g2text[gi[0]]
+  g2text = (g) => this._g2text[g]
 }

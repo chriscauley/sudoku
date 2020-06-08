@@ -39,6 +39,36 @@ const extractColor = (color) => {
   return color_map[color]
 }
 
+class Gutter {
+  constructor(options) {
+    this.board = options.board
+    this.g = options.g
+    this.name = this.board.geo.g2text(this.g)
+    this.is_column = this.g %2 === 0
+    this.SIZE = this.board.geo[this.is_column ? 'H' : 'W']
+    this.values = range(this.SIZE).map(()=> undefined)
+    this.className = 'gutter gutter-'+this.name
+  }
+  get = (index) => this.values[index]
+  set = (index, value) => this.values[index] = value
+}
+
+const buildGutters = (underlays, board) => {
+  board.gutters = range(4).map(g => new Gutter({ board, g }))
+  const overlays = board.ctc.overlays.map(overlay => {
+    const xy = overlay.center.reverse().map(i => Math.floor(i))
+    if (board.geo.xyInGrid(xy)) {
+      throw "Overlay found in grid. Overlays currently only work for gutter."
+    }
+    const gi = board.geo.xy2gi(xy)
+    if (!gi) {
+      console.warn('no gutter matching', xy)
+      return
+    }
+    board.gutters[gi[0]].set(gi[1], overlay.text)
+  })
+}
+
 // currently only thermometers & diagonals
 // forked thermometer #H7n7NhH26M
 // lots of theremometers #J7pMMgrLL3
@@ -235,7 +265,7 @@ const buildUnderlays = (underlays, geo) => {
   underlays.forEach((u) => (underlay_indexes[u.index] = u))
   underlays.forEach((underlay) => {
     if (!geo.xyInGrid(underlay.xy)) {
-      underlay.type = 'margin'
+      underlay.type = 'gutter'
       return
     }
     underlay.next_to = geo
@@ -392,18 +422,21 @@ export default class Board {
         return cage
       })
 
-      this.extras.margin_underlays = []
+      const gutter_underlays = []
       this.extras.underlays = []
       buildUnderlays(underlays, this.geo).forEach((underlay) => {
-        if (underlay.type === 'margin') {
-          this.extras.margin_underlays.push(underlay)
+        if (underlay.type === 'gutter') {
+          gutter_underlays.push(underlay)
         } else {
           this.extras.underlays.push(underlay)
         }
       })
 
+      buildGutters(gutter_underlays, this)
+
       buildLines(lines, this)
     }
+
     this.turn = this.actions.length
     this.sudoku = this.sudoku || range(this.geo.AREA).map(() => {})
     this.clearErrors()

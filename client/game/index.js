@@ -165,8 +165,15 @@ class CTC extends React.Component {
           sendKey={this.sendKey}
         />
         <div>
-          <div className="gutter">
+          <div className="game-area">
             <div className="board">
+              {board.gutters.map(g => (
+                <div className={g.className} key={g.g}>
+                  {g.values.map((v,i) =>(
+                    <span key={i}>{v}</span>
+                  ))}
+                </div>
+              ))}
               <div className="sudoku cage-last display-boxes display-cells">
                 <div
                   className="_canvas"
