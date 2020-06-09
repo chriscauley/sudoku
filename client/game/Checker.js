@@ -341,7 +341,7 @@ export default class Checker {
 
   hasAnswer = (index) => !isNaN(this.answers[index])
 
-  between_sudoku() {
+  validateBetweenSudoku(max = 9) {
     const marked_indexes = this.board.extras.marks.map((u) => u.index).sort()
 
     // TODO the first part of this is figuring out which which regions to check and should be cached on board
@@ -361,6 +361,10 @@ export default class Checker {
         }
         indexes = indexes.slice(0, indexes.indexOf(index2))
 
+        if (!inRange(indexes.length, 1, max)) {
+          return
+        }
+
         // now we can actually check for one number between
         const a1 = this.answers[index]
         const a2 = this.answers[index2]
@@ -379,6 +383,10 @@ export default class Checker {
         }
       })
     })
+  }
+
+  between_sudoku_1() {
+    this.validateBetweenSudoku(1)
   }
 
   other() {}

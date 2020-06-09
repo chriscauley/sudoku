@@ -63,12 +63,12 @@ class Puzzle(BaseModel):
                 self.flag = 'maybe_not_9x9'
 
     def save(self, *args, **kwargs):
-        self.update_status()
         if not self.publish_date:
             for video in self.video_set.all():
                 self.publish_date = self.publish_date or video.publish_date
         if not self.data.get('ctc') and self.source == "ctc" and self.external_id:
             update_ctc(self)
+        self.update_status()
         self.update_meta()
         super().save(*args, **kwargs)
 

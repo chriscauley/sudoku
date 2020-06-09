@@ -363,7 +363,7 @@ export default class Board {
       'increasing_or_decreasing',
       'magic_square',
       'sandwich',
-      'between_sudoku',
+      'between_sudoku_1',
       'arrow_sudoku',
       'other',
     ]
