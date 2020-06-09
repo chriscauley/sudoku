@@ -57,6 +57,10 @@ export default class Geo {
   index2pawn = (index) => this._index2pawn[index]
   index2king = (index) => this._index2king[index]
   index2queen = (index) => this._index2queen[index]
+  index2row = (index) => this._index2row[index]
+  index2col = (index) => this._index2col[index]
+  index2updiagonal = (index) => this._index2updiagonal[index]
+  index2downdiagonal = (index) => this._index2downdiagonal[index]
 
   preCache = () => {
     const { W, H, xy2index } = this
@@ -65,13 +69,24 @@ export default class Geo {
     this.i_cols = range(W)
     this.i_boxes = range(H)
 
-    // sudoku specific
+    // sudoku specific, change to y2indexes and x2indexes
     this._row2indexes = range(H).map((y) =>
       this.i_rows.map((x) => xy2index([x, y])),
     )
     this._col2indexes = range(W).map((x) =>
       this.i_cols.map((y) => xy2index([x, y])),
     )
+
+    this._index2row = {}
+    this._index2col = {}
+    this._row2indexes.map((row) =>
+      row.map((index) => (this._index2row[index] = row)),
+    )
+    this._col2indexes.map((col) =>
+      col.map((index) => (this._index2col[index] = col)),
+    )
+
+    this.cacheDiagonals()
 
     // this is highly sudoku specific for now since it relies on boxes being square
     const box_count = 3 // boxes per row/col of game
@@ -98,6 +113,7 @@ export default class Geo {
     this.cachePawn()
   }
   // these are sudoku specific
+  // TODO changing to y2indexes and x2indexes will make box2indexes the only sudoku specific item
   row2indexes = (y) => this._row2indexes[y]
   col2indexes = (x) => this._col2indexes[x]
   box2indexes = (box) => this._box2indexes[box]
@@ -187,4 +203,33 @@ export default class Geo {
   _g2text = ['left', 'top', 'right', 'bottom']
   gi2text = (gi) => this._g2text[gi[0]]
   g2text = (g) => this._g2text[g]
+
+  cacheDiagonals() {
+    // add two diagonals for each index
+    this._index2updiagonal = {}
+    this._index2downdiagonal = {}
+    const _delta = { up: this.W - 1, down: this.W + 1 }
+    const _row = {
+      up: this.index2row(0).slice().reverse(),
+      down: this.index2row(0),
+    }
+    const _col = { up: this.index2col(this.W - 1), down: this.index2col(0) }
+
+    Object.keys(_delta).map((name) => {
+      const delta = _delta[name]
+      const row_diagonals = _row[name].map((first_index, col_no) =>
+        range(this.W - col_no).map((i) => first_index + i * delta),
+      )
+      const col_diagonals = _col[name].map((first_index, row_no) =>
+        range(this.W - row_no).map((i) => first_index + i * delta),
+      )
+
+      const _name = `_index2${name}diagonal`
+      col_diagonals
+        .concat(row_diagonals)
+        .forEach((diagonal) =>
+          diagonal.forEach((index) => (this[_name][index] = diagonal)),
+        )
+    })
+  }
 }
