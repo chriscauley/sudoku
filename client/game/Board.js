@@ -206,6 +206,10 @@ const buildThermometers = (board, _colors, forced_ends) => {
     let depth = 0
     const _thermo = {}
     const thermometer = _colors[u.color]
+    if (!(thermometer && thermometer[u.index])) {
+      console.warn('Cannot find thermometer')
+      return
+    }
     const chase = (index, last) => {
       depth++
       let is_end = forced_ends[index] === u.color
