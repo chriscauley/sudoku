@@ -339,7 +339,6 @@ export default class Checker {
     this.validateUnique(indexes, 'Magic square cannot contain repeat numbers')
   }
 
-  sandwich() {}
   hasAnswer = (index) => !isNaN(this.answers[index])
 
   between_sudoku() {
@@ -385,4 +384,6 @@ export default class Checker {
   }
 
   other() {}
+  arrow_sudoku() {}
+  sandwich() {}
 }

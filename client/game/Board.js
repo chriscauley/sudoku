@@ -362,6 +362,7 @@ export default class Board {
       'magic_square',
       'sandwich',
       'between_sudoku',
+      'arrow_sudoku',
       'other',
     ]
 
