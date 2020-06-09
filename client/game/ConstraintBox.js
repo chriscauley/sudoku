@@ -10,7 +10,7 @@ const icon_constraints = [
   'arrow_sudoku',
 ]
 
-const icon_flags = ['bad_render']
+const icon_flags = ['bad_render', 'no_rules', 'vanilla', 'new']
 
 const groups = {
   sudoku: ['row', 'col', 'box', 'complete'],
@@ -40,7 +40,7 @@ export default function ConstraintBox({ constraints, meta, flag }) {
     }
   })
   if (icon_flags.includes(flag)) {
-    constraints.push(flag)
+    constraints.push(flag + ' flag')
   }
   return (
     <>

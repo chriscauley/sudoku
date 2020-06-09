@@ -8,12 +8,14 @@
   &[data-count]:before {
     @apply flex justify-center items-center rounded-full absolute text-white bg-black;
     content: attr(data-count);
-    font-size: 0.75em;
-    height: 1.2em;
+    font-size: 0.7em;
+    height: 1.5em;
     left: 50%;
     top: 50%;
-    width: 1.2em;
-
+    width: 1.5em;
+  }
+  &.constraint-sudoku[data-count="0"]:before {
+    @apply bg-red-600;
   }
 }
 
@@ -54,16 +56,37 @@
   width: 1.5em;
 }
 
-/* these constraints use font-awesome */
-.constraint-thermo {
-  font: normal normal normal 1.5em FontAwesome;
-  height: 1em;
-  width: unset;
-}
-.constraint-thermo:before {
-  content: "\f2c7";
+.constraint.flag {
+  border-bottom: 3px solid black;
 }
 
 .constraint-bad_render {
   background-image: url('../icons/bad_render.svg'),
+}
+
+/* these constraints use font-awesome */
+.constraint- {
+  &thermo, &no_rules, &vanilla, &new {
+    font: normal normal normal 1.5em FontAwesome;
+    height: 1em;
+    width: unset;
+  }
+  &thermo:before {
+    content: "\f2c7";
+  }
+
+  &no_rules:before {
+    @apply text-red-500;
+    content: "\f05e";
+  }
+
+  &vanilla:before {
+    content: "\f004";
+    display: inline-block;
+    transform: rotate(90deg);
+  }
+
+  &new:before {
+    content: "\f055";
+  }
 }

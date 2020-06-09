@@ -60,22 +60,3 @@
     position: relative;
   }
 }
-
-.flag {
-  @apply mr-2 text-xl;
-}
-
-.flag.flag-no_rules:before {
-  @apply text-red-500;
-  content: "\f05e";
-}
-
-.flag.flag-vanilla:before {
-  content: "\f004";
-  display: inline-block;
-  transform: rotate(90deg);
-}
-
-.flag.flag-new:before {
-  content: "\f055";
-}
