@@ -1,4 +1,4 @@
-import { range, sum } from 'lodash'
+import { range, sum, inRange } from 'lodash'
 
 const _err = (cage, test = () => true) => {
   cage.cells.filter(test).forEach((cell) => (cell.className += ' error'))
@@ -340,6 +340,49 @@ export default class Checker {
   }
 
   sandwich() {}
+  hasAnswer = (index) => !isNaN(this.answers[index])
+
+  between_sudoku() {
+    const marked_indexes = this.board.extras.underlays
+      .map((u) => u.index)
+      .sort()
+
+    // TODO the first part of this is figuring out which which regions to check and should be cached on board
+    marked_indexes.filter(this.hasAnswer).forEach((index) => {
+      const slices = [
+        'index2row',
+        'index2col',
+        'index2updiagonal',
+        'index2downdiagonal',
+      ]
+      slices.forEach((name) => {
+        let indexes = this.geo[name](index)
+        indexes = indexes.slice(indexes.indexOf(index) + 1)
+        const index2 = indexes.find((i) => marked_indexes.includes(i))
+        if (index2 === undefined || !this.hasAnswer(index2)) {
+          return
+        }
+        indexes = indexes.slice(0, indexes.indexOf(index2))
+
+        // now we can actually check for one number between
+        const a1 = this.answers[index]
+        const a2 = this.answers[index2]
+        const answers = indexes.map((i) => this.answers[i])
+        if (answers.find((a) => isNaN(a)) !== undefined) {
+          return
+        }
+        const matched_index = indexes.find((index) =>
+          inRange(this.answers[index], a1, a2),
+        )
+        if (matched_index === undefined) {
+          this.addError(
+            [index, index2, ...indexes],
+            'At least one number between the marked cells must be between their values.',
+          )
+        }
+      })
+    })
+  }
 
   other() {}
 }
