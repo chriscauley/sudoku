@@ -36,6 +36,7 @@ class Puzzle(BaseModel):
     data = JSONField(default=dict)
     flag = models.CharField(max_length=16, default="new", choices=FLAG_CHOICES)
 
+    meta = property(lambda s: s.data.get('meta', {}))
     constraints = property(lambda s: s.data.get('required_constraints', []))
     screenshot = property(lambda s: s.data.get('screenshot'))
 
@@ -68,7 +69,20 @@ class Puzzle(BaseModel):
                 self.publish_date = self.publish_date or video.publish_date
         if not self.data.get('ctc') and self.source == "ctc" and self.external_id:
             update_ctc(self)
+        self.update_meta()
         super().save(*args, **kwargs)
+
+    def update_meta(self):
+        ctc = self.data.get('ctc')
+        if ctc:
+            ctc.pop('meta', None)
+            meta = self.data['meta'] = {}
+            meta['givens'] = 0
+            for row in ctc.get('cells', []):
+                meta['givens'] += sum([1 if cell.get('value') else 0 for cell in row])
+            for s in ['cages',  'arrows', 'overlays', 'underlays', 'overlays']:
+                meta[s] = len(ctc.get(s, []))
+
 
     def validate(self, answer):
         # trust everyone until we can hook this up to server side node
