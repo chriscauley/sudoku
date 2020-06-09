@@ -82,6 +82,7 @@ class Puzzle(BaseModel):
                 meta['givens'] += sum([1 if cell.get('value') else 0 for cell in row])
             for s in ['cages',  'arrows', 'overlays', 'underlays', 'overlays']:
                 meta[s] = len(ctc.get(s, []))
+            meta['marks'] = meta['underlays'] + meta['overlays']
 
 
     def validate(self, answer):

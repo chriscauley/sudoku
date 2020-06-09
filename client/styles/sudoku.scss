@@ -19,7 +19,7 @@ $pallet: (
 $sel: 4px;
 $selected: $sel solid map.get($pallet, "selected");
 $darkenSelected: 5%;
-$underlay: rgba(0,0,0,0.15);
+$mark: rgba(0,0,0,0.15);
 $thermo: #ddd;
 
 .Game {
@@ -242,7 +242,7 @@ $thermo: #ddd;
 .board .cell {
   position: relative;
   &.selected {
-    border-color: $underlay;
+    border-color: $mark;
     .colour {
       background: darken(map.get($pallet, 1), $darkenSelected);
     }
@@ -363,26 +363,26 @@ $thermo: #ddd;
 }
 
 .board {
-  --underlay-color: #ccc;
+  --mark-color: #ccc;
   .color-green {
-    --underlay-color: #A3E048;
+    --mark-color: #A3E048;
   }
   .color-yellow {
-    --underlay-color: #F7D038;
+    --mark-color: #F7D038;
   }
   .color-blue {
-    --underlay-color: #34BBE6;
+    --mark-color: #34BBE6;
   }
 }
 
-.board .cell .underlay {
+.board .cell .mark {
   $wall: 7%;
   background: repeating-linear-gradient(
     -45deg,
     transparent,
     transparent 0.2em,
-    var(--underlay-color) 0.2em,
-    var(--underlay-color) 0.4em
+    var(--mark-color) 0.2em,
+    var(--mark-color) 0.4em
   );
   height: 100%;
   left: 0;
@@ -392,7 +392,7 @@ $thermo: #ddd;
   width: 100%;
   &.wall {
     border: black 2px solid;
-    background: $underlay;
+    background: $mark;
   }
   &.v-split {
     height: 2 * $wall;
@@ -411,7 +411,7 @@ $thermo: #ddd;
   /* thermo */
   &.rounded {
     $bulb-shrink: 15%;
-    background: var(--underlay-color);
+    background: var(--mark-color);
     border-radius: 100%;
     height: 100% - 2 * $bulb-shrink;
     margin: $bulb-shrink;
@@ -423,7 +423,7 @@ $thermo: #ddd;
 .board .cell .line-thermo {
   $t: 0.25em;
   &.from:before, &.to:after {
-    background: var(--underlay-color);
+    background: var(--mark-color);
     border-radius: $t 0 0 $t;
     content: "";
     display: block;

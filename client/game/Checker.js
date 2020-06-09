@@ -45,8 +45,8 @@ export default class Checker {
   anti_queen = () => this._validateAntiChess('queen')
 
   consecutive_pairs() {
-    this.board.extras.underlays.forEach((underlay) => {
-      const { index, orientation } = underlay
+    this.board.extras.marks.forEach((mark) => {
+      const { index, orientation } = mark
       const index2 = index - (orientation === 'h-split' ? 1 : this.geo.W)
       const diff = Math.abs(this.answers[index] - this.answers[index2])
       if (!isNaN(diff) && diff !== 1) {
@@ -232,7 +232,7 @@ export default class Checker {
         cage.cells.map((cell) => cell.index),
       )
     }
-    const ends = this.board.extras.underlays.filter((u) => u.is_end)
+    const ends = this.board.extras.marks.filter((u) => u.is_end)
     const checked = {}
     ends
       .map((end) => {
@@ -258,7 +258,7 @@ export default class Checker {
   }
 
   increasing_or_decreasing() {
-    const ends = this.board.extras.underlays.filter((u) => u.is_end)
+    const ends = this.board.extras.marks.filter((u) => u.is_end)
     const checked = {}
     ends.forEach((end) => {
       if (checked[end.index]) {
@@ -330,7 +330,7 @@ export default class Checker {
 
   // TODO highly sudoku specific
   magic_square() {
-    let indexes = this.board.extras.underlays.map((u) => u.index).sort()
+    let indexes = this.board.extras.marks.map((u) => u.index).sort()
     if (indexes.length === 25) {
       // this is a 5x5 magic square, cut it down
       indexes = _slice(indexes, [0, 2, 4, 10, 12, 14, 20, 22, 24])
@@ -342,9 +342,7 @@ export default class Checker {
   hasAnswer = (index) => !isNaN(this.answers[index])
 
   between_sudoku() {
-    const marked_indexes = this.board.extras.underlays
-      .map((u) => u.index)
-      .sort()
+    const marked_indexes = this.board.extras.marks.map((u) => u.index).sort()
 
     // TODO the first part of this is figuring out which which regions to check and should be cached on board
     marked_indexes.filter(this.hasAnswer).forEach((index) => {

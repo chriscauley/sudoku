@@ -53,19 +53,20 @@ class Gutter {
   set = (index, value) => (this.values[index] = value)
 }
 
-const buildGutters = (underlays, board) => {
+const buildGutters = (marks, board) => {
   board.gutters = range(4).map((g) => new Gutter({ board, g }))
-  board.ctc.overlays.map((overlay) => {
-    const xy = overlay.center.reverse().map((i) => Math.floor(i))
+  marks.forEach((mark) => {
+    const xy = mark.xy
     if (board.geo.xyInGrid(xy)) {
-      throw 'Overlay found in grid. Overlays currently only work for gutter.'
+      console.warn('Mark found in grid. Marks currently only work for gutter.')
+      return
     }
     const gi = board.geo.xy2gi(xy)
     if (!gi) {
       console.warn('no gutter matching', xy)
       return
     }
-    board.gutters[gi[0]].set(gi[1], overlay.text)
+    board.gutters[gi[0]].set(gi[1], mark.text)
   })
 }
 
@@ -192,7 +193,7 @@ const buildThermometers = (board, _colors, forced_ends) => {
   // build out the "this cell is greater than these" map used in checking thermometers
   const thermometers = {}
   board.extras.thermometers = []
-  board.extras.underlays.forEach((u) => {
+  board.extras.marks.forEach((u) => {
     if (u.type !== 'thermo') {
       return
     }
@@ -228,13 +229,13 @@ const buildThermometers = (board, _colors, forced_ends) => {
 // example puzzles:
 // H7n7NhH26M - crazy thermometers
 // 7Qh3tBm4mj - ceiling and floor
-const buildUnderlays = (underlays, geo) => {
-  underlays = underlays.map((underlay) => {
-    const center = underlay.center.reverse()
-    const ratio = underlay.width / underlay.height
+const buildMarks = (marks, geo) => {
+  marks = marks.map((mark) => {
+    const center = mark.center.reverse()
+    const ratio = mark.width / mark.height
     const xy = center.map((n) => Math.floor(n))
     const index = geo.xy2index(xy)
-    let type = underlay.rounded ? 'thermo' : 'square'
+    let type = mark.rounded ? 'thermo' : 'square'
     let orientation = ''
     if (ratio < 1) {
       type = 'wall'
@@ -243,15 +244,16 @@ const buildUnderlays = (underlays, geo) => {
       type = 'wall'
       orientation = 'v-split'
     }
-    const color = extractColor(underlay.backgroundColor)
+    const color = extractColor(mark.backgroundColor)
     const className = classNames(
-      `underlay ${orientation} ${type} color-${color}`,
+      `mark ${orientation} ${type} color-${color}`,
       css.xy(xy),
-      { rounded: underlay.rounded },
+      { rounded: mark.rounded },
     )
     return {
       index,
       offset: [xy[0] - center[0], xy[1] - center[1]],
+      text: mark.text,
       xy,
       type,
       orientation,
@@ -261,20 +263,20 @@ const buildUnderlays = (underlays, geo) => {
     }
   })
 
-  const underlay_indexes = {}
-  underlays.forEach((u) => (underlay_indexes[u.index] = u))
-  underlays.forEach((underlay) => {
-    if (!geo.xyInGrid(underlay.xy)) {
-      underlay.type = 'gutter'
+  const mark_indexes = {}
+  marks.forEach((u) => (mark_indexes[u.index] = u))
+  marks.forEach((mark) => {
+    if (!geo.xyInGrid(mark.xy)) {
+      mark.type = 'gutter'
       return
     }
-    underlay.next_to = geo
-      .index2pawn(underlay.index)
-      .map((i) => underlay_indexes[i])
+    mark.next_to = geo
+      .index2pawn(mark.index)
+      .map((i) => mark_indexes[i])
       .filter(Boolean)
-    underlay.is_end = underlay.next_to.length === 1
+    mark.is_end = mark.next_to.length === 1
   })
-  return underlays
+  return marks
 }
 
 export default class Board {
@@ -370,6 +372,7 @@ export default class Board {
       const {
         arrows = [],
         underlays = [],
+        overlays = [],
         cages = [],
         cells = [],
         lines = [],
@@ -430,17 +433,18 @@ export default class Board {
         return cage
       })
 
-      const gutter_underlays = []
-      this.extras.underlays = []
-      buildUnderlays(underlays, this.geo).forEach((underlay) => {
-        if (underlay.type === 'gutter') {
-          gutter_underlays.push(underlay)
+      const gutter_marks = []
+      this.extras.marks = []
+      // ctc doesn't seem to differentiate much with underlays/overlays
+      buildMarks(underlays.concat(overlays), this.geo).forEach((mark) => {
+        if (mark.type === 'gutter') {
+          gutter_marks.push(mark)
         } else {
-          this.extras.underlays.push(underlay)
+          this.extras.marks.push(mark)
         }
       })
 
-      buildGutters(gutter_underlays, this)
+      buildGutters(gutter_marks, this)
 
       buildLines(lines, this)
     }
@@ -554,7 +558,7 @@ export default class Board {
       centre: this.centre[index] || [],
       corner: this.corner[index] || [],
       colour: this.colour[index],
-      underlays: [],
+      marks: [],
       extras: [{ className: 'colour colour-' + this.colour[index] }],
     }))
     this.errors.indexes.forEach((index) => (cells[index].error = true))
@@ -564,9 +568,7 @@ export default class Board {
       ),
     )
     this.extras.arrows.forEach((arrow) => cells[arrow.index].extras.push(arrow))
-    this.extras.underlays.forEach((underlay) =>
-      cells[underlay.index].extras.push(underlay),
-    )
+    this.extras.marks.forEach((mark) => cells[mark.index].extras.push(mark))
     return cells
   }
   getSelectedNeighbors = (index, selected) => {
@@ -593,9 +595,7 @@ export default class Board {
   }
 
   clearErrors() {
-    this.extras.underlays.forEach(
-      (underlay) => (underlay.className = underlay._className),
-    )
+    this.extras.marks.forEach((mark) => (mark.className = mark._className))
     this.extras.lines.forEach((line) =>
       line.cells.forEach((point) => (point.className = point._className)),
     )

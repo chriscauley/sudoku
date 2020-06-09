@@ -30,3 +30,5 @@ for p in Puzzle.objects.all():
     p.update_meta()
     print(p.meta)
     p.save()
+    if p.data['ctc'].get('underlays') and p.data['ctc'].get('overrlays'):
+        print(p.id)
