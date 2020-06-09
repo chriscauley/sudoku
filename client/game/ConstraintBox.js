@@ -1,9 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import auth from '@unrest/react-auth'
-import css from '@unrest/css'
-
-import { saved_games } from './Board'
 
 const icon_constraints = [
   'anti_knight',
@@ -15,14 +10,21 @@ const icon_constraints = [
   'arrow_sudoku',
 ]
 
+const icon_flags = ['bad_render']
+
 const groups = {
   sudoku: ['row', 'col', 'box', 'complete'],
   killer: ['killer_sudoku', 'killer_total'],
 }
 
+const slug2meta = {
+  sudoku: 'givens',
+  killer: 'cages',
+}
+
 const group_keys = Object.keys(groups)
 
-export default ({ constraints }) => {
+export default function ConstraintBox({ constraints, meta, flag }) {
   const counts = {}
   constraints = constraints.filter((c) => {
     if (icon_constraints.includes(c)) {
@@ -37,10 +39,17 @@ export default ({ constraints }) => {
       constraints.unshift(key)
     }
   })
+  if (icon_flags.includes(flag)) {
+    constraints.push(flag)
+  }
   return (
     <>
       {constraints.map((c) => (
-        <span className={`constraint constraint-${c} mr-2`} key={c} />
+        <span
+          className={`constraint constraint-${c} mr-2`}
+          data-count={meta[slug2meta[c]]}
+          key={c}
+        />
       ))}
       {counts.other > 0 && (
         <span className="other_constraint">+{counts.other}</span>

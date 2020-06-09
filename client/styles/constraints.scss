@@ -5,6 +5,16 @@
   position: relative;
   vertical-align: middle;
   width: 1.5em;
+  &[data-count]:before {
+    @apply flex justify-center items-center rounded-full absolute text-white bg-black;
+    content: attr(data-count);
+    font-size: 0.75em;
+    height: 1.2em;
+    left: 50%;
+    top: 50%;
+    width: 1.2em;
+
+  }
 }
 
 .constraint-sudoku {
@@ -52,4 +62,8 @@
 }
 .constraint-thermo:before {
   content: "\f2c7";
+}
+
+.constraint-bad_render {
+  background-image: url('../icons/bad_render.svg'),
 }

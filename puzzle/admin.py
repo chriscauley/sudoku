@@ -19,7 +19,7 @@ class PuzzleAdmin(admin.ModelAdmin):
         link = '<a href="https://www.youtube.com/watch?v={}" target="_new">{}</a>'
         links = [link.format(v.external_id, v.title) for v in videos]
         return mark_safe('<br/>'.join(links))
-    readonly_fields = ['_links', 'data']
+    readonly_fields = ['_links',]
 
 @admin.register(Solve)
 class SolveAdmin(admin.ModelAdmin):

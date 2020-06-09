@@ -26,7 +26,7 @@ const PuzzleLink = (props) => {
   return (
     <div className="mb-2">
       <span className={'fa flag flag-' + flag} />
-      <ConstraintBox constraints={constraints} meta={meta} />
+      <ConstraintBox constraints={constraints} meta={meta} flag={flag} />
       {solved ? (
         <i
           className={icon('check text-green-500')}
