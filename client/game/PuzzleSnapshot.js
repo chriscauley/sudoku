@@ -17,7 +17,7 @@ export default function PuzzleSnapshot(props) {
         rel="noreferrer"
       >
         Go to original puzzle
-        <i className={css.icon('external_url')} />
+        <i className={css.icon('external-link ml-2')} />
       </a>
     </>
   )

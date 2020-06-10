@@ -301,15 +301,14 @@ $thermo: #ddd;
 
 .board .cell {
   $error: inset 0 0 8px red;
-  $hover: inset map.get($pallet, "hover") 0 0 0 3px;
+  $hover: inset map.get($pallet, "hover") 0 0 3px 3px;
   &.error {
     box-shadow: $error;
   }
-  &.hover {
+  .hover {
     box-shadow: $hover;
-  }
-  &.error.hover {
-    box-shadow: $error, $hover;
+    height: 100%;
+    width: 100%;
   }
 }
 
