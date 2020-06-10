@@ -66,13 +66,19 @@
 
 /* these constraints use font-awesome */
 .constraint- {
-  &thermo, &no_rules, &vanilla, &new {
+  &thermo, &no_rules, &vanilla, &new, &other {
     font: normal normal normal 1.5em FontAwesome;
     height: 1em;
     width: unset;
   }
+
   &thermo:before {
     content: "\f2c7";
+  }
+
+  &other:before { /* "labs" icon */
+    @apply text-green-500;
+    content: "\f0c3";
   }
 
   &no_rules:before {

@@ -80,8 +80,9 @@ class Puzzle(BaseModel):
             meta['givens'] = 0
             for row in ctc.get('cells', []):
                 meta['givens'] += sum([1 if cell.get('value') else 0 for cell in row])
-            for s in ['cages',  'arrows', 'overlays', 'underlays', 'overlays']:
+            for s in ['arrows', 'overlays', 'underlays', 'overlays', 'lines']: # todo add thermometer flaire
                 meta[s] = len(ctc.get(s, []))
+            meta['cages'] = len([c for c in ctc.get('cages', []) if c['cells']])
             meta['marks'] = meta['underlays'] + meta['overlays']
 
 

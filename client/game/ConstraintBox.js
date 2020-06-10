@@ -8,6 +8,7 @@ const icon_constraints = [
   'thermo',
   'sandwich',
   'arrow_sudoku',
+  'other'
 ]
 
 const icon_flags = ['bad_render', 'no_rules', 'vanilla', 'new']
@@ -30,7 +31,7 @@ export default function ConstraintBox({ constraints, meta, flag }) {
     if (icon_constraints.includes(c)) {
       return true
     }
-    const group = group_keys.find((key) => groups[key].includes(c)) || 'other'
+    const group = group_keys.find((key) => groups[key].includes(c)) || 'unknown'
     counts[group] = (counts[group] || 0) + 1
     return false
   })
@@ -51,8 +52,8 @@ export default function ConstraintBox({ constraints, meta, flag }) {
           key={c}
         />
       ))}
-      {counts.other > 0 && (
-        <span className="other_constraint">+{counts.other}</span>
+      {counts.unknown > 0 && (
+        <span className="other_constraint">+{counts.unknown}</span>
       )}
     </>
   )
