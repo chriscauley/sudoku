@@ -1,11 +1,13 @@
 .constraint {
   background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   display: inline-block;
   height: 1.5em;
   position: relative;
   vertical-align: middle;
   width: 1.5em;
-  &[data-count]:before {
+  &[data-count]:after {
     @apply flex justify-center items-center rounded-full absolute text-white bg-black;
     content: attr(data-count);
     font-size: 0.7em;
@@ -14,7 +16,7 @@
     top: 50%;
     width: 1.5em;
   }
-  &.constraint-sudoku[data-count="0"]:before {
+  &.constraint-sudoku[data-count="0"]:after {
     @apply bg-red-600;
   }
 }
@@ -56,20 +58,18 @@
   width: 1.5em;
 }
 
-.constraint.flag {
-  border-bottom: 3px solid black;
-}
-
 .constraint-bad_render {
-  background-image: url('../icons/bad_render.svg'),
+  background-image: url('../icons/broken_image.png'),
 }
 
 /* these constraints use font-awesome */
 .constraint- {
   &thermo, &no_rules, &vanilla, &new, &other {
-    font: normal normal normal 1.5em FontAwesome;
     height: 1em;
     width: unset;
+    &:before {
+      font: normal normal normal 1.5em/0.6 FontAwesome;
+    }
   }
 
   &thermo:before {

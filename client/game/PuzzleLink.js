@@ -37,24 +37,8 @@ const PuzzleLink = (props) => {
       <Tag to={`/puzzle/ctc/${external_id}/`} className={css.link()}>
         {title} #{external_id}
       </Tag>
-      {videos.map((video) => (
-        <a
-          key={video.external_id}
-          href={`https://www.youtube.com/watch?v=${video.external_id}`}
-          title={video.title}
-          target="_blank"
-          rel="noreferrer"
-          className={icon('youtube mx-2')}
-        />
-      ))}
-      <a
-        href={`https://cracking-the-cryptic.web.app/sudoku/${external_id}`}
-        target="_blank"
-        rel="noreferrer"
-        className={icon('external-link')}
-      />
       {is_superuser && (
-        <a href={`/admin/puzzle/puzzle/${id}`} className={icon('admin')} />
+        <a href={`/admin/puzzle/puzzle/${id}`} className={icon('admin ml-4')} />
       )}
       {children}
     </div>

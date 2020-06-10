@@ -7,7 +7,7 @@ export default class Hoverdown extends React.Component {
   timeout = (func) => {
     clearTimeout(this._timeout)
     if (typeof func === 'function') {
-      this._timeuout = setTimeout(func, 2000)
+      this._timeuout = setTimeout(func, this.props.delay || 0)
     }
   }
   mouseover = () => {

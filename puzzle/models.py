@@ -33,7 +33,7 @@ class Puzzle(BaseModel):
     source = models.CharField(max_length=16, default="ctc")
     external_id = models.CharField(max_length=32, null=True, blank=True)
     publish_date = models.DateField(null=True, blank=True)
-    data = JSONField(default=dict)
+    data = JSONField(default=dict, blank=True)
     flag = models.CharField(max_length=16, default="new", choices=FLAG_CHOICES)
 
     meta = property(lambda s: s.data.get('meta', {}))

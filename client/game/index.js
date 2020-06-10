@@ -9,8 +9,9 @@ import Index from './Index'
 import withGame from './withGame'
 import Hoverdown from './Hoverdown'
 import PuzzleLink from './PuzzleLink'
+import PuzzleSnapshot from './PuzzleSnapshot'
+import VideoDescription from './VideoDescription'
 import Controls, { getMode } from './Controls'
-import Markdown from 'react-markdown'
 
 const clickRef = React.createRef()
 
@@ -174,43 +175,21 @@ class CTC extends React.Component {
                 key={video.external_id}
                 className="fixed md right inline-block"
                 loaded={true}
-                content={
-                  <>
-                    <a
-                      className="link mb-4 border-b block text-lg"
-                      href={video.url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {video.title}
-                      <i className={css.icon('external-link ml-2')} />
-                    </a>
-                    <Markdown
-                      className="whitespace-normal"
-                      linkTarget={() => '_blank'}
-                    >
-                      {video.description}
-                    </Markdown>
-                  </>
-                }
+                content={<VideoDescription video={video} />}
               >
                 <i className={icon('info')} />
               </Hoverdown>
             ))}
             <Hoverdown
               className="fixed lg inline-block"
-              content={<iframe src={puzzle.external_url} />}
+              content={<PuzzleSnapshot puzzle={puzzle} />}
             >
-              <i className={icon('puzzle-piece')} />
+              <i
+                className={icon(
+                  puzzle.screenshot ? 'picture-o' : 'puzzle-piece',
+                )}
+              />
             </Hoverdown>
-            {puzzle.screenshot && (
-              <Hoverdown
-                className="fixed sm inline-block"
-                content={<img src={puzzle.screenshot} />}
-              >
-                <i className={icon('picture-o')} />
-              </Hoverdown>
-            )}
           </PuzzleLink>
         </div>
         <Controls

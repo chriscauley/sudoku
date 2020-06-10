@@ -79,11 +79,11 @@ const actions = {
       store.setState({ rando: Math.random() })
     })
   },
-  saveBoard(store, data={}) {
+  saveBoard(store, data = {}) {
     Object.assign(store.state.board, data)
-      store.state.board.save()
-      store.setState({ rando: Math.random() })
-  }
+    store.state.board.save()
+    store.setState({ rando: Math.random() })
+  },
 }
 
 export const _withGame = ConfigHook('game', {

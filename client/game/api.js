@@ -33,6 +33,7 @@ const groupConstraints = (puzzle) => {
 
 const prepPuzzle = (puzzle) => {
   puzzle.external_url = `https://cracking-the-cryptic.web.app/sudoku/${puzzle.external_id}`
+  puzzle.source_name = 'Cracking The Cryptic'
   puzzle.videos.forEach((v) => {
     v.url = `https://www.youtube.com/watch?v=${v.external_id}`
   })

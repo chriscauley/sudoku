@@ -1,4 +1,5 @@
 import React from 'react'
+import { template } from 'lodash'
 
 const icon_constraints = [
   'anti_knight',
@@ -8,7 +9,7 @@ const icon_constraints = [
   'thermo',
   'sandwich',
   'arrow_sudoku',
-  'other'
+  'other',
 ]
 
 const icon_flags = ['bad_render', 'no_rules', 'vanilla', 'new']
@@ -21,7 +22,19 @@ const groups = {
 const slug2meta = {
   sudoku: 'givens',
   killer: 'cages',
+  thermo: 'marks',
 }
+
+const title_templates = {
+  sudoku:
+    '${constraints.length === 1 ? "Classic " : ""}Sudoku with ${counts} givens',
+  killer: 'Killer sudoku with ${counts} cages',
+  thermo: 'Thermo sudoku with ${counts} thermometer cells',
+  other: 'Experimental puzzle with custom rules',
+}
+
+const getTitle = (slug, counts, constraints) =>
+  template(title_templates[slug] || slug)({ slug, counts, constraints })
 
 const group_keys = Object.keys(groups)
 
@@ -41,7 +54,7 @@ export default function ConstraintBox({ constraints, meta, flag }) {
     }
   })
   if (icon_flags.includes(flag)) {
-    constraints.push(flag + ' flag')
+    constraints.push(flag)
   }
   return (
     <>
@@ -49,11 +62,17 @@ export default function ConstraintBox({ constraints, meta, flag }) {
         <span
           className={`constraint constraint-${c} mr-2`}
           data-count={meta[slug2meta[c]]}
+          title={getTitle(c, meta[slug2meta[c]], constraints)}
           key={c}
         />
       ))}
       {counts.unknown > 0 && (
-        <span className="other_constraint">+{counts.unknown}</span>
+        <span
+          title={counts.unknown + ' other constraints'}
+          className="other_constraint"
+        >
+          {counts.unknown === 1 ? '?' : '??'}
+        </span>
       )}
     </>
   )

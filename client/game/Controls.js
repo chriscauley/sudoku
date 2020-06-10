@@ -25,12 +25,12 @@ const CheckControl = auth.connect(
     const { user = {} } = props.auth
     const { constraints, required_constraints } = board
     const check = () => actions.check(constraints)
-    const clear = () => actions.saveBoard({constraints: []})
+    const clear = () => actions.saveBoard({ constraints: [] })
 
     // TODO admin only
-    const saveConstraints = (required_constraints=constraints) =>
-          actions.savePuzzle({ required_constraints })
-    const reset = () => actions.saveBoard({constraints: required_constraints})
+    const saveConstraints = (required_constraints = constraints) =>
+      actions.savePuzzle({ required_constraints })
+    const reset = () => actions.saveBoard({ constraints: required_constraints })
 
     const options = board.available_constraints.map((slug) => ({
       checked: constraints.includes(slug),
@@ -40,9 +40,15 @@ const CheckControl = auth.connect(
       title: slug.replace(/_/g, ' '),
     }))
 
-    const _add = constraints.filter(c => !required_constraints.includes(c)).length
-    const _remove = required_constraints.filter(c => !constraints.includes(c)).length
-    const _diff = <span>(+{_add} / -{_remove})</span>
+    const _add = constraints.filter((c) => !required_constraints.includes(c))
+      .length
+    const _remove = required_constraints.filter((c) => !constraints.includes(c))
+      .length
+    const _diff = (
+      <span>
+        (+{_add} / -{_remove})
+      </span>
+    )
 
     return (
       <div className={'hoverdown left flush'}>
@@ -59,7 +65,7 @@ const CheckControl = auth.connect(
                   checked={c.checked}
                   className="mr-2"
                 />
-                {c.required && "* "}
+                {c.required && '* '}
                 {c.title}
               </label>
             ))}
@@ -71,7 +77,10 @@ const CheckControl = auth.connect(
                 Clear All
               </div>
               {user.is_superuser && (
-                <div className={'w-full ' + btn()} onClick={() => saveConstraints()}>
+                <div
+                  className={'w-full ' + btn()}
+                  onClick={() => saveConstraints()}
+                >
                   Save Constraints {_diff}
                 </div>
               )}

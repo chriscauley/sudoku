@@ -30,8 +30,8 @@ const extractColor = (color) => {
     '#34BBE6': 'blue',
     '#CFCFCF': 'border',
     '#E6261F': 'red',
-    "#D23BE7": 'magenta',
-    "#EB7532": 'orange',
+    '#D23BE7': 'magenta',
+    '#EB7532': 'orange',
     '#000000': 'text',
     '#FFFFFF': 'white',
   }
