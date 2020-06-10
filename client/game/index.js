@@ -120,7 +120,7 @@ class CTC extends React.Component {
     }
     this.props.game.actions.doAction({ mode, indexes, value })
   }
-  onMouseMove = (e) => this._bouncemove([e.clientX, e.clientY])
+  onMouseMove = (e) => this._move([e.clientX, e.clientY])
 
   mousedown = (e) => {
     const index = this.geo.pxy2index([e.clientX, e.clientY])
@@ -145,6 +145,8 @@ class CTC extends React.Component {
   _move = (pxy) => {
     const hover = this.geo.pxy2index(pxy)
     const { selected, dragging, removing } = this.state
+    const old_selected = selected[hover]
+    const old_hover = this.state.hover
     if (dragging) {
       if (removing) {
         delete selected[hover]
@@ -152,9 +154,10 @@ class CTC extends React.Component {
         selected[hover] = true
       }
     }
-    this.setState({ hover, selected })
+    if (old_hover !== hover || old_selected !== selected[hover]) {
+      this.setState({ hover, selected })
+    }
   }
-  _bouncemove = debounce(this._move, 25, { maxWait: 25 })
   setMode = (mode) => () => this.setState({ mode })
 
   render() {
