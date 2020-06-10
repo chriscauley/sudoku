@@ -84,6 +84,14 @@ class CTC extends React.Component {
     if (this.allowed_keys.includes(value)) {
       e.preventDefault()
     }
+    if (value === 'z' && e.ctrlKey) {
+      this.props.game.actions.undo()
+      return
+    }
+    if (value === 'y' && e.ctrlKey) {
+      this.props.game.actions.redo()
+      return
+    }
     const mode = getMode(e, this.state.mode)
     if (ARROWS.includes(value)) {
       return this.sendArrow(value, e.ctrlKey)
