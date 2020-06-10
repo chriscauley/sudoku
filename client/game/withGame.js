@@ -52,7 +52,7 @@ const actions = {
   replay(store) {
     store.state.board.replay(() => store.setState({ rando: Math.random() }))
   },
-  submit(store) {
+  submitSolve(store) {
     const { board } = store.state
     const answer = board.geo.indexes.map((i) =>
       parseInt(board.answer[i] || board.sudoku[i]),
@@ -69,6 +69,7 @@ const actions = {
     } else {
       board.constraints.push(slug)
     }
+    board.save()
     store.setState({ rando: Math.random() })
   },
   savePuzzle(store, data) {
@@ -78,6 +79,11 @@ const actions = {
       store.setState({ rando: Math.random() })
     })
   },
+  saveBoard(store, data={}) {
+    Object.assign(store.state.board, data)
+      store.state.board.save()
+      store.setState({ rando: Math.random() })
+  }
 }
 
 export const _withGame = ConfigHook('game', {

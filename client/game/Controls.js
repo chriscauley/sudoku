@@ -23,18 +23,26 @@ const CheckControl = auth.connect(
   _withGame((props) => {
     const { actions, board } = props.game
     const { user = {} } = props.auth
-    const { constraints } = board
+    const { constraints, required_constraints } = board
     const check = () => actions.check(constraints)
-    const clear = () => actions.check()
-    const saveConstraints = () =>
-      actions.savePuzzle({ required_constraints: constraints })
+    const clear = () => actions.saveBoard({constraints: []})
+
+    // TODO admin only
+    const saveConstraints = (required_constraints=constraints) =>
+          actions.savePuzzle({ required_constraints })
+    const reset = () => actions.saveBoard({constraints: required_constraints})
 
     const options = board.available_constraints.map((slug) => ({
       checked: constraints.includes(slug),
       onChange: () => actions.toggleConstraint(slug),
+      required: required_constraints.includes(slug),
       slug,
       title: slug.replace(/_/g, ' '),
     }))
+
+    const _add = constraints.filter(c => !required_constraints.includes(c)).length
+    const _remove = required_constraints.filter(c => !constraints.includes(c)).length
+    const _diff = <span>(+{_add} / -{_remove})</span>
 
     return (
       <div className={'hoverdown left flush'}>
@@ -42,26 +50,33 @@ const CheckControl = auth.connect(
           check
         </div>
         <div className="hoverdown--target">
-          {options.map((c) => (
-            <label className={'w-full ' + btn(c.checked)} key={c.slug}>
-              <input
-                type="checkbox"
-                onChange={c.onChange}
-                checked={c.checked}
-                className="mr-2"
-              />
-              {c.title}
-            </label>
-          ))}
-          <hr />
-          <div className={'w-full ' + btn()} onClick={clear}>
-            clear
-          </div>
-          {user.is_superuser && (
-            <div className={'w-full ' + btn()} onClick={saveConstraints}>
-              Add Constraints - {board.required_constraints.length}
+          <div className="hoverdown--three-columns">
+            {options.map((c) => (
+              <label className={'w-full ' + btn(c.checked)} key={c.slug}>
+                <input
+                  type="checkbox"
+                  onChange={c.onChange}
+                  checked={c.checked}
+                  className="mr-2"
+                />
+                {c.required && "* "}
+                {c.title}
+              </label>
+            ))}
+            <div>
+              <div className={'w-full ' + btn()} onClick={reset}>
+                Reset to Required
+              </div>
+              <div className={'w-full ' + btn()} onClick={clear}>
+                Clear All
+              </div>
+              {user.is_superuser && (
+                <div className={'w-full ' + btn()} onClick={() => saveConstraints()}>
+                  Save Constraints {_diff}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     )
@@ -85,7 +100,7 @@ const SubmitButton = auth.connect(
     ) {
       return null
     }
-    return <ActionButton name="submit" />
+    return <ActionButton name="submitSolve" />
   }),
 )
 

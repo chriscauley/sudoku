@@ -60,3 +60,8 @@
     position: relative;
   }
 }
+
+.hoverdown .hoverdown--three-columns {
+  column-count: 3;
+  column-gap: 0;
+}
