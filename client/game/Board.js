@@ -369,6 +369,9 @@ export default class Board {
       'sandwich',
       'between_sudoku_1',
       'arrow_sudoku',
+      'multiple_solutions',
+      'nonconsective_adjacent',
+      'snake',
       'other',
     ]
 

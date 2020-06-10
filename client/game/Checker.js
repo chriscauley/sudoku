@@ -392,4 +392,7 @@ export default class Checker {
   other() {}
   arrow_sudoku() {}
   sandwich() {}
+  multiple_solutions() {}
+  nonconsective_adjacent() {}
+  snake() {}
 }
