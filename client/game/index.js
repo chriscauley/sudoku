@@ -163,7 +163,7 @@ class CTC extends React.Component {
       cells[hover].extras.push({ className: 'hover' })
     }
     return (
-      <div className="Game">
+      <div className="Game theme-ctc">
         <div className="my4 flex justify-between items-center">
           <div className="mr-4">
             {board.solve && 'Victory!'} @ {board.getTime()}

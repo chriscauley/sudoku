@@ -1,17 +1,31 @@
 @use 'sass:map';
 @use 'sass:color';
 
+.theme-ctc {
+  --text: rgb(0, 0, 0);
+  --border: rgb(207, 207, 207);
+  --bg: rgb(255, 255, 255);
+  --green: rgb(163, 224, 72);
+  --magenta: rgb(210, 59, 231);
+  --pink: rgb(235, 117, 50);
+  --red: rgb(230, 38, 31);
+  --yellow: rgb(247, 208, 56);
+  --teal: rgb(52, 187, 230);
+  --blue: rgb(64, 128, 255);
+  --selected: rgba(0, 0, 0, 0.1);
+}
+
 $pallet: (
-  0: #000,
-  1: #FFF,
-  2: #888,
-  3: #F88,
-  4: #FF8,
-  5: #F8F,
-  6: #44F,
-  7: #8FF,
-  8: #8F8,
-  9: #F00,
+  0: var(--text),
+  1: var(--border),
+  2: var(--bg),
+  3: var(--green),
+  4: var(--magenta),
+  5: var(--pink),
+  6: var(--red),
+  7: var(--yellow),
+  8: var(--blue),
+  9: var(--teal),
   "selected": #888,
   "hover": #666,
 );
@@ -243,8 +257,8 @@ $thermo: #ddd;
   position: relative;
   &.selected {
     border-color: $mark;
-    .colour {
-      background: darken(map.get($pallet, 1), $darkenSelected);
+    .number {
+      background-color: var(--selected);
     }
   }
   .corner {
@@ -261,9 +275,6 @@ $thermo: #ddd;
   @for $i from 0 through 9 {
     .colour-#{$i} {
       background: map.get($pallet, $i);
-    }
-    &.selected .colour-#{$i} {
-      background: darken(map.get($pallet, $i), $darkenSelected);
     }
   }
 }
@@ -363,15 +374,15 @@ $thermo: #ddd;
 }
 
 .board {
-  --mark-color: #ccc;
+  --mark-color: rgba(0,0,0,0.5);
   .color-green {
-    --mark-color: #A3E048;
+    --mark-color: rgba(0,255,0,0.5);
   }
   .color-yellow {
-    --mark-color: #F7D038;
+    --mark-color: rgba(255,255,0,0.5);
   }
   .color-blue {
-    --mark-color: #34BBE6;
+    --mark-color: rgba(0,0,255,0.5);
   }
 }
 
