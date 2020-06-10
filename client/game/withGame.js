@@ -74,6 +74,7 @@ const actions = {
   savePuzzle(store, data) {
     submitPuzzle(store.state.board.puzzle_id, data).then(() => {
       Object.assign(store.state.board, data)
+      store.state.board.save()
       store.setState({ rando: Math.random() })
     })
   },
