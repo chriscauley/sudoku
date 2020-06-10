@@ -1,6 +1,8 @@
 @use 'sass:map';
 @use 'sass:color';
 
+$theme_colors: text, border, bg, green, magenta, pink, red, yellow, blue, teal, orange;
+
 .theme-ctc {
   --text: rgb(0, 0, 0);
   --border: rgb(207, 207, 207);
@@ -12,6 +14,7 @@
   --yellow: rgb(247, 208, 56);
   --teal: rgb(52, 187, 230);
   --blue: rgb(64, 128, 255);
+  --orange: #EB7532; /* not useable as a colour */
   --selected: rgba(0, 0, 0, 0.1);
 }
 
@@ -374,24 +377,21 @@ $thermo: #ddd;
 }
 
 .board {
-  --mark-color: rgba(0,0,0,0.5);
-  .color-green {
-    --mark-color: rgba(0,255,0,0.5);
-  }
-  .color-yellow {
-    --mark-color: rgba(255,255,0,0.5);
-  }
-  .color-blue {
-    --mark-color: rgba(0,0,255,0.5);
+  --mark-color: var(--border);
+  @each $color in $theme_colors {
+    .color-#{""+$color} {
+      --mark-color: var(--#{$color})
+    }
   }
 }
 
 .board .cell .mark {
+  --transparent: rgba(255, 255, 255, 0.2);
   $wall: 7%;
   background: repeating-linear-gradient(
     -45deg,
-    transparent,
-    transparent 15%,
+    var(--transparent),
+    var(--transparent) 15%,
     var(--mark-color) 15%,
     var(--mark-color) 25%
   );

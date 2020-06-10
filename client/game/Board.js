@@ -28,7 +28,12 @@ const extractColor = (color) => {
     '#A3E048': 'green',
     '#F7D038': 'yellow',
     '#34BBE6': 'blue',
-    '#CFCFCF': 'gray',
+    '#CFCFCF': 'border',
+    '#E6261F': 'red',
+    "#D23BE7": 'magenta',
+    "#EB7532": 'orange',
+    '#000000': 'text',
+    '#FFFFFF': 'white',
   }
 
   color = color.toUpperCase()
