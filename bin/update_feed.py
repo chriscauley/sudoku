@@ -22,13 +22,14 @@ for video in Video.objects.filter(publish_date__isnull=True):
 
 count = 0
 for puzzle in Puzzle.objects.all():
-    old_flag = puzzle.flag
-    puzzle.update_status()
-    if puzzle.flag != old_flag:
-        count += 1
-        print("Flag changed", old_flag, puzzle.flag)
-        puzzle.save()
-
+    # old_flag = puzzle.flag
+    # puzzle.update_status()
+    # if puzzle.flag != old_flag:
+    #     count += 1
+    #     print("Flag changed", old_flag, puzzle.flag)
+    #     puzzle.save()
+    puzzle.update_meta()
+    puzzle.save()
 
 print(count, Puzzle.objects.count())
 # with open('.ctc.json', 'r') as f:
