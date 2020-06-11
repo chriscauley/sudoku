@@ -1,6 +1,14 @@
 @import "sudoku.scss";
 @import "constraints.scss";
 
+.PuzzleAdminForm {
+  @apply absolute bottom-0 left-0 p-4 bg-white;
+  z-index: 100;
+  .rjsf, .form-group {
+    margin-bottom: 0;
+  }
+}
+
 .hoverdown {
   @apply relative;
   z-index: 300;
@@ -61,7 +69,7 @@
   }
 }
 
-.hoverdown .hoverdown--three-columns {
-  column-count: 3;
+.hoverdown .hoverdown--two-columns {
+  column-count: 2;
   column-gap: 0;
 }

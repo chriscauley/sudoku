@@ -41,7 +41,7 @@ class Puzzle(BaseModel):
     screenshot = property(lambda s: s.data.get('screenshot'))
 
     def update_status(self):
-        _auto = ['new', 'valid', 'no_rules', 'vanilla', 'maybe_not_9x9']
+        _auto = ['new', 'no_rules']
         if self.flag not in _auto:
             return
         ctc = self.data.get('ctc')

@@ -56,7 +56,7 @@ const CheckControl = auth.connect(
           check
         </div>
         <div className="hoverdown--target">
-          <div className="hoverdown--three-columns">
+          <div className="hoverdown--two-columns">
             {options.map((c) => (
               <label className={'w-full ' + btn(c.checked)} key={c.slug}>
                 <input

@@ -1,6 +1,5 @@
 import classnames from 'classnames'
 import React from 'react'
-import { debounce } from 'lodash'
 import { config as ur_config, afterFetch, handleError } from '@unrest/core'
 import css from '@unrest/css'
 import auth from '@unrest/react-auth'
@@ -12,6 +11,7 @@ import PuzzleLink from './PuzzleLink'
 import PuzzleSnapshot from './PuzzleSnapshot'
 import VideoDescription from './VideoDescription'
 import Controls, { getMode } from './Controls'
+import PuzzleAdminForm from './PuzzleAdminForm'
 
 const clickRef = React.createRef()
 
@@ -69,7 +69,7 @@ class CTC extends React.Component {
       const file = item.getAsFile()
       const formData = new FormData()
       formData.append('screenshot', file)
-      return fetch(`/api/schema/PuzzleAdminForm/${this.props.api.puzzle.id}/`, {
+      return fetch(`/api/schema/PuzzleDataForm/${this.props.api.puzzle.id}/`, {
         method: 'POST',
         body: formData,
         headers: { 'X-CSRFToken': ur_config.getCSRF() },
@@ -180,6 +180,7 @@ class CTC extends React.Component {
           <div className="mr-4">
             {board.solve && 'Victory!'} @ {board.getTime()}
           </div>
+          {user.is_superuser && <PuzzleAdminForm />}
           <PuzzleLink {...puzzle} is_superuser={user.is_superuser}>
             {puzzle.videos.map((video) => (
               <Hoverdown

@@ -17,7 +17,7 @@ const PuzzleLink = (props) => {
     children,
     meta,
   } = props
-  const { solves = [], is_superuser } = props.auth.user || {}
+  const { solves = [] } = props.auth.user || {}
   const solved = solves.find((s) => s.puzzle_id === id)
 
   const title = videos.length ? videos[0].title : '???'
@@ -37,9 +37,6 @@ const PuzzleLink = (props) => {
       <Tag to={`/puzzle/ctc/${external_id}/`} className={css.link()}>
         {title} #{external_id}
       </Tag>
-      {is_superuser && (
-        <a href={`/admin/puzzle/puzzle/${id}`} className={icon('admin ml-4')} />
-      )}
       {children}
     </div>
   )

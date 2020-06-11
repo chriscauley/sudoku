@@ -5,9 +5,15 @@ from puzzle.models import Solve, Puzzle
 from django.contrib.postgres.forms import SimpleArrayField
 from unrest import schema
 
-
 @schema.register
 class PuzzleAdminForm(forms.ModelForm):
+    class Meta:
+        model = Puzzle
+        fields = ('flag',)
+
+
+@schema.register
+class PuzzleDataForm(forms.ModelForm):
     required_constraints = SimpleArrayField(forms.CharField(), required=False)
     screenshot = forms.FileField(required=False)
     def clean_screenshot(self):
@@ -21,6 +27,7 @@ class PuzzleAdminForm(forms.ModelForm):
 
     def save(self, commit=True):
         for attr, value in self.cleaned_data.items():
+            print('saving', attr, value)
             if value:
                 self.instance.data[attr] = value
         return super().save(commit=commit)

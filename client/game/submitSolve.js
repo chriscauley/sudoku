@@ -10,5 +10,5 @@ export default ({ answer, puzzle, constraints }) => {
 }
 
 export const submitPuzzle = (id, data) => {
-  return post(`/api/schema/PuzzleAdminForm/${id}/`, data)
+  return post(`/api/schema/PuzzleDataForm/${id}/`, data)
 }
