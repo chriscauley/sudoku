@@ -40,6 +40,8 @@ class Puzzle(BaseModel):
     constraints = property(lambda s: s.data.get('required_constraints', []))
     screenshot = property(lambda s: s.data.get('screenshot'))
 
+    get_absolute_url = lambda s: f'/#/puzzle/ctc/{s.external_id}/'
+
     def update_status(self):
         _auto = ['new', 'no_rules']
         if self.flag not in _auto:

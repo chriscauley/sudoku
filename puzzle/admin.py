@@ -17,8 +17,10 @@ class PuzzleAdmin(admin.ModelAdmin):
     def _links(self, obj):
         videos = obj.video_set.all()
         link = '<a href="https://www.youtube.com/watch?v={}" target="_new">{}</a>'
-        links = [link.format(v.external_id, v.title) for v in videos]
-        return mark_safe('<br/>'.join(links))
+        links = [f'<b><a href="{obj.get_absolute_url()}" target="_new">View on Site</a></b>']
+        links += [link.format(v.external_id, v.title) for v in videos]
+        links = ''.join([f'<li>{l}</li>' for l in links])
+        return mark_safe(f'<ul>{links}</ul>')
     readonly_fields = ['_links',]
 
 @admin.register(Solve)
