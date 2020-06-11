@@ -7,6 +7,15 @@ const icon_constraints = [
   'sudoku',
   'killer',
 ]
+
+const flag2icon = {
+  maybe_not_9x9: 'bad_render',
+  not_9x9: 'bad_render',
+  bad_render: 'bad_render',
+  no_rules: 'no_rules',
+  vanlla: 'vanilla',
+}
+
 const groups = {
   sudoku: ['row', 'col', 'box', 'complete'],
   killer: ['killer_sudoku', 'killer_total'],
@@ -34,6 +43,7 @@ const groupConstraints = (puzzle) => {
 const prepPuzzle = (puzzle) => {
   puzzle.external_url = `https://cracking-the-cryptic.web.app/sudoku/${puzzle.external_id}`
   puzzle.source_name = 'Cracking The Cryptic'
+  puzzle.flag_icon = flag2icon[puzzle.flag]
   puzzle.videos.forEach((v) => {
     v.url = `https://www.youtube.com/watch?v=${v.external_id}`
   })

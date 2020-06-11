@@ -12,8 +12,6 @@ const icon_constraints = [
   'other',
 ]
 
-const icon_flags = ['bad_render', 'no_rules', 'vanilla', 'new']
-
 const groups = {
   sudoku: ['row', 'col', 'box', 'complete'],
   killer: ['killer_sudoku', 'killer_total'],
@@ -38,7 +36,7 @@ const getTitle = (slug, counts, constraints) =>
 
 const group_keys = Object.keys(groups)
 
-export default function ConstraintBox({ constraints, meta, flag }) {
+export default function ConstraintBox({ constraints, meta, flag_icon }) {
   const counts = {}
   constraints = constraints.filter((c) => {
     if (icon_constraints.includes(c)) {
@@ -53,9 +51,7 @@ export default function ConstraintBox({ constraints, meta, flag }) {
       constraints.unshift(key)
     }
   })
-  if (icon_flags.includes(flag)) {
-    constraints.push(flag)
-  }
+  flag_icon && constraints.push(flag_icon)
   return (
     <>
       {constraints.map((c) => (
