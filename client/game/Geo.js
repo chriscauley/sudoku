@@ -193,9 +193,9 @@ export default class Geo {
       return [0, xy[1]]
     } else if (xy[1] < 0) {
       return [1, xy[0]]
-    } else if (xy[0] > this.W) {
+    } else if (xy[0] >= this.W) {
       return [2, xy[1]]
-    } else if (xy[1] > this.H) {
+    } else if (xy[1] >= this.H) {
       return [3, xy[0]]
     }
   }
