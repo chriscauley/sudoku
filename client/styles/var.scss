@@ -43,6 +43,9 @@ $border-box: var(--border-box);
 $border-cell: var(--border-cell);
 $border-cage: var(--cage-width);
 
+$mark-color: var(--mark-color);
+$mark-transparent: var(--mark-transparent);
+
 .Game {
   --cage-width: 2px;
   --border-box: 0;
@@ -54,6 +57,10 @@ $border-cage: var(--cage-width);
   .display-boxes, .display-boxes.display-cells {
     --border-box: 3px;
   }
+}
+
+.Game {
+  --mark-transparent: rgba(255, 255, 255, 0.2);
   --mark-color: var(--border);
   @each $color in $theme_colors {
     .color-#{""+$color} {
