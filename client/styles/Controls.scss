@@ -1,0 +1,41 @@
+@use 'sass:map';
+
+@import './var.scss';
+
+.Controls {
+  @apply mb-8 relative;
+  $smaller: 0.75rem;
+  $wh: 40px;
+  @for $i from 0 through 9 {
+    [data-key="#{$i}"]:before {
+      content: "#{$i}";
+    }
+    [data-key="#{$i}"].mode-colour:before {
+      content: "";
+      background: map.get($pallet, $i);
+    }
+  }
+  [data-key] {
+    align-items: center;
+    display: flex;
+    font-size: 1.5rem;
+    height: $wh;
+    justify-content: center;
+    padding: 0;
+    width: $wh;
+  }
+  [data-key].mode-corner:before {
+    font-size: $smaller;
+    position: relative;
+    top: -1em;
+    left: -1em;
+  }
+  [data-key].mode-centre:before {
+    font-size: $smaller;
+  }
+  [data-key].mode-colour:before {
+    display: block;
+    height: 50%;
+    width: 50%;
+  }
+}
