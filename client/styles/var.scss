@@ -1,0 +1,61 @@
+@use 'sass:map';
+@use 'sass:color';
+
+$theme_colors: text, border, bg, green, magenta, pink, red, yellow, blue, teal, orange;
+
+.theme-ctc {
+  --text: rgb(0, 0, 0);
+  --border: rgb(207, 207, 207);
+  --bg: rgb(255, 255, 255);
+  --green: rgb(163, 224, 72);
+  --magenta: rgb(210, 59, 231);
+  --pink: rgb(235, 117, 50);
+  --red: rgb(230, 38, 31);
+  --yellow: rgb(247, 208, 56);
+  --teal: rgb(52, 187, 230);
+  --blue: rgb(64, 128, 255);
+  --orange: #EB7532; /* not useable as a colour */
+  --selected: rgba(0, 0, 0, 0.1);
+}
+
+$pallet: (
+  0: var(--text),
+  1: var(--border),
+  2: var(--bg),
+  3: var(--green),
+  4: var(--magenta),
+  5: var(--pink),
+  6: var(--red),
+  7: var(--yellow),
+  8: var(--blue),
+  9: var(--teal),
+  "selected": #888,
+  "hover": #666,
+);
+
+$sel: 4px;
+$selected: $sel solid map.get($pallet, "selected");
+$darkenSelected: 5%;
+$mark: rgba(0,0,0,0.15);
+$thermo: #ddd;
+
+$border-box: var(--border-box);
+$border-cell: var(--border-cell);
+
+.Game {
+  --border-box: 0;
+  --border-cell: 0;
+  .display-cells {
+    --border-cell: 1px;
+    --border-box: 1px;
+  }
+  .display-boxes, .display-boxes.display-cells {
+    --border-box: 3px;
+  }
+  --mark-color: var(--border);
+  @each $color in $theme_colors {
+    .color-#{""+$color} {
+      --mark-color: var(--#{$color})
+    }
+  }
+}

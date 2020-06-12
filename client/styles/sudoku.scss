@@ -1,43 +1,7 @@
 @use 'sass:map';
 @use 'sass:color';
 
-$theme_colors: text, border, bg, green, magenta, pink, red, yellow, blue, teal, orange;
-
-.theme-ctc {
-  --text: rgb(0, 0, 0);
-  --border: rgb(207, 207, 207);
-  --bg: rgb(255, 255, 255);
-  --green: rgb(163, 224, 72);
-  --magenta: rgb(210, 59, 231);
-  --pink: rgb(235, 117, 50);
-  --red: rgb(230, 38, 31);
-  --yellow: rgb(247, 208, 56);
-  --teal: rgb(52, 187, 230);
-  --blue: rgb(64, 128, 255);
-  --orange: #EB7532; /* not useable as a colour */
-  --selected: rgba(0, 0, 0, 0.1);
-}
-
-$pallet: (
-  0: var(--text),
-  1: var(--border),
-  2: var(--bg),
-  3: var(--green),
-  4: var(--magenta),
-  5: var(--pink),
-  6: var(--red),
-  7: var(--yellow),
-  8: var(--blue),
-  9: var(--teal),
-  "selected": #888,
-  "hover": #666,
-);
-
-$sel: 4px;
-$selected: $sel solid map.get($pallet, "selected");
-$darkenSelected: 5%;
-$mark: rgba(0,0,0,0.15);
-$thermo: #ddd;
+@import './var.scss';
 
 .Game {
   user-select: none;
@@ -103,17 +67,6 @@ $thermo: #ddd;
 }
 
 .board {
-  --box-border: 0;
-  --cell-border: 0;
-  .display-cells {
-    --cell-border: 1px;
-    --box-border: 1px;
-  }
-  .display-boxes, .display-boxes.display-cells {
-    --box-border: 3px;
-  }
-  $box-border: var(--box-border);
-  $cell-border: var(--cell-border);
   position: relative;
   .sudoku, .clickMask {
     display: flex;
@@ -141,7 +94,7 @@ $thermo: #ddd;
       justify-content: center;
 
       border: black solid;
-      border-width: 0 $cell-border $cell-border 0;
+      border-width: 0 $border-cell $border-cell 0;
       position: absolute;
       top: 0;
       left: 0;
@@ -151,12 +104,12 @@ $thermo: #ddd;
     .cell {
       &.x-2, &.x-5 {
         .number {
-          border-right-width: $box-border;
+          border-right-width: $border-box;
         }
       }
       &.y-2, &.y-5 {
         .number {
-          border-bottom-width: $box-border;
+          border-bottom-width: $border-box;
         }
       }
       &.x-8 {
@@ -380,15 +333,6 @@ $thermo: #ddd;
   }
   &.arrow-right {
     right: -0.2em;
-  }
-}
-
-.board {
-  --mark-color: var(--border);
-  @each $color in $theme_colors {
-    .color-#{""+$color} {
-      --mark-color: var(--#{$color})
-    }
   }
 }
 
