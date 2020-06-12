@@ -42,7 +42,7 @@ $thermo: #ddd;
 .Game {
   user-select: none;
   .game-area {
-    padding: 9.999999999%;
+    width: 100%;
   }
 }
 
@@ -88,6 +88,19 @@ $thermo: #ddd;
   }
 }
 
+.Game .play-area {
+  @apply flex overflow-hidden h-full;
+  @media (max-aspect-ratio: 1/1) {
+    flex-direction: column;
+  }
+  .Controls {
+    @apply items-center justify-center w-full;
+  }
+}
+
+.flex-cell {
+  @apply flex;
+}
 
 .board {
   --box-border: 0;
@@ -101,9 +114,7 @@ $thermo: #ddd;
   }
   $box-border: var(--box-border);
   $cell-border: var(--cell-border);
-  padding-top: 100%;
   position: relative;
-  width: 100%;
   .sudoku, .clickMask {
     display: flex;
     flex-wrap: wrap;

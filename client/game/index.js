@@ -15,6 +15,7 @@ import Controls, { getMode } from './Controls'
 import PuzzleAdminForm from './PuzzleAdminForm'
 
 const clickRef = React.createRef()
+const gameRef = React.createRef()
 
 const getClassName = ({
   xy,
@@ -48,12 +49,18 @@ class CTC extends React.Component {
     answer: {},
     selected: {},
     cellSize: 24,
+    boardStyle: { opacity: 0 },
   }
   componentDidMount = () => this.resize()
 
   resize = debounce(() => {
-    const { current } = clickRef
-    current && this.setState({ cellSize: current.offsetHeight / 10 })
+    const { current } = gameRef
+    if (current) {
+      const { offsetHeight, offsetWidth } = current
+      const cellSize = Math.min(offsetWidth, offsetHeight) / 11
+      const boardStyle = { height: cellSize * 9, width: cellSize * 9 }
+      this.setState({ cellSize, boardStyle })
+    }
   }, 100)
 
   constructor(props) {
@@ -176,7 +183,7 @@ class CTC extends React.Component {
   setMode = (mode) => () => this.setState({ mode })
 
   render() {
-    const { hover, selected, cursor } = this.state
+    const { hover, selected, cursor, cellSize, boardStyle } = this.state
     const { puzzle } = this.props.api
     const { board } = this.props.game
     const { user = {} } = this.props.auth
@@ -219,57 +226,66 @@ class CTC extends React.Component {
             </Hoverdown>
           </PuzzleLink>
         </div>
-        <Controls
-          keys={this.game_keys}
-          onClick={this.setMode}
-          mode={this.state.mode}
-          sendKey={this.sendKey}
-        />
-        <div>
-          <div className="game-area" style={{ fontSize: this.state.cellSize }}>
-            <div className="board">
-              {board.gutters.map((g) => (
-                <div className={g.className} key={g.g}>
-                  {g.values.map((v, i) => (
-                    <span key={i}>{v}</span>
-                  ))}
-                </div>
-              ))}
-              <div className="sudoku cage-last display-boxes display-cells">
-                <div
-                  className="_canvas"
-                  style={{ backgroundImage: board.bg_image }}
-                />
-                {cells.map((cell) => (
-                  <div key={cell.index} className={getClassName(cell)}>
-                    {cell.question === undefined && cell.answer === undefined && (
-                      <>
-                        <div className="corner">{cell.corner.join('')}</div>
-                        <div className="centre">{cell.centre.join('')}</div>
-                      </>
-                    )}
-                    {cell.question !== undefined ? (
-                      <span className="question number">{cell.question}</span>
-                    ) : (
-                      <span className="answer number">{cell.answer}</span>
-                    )}
-                    {cell.cage && (
-                      <span
-                        className={cell.cage.className}
-                        data-text={cell.cage.text}
-                      />
-                    )}
-                    {cell.extras.map((extra, i) => (
-                      <span key={i} className={extra.className} />
+        <div className="play-area">
+          <div className="flex-cell">
+            <Controls
+              keys={this.game_keys}
+              onClick={this.setMode}
+              mode={this.state.mode}
+              sendKey={this.sendKey}
+            />
+          </div>
+          <div className="flex-cell flex-grow">
+            <div
+              className="game-area"
+              ref={gameRef}
+              style={{ fontSize: cellSize, padding: cellSize }}
+            >
+              <div className="board" style={boardStyle}>
+                {board.gutters.map((g) => (
+                  <div className={g.className} key={g.g}>
+                    {g.values.map((v, i) => (
+                      <span key={i}>{v}</span>
                     ))}
                   </div>
                 ))}
+                <div className="sudoku cage-last display-boxes display-cells">
+                  <div
+                    className="_canvas"
+                    style={{ backgroundImage: board.bg_image }}
+                  />
+                  {cells.map((cell) => (
+                    <div key={cell.index} className={getClassName(cell)}>
+                      {cell.question === undefined &&
+                        cell.answer === undefined && (
+                          <>
+                            <div className="corner">{cell.corner.join('')}</div>
+                            <div className="centre">{cell.centre.join('')}</div>
+                          </>
+                        )}
+                      {cell.question !== undefined ? (
+                        <span className="question number">{cell.question}</span>
+                      ) : (
+                        <span className="answer number">{cell.answer}</span>
+                      )}
+                      {cell.cage && (
+                        <span
+                          className={cell.cage.className}
+                          data-text={cell.cage.text}
+                        />
+                      )}
+                      {cell.extras.map((extra, i) => (
+                        <span key={i} className={extra.className} />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <div
+                  className="clickMask"
+                  onMouseMove={this.onMouseMove}
+                  ref={clickRef}
+                />
               </div>
-              <div
-                className="clickMask"
-                onMouseMove={this.onMouseMove}
-                ref={clickRef}
-              />
             </div>
           </div>
         </div>

@@ -1,6 +1,19 @@
 @import "sudoku.scss";
 @import "constraints.scss";
 
+#react-app, body, html, #app-content, .Game {
+  height: 100vh;
+}
+
+.Game {
+  display: flex;
+  flex-direction: column;
+}
+
+#react-app {
+  max-width: 1200px;
+}
+
 .PuzzleAdminForm {
   @apply absolute bottom-0 left-0 p-4 bg-white;
   z-index: 100;
