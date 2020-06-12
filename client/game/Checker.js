@@ -131,7 +131,7 @@ export default class Checker {
 
   // validate killer cages
   killer_total() {
-    this.extras.cages.forEach((cage) => {
+    this.board.extras.cages.forEach((cage) => {
       const total = sum(cage.indexes.map(this.getAnswer))
       if (total !== parseInt(cage.value)) {
         this.errors.reasons.push(`Cage should be ${cage.value}, got ${total}`)
@@ -142,7 +142,7 @@ export default class Checker {
   }
 
   killer_sudoku() {
-    this.extras.cages.forEach((cage) => {
+    this.board.extras.cages.forEach((cage) => {
       const bins = this._binAnswers(cage.indexes)
       Object.entries(bins).forEach(([answer, indexes]) => {
         if (indexes.length > 1) {
