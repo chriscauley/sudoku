@@ -123,6 +123,9 @@ class CTC extends React.Component {
   onMouseMove = (e) => this._move([e.clientX, e.clientY])
 
   mousedown = (e) => {
+    if (e.button === 2) { // right mouse button
+      return
+    }
     const index = this.geo.pxy2index([e.clientX, e.clientY])
     if (e.target.closest('.Controls')) {
       return
