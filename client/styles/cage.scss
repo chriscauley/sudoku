@@ -1,0 +1,57 @@
+@import './var.scss';
+
+.board .cell .cage {
+  $color: black;
+  position: absolute;
+  height: calc(100% - var(--cage-width));
+  top: 0;
+  left: 0;
+  width: calc(100% - var(--cage-width));
+  &:before {
+    border: 0 dashed $color;
+    content: "";
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+  &.error:before {
+    --cage-width: 2px;
+    border-color: red;
+  }
+  &.cage-left {
+    padding-left: 2px;
+    &:before { border-left-width: $border-cage; }
+  }
+  &.cage-right {
+    padding-right: 2px;
+    &:before { border-right-width: $border-cage; }
+  }
+  &.cage-top {
+    padding-top: 2px;
+    &:before { border-top-width: $border-cage; }
+  }
+  &.cage-bottom {
+    padding-bottom: 2px;
+    &:before { border-bottom-width: $border-cage; }
+  }
+}
+
+.board .cage-first .cage-first:after {
+  background: white;
+  content: attr(data-text);
+  font-size: 0.25em;
+  left: 0;
+  line-height: 1;
+  position: absolute;
+  top: 0;
+}
+
+.board .cage-last .cage-last:after {
+  background: white;
+  bottom: 0;
+  content: attr(data-text);
+  position: absolute;
+  font-size: 0.25em;
+  line-height: 1;
+  right: 0;
+}

@@ -41,8 +41,10 @@ $thermo: #ddd;
 
 $border-box: var(--border-box);
 $border-cell: var(--border-cell);
+$border-cage: var(--cage-width);
 
 .Game {
+  --cage-width: 2px;
   --border-box: 0;
   --border-cell: 0;
   .display-cells {
