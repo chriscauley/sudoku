@@ -1,37 +1,15 @@
 import React from 'react'
-import css from '@unrest/css'
-import auth from '@unrest/react-auth'
 
 import _getMode from './getMode'
+export const getMode = getMode
 import { _withGame } from '../withGame'
-import btn from './btn'
+import css from './css'
+import ActionButton from './ActionButton'
 import Check from './Check'
 import Reset from './Reset'
+import Submit from './Submit'
 
-export const getMode = _getMode
-const row = 'flex mb-1 flex-wrap'
 const noop = () => {}
-
-const ActionButton = _withGame((props) => {
-  return (
-    <div className={btn()} onClick={props.game.actions[props.name]}>
-      {props.name}
-    </div>
-  )
-})
-
-const SubmitButton = auth.connect(
-  _withGame(({ game, auth }) => {
-    const { solves = [] } = auth.user || {}
-    if (
-      !game.board.solve ||
-      solves.find((s) => s.puzzle_id === game.board.puzzle_id)
-    ) {
-      return null
-    }
-    return <ActionButton name="submitSolve" />
-  }),
-)
 
 class Controls extends React.Component {
   state = {}
@@ -54,22 +32,22 @@ class Controls extends React.Component {
     const modes = ['answer', 'corner', 'centre', 'colour']
     return (
       <div className="Controls" onClick={(e) => e.stopPropagation()}>
-        <div className={row}>
+        <div className={css.row}>
           <Reset />
           <Check />
           <ActionButton name="redo" />
           <ActionButton name="replay" />
           <ActionButton name="undo" />
-          <SubmitButton />
+          <Submit />
         </div>
-        <div className={row}>
+        <div className={css.row}>
           {modes.map((m) => (
-            <div className={btn(mode === m)} key={m} onClick={onClick(m)}>
+            <div className={css.btn(mode === m)} key={m} onClick={onClick(m)}>
               {m}
             </div>
           ))}
         </div>
-        <div className={row}>
+        <div className={css.row}>
           {keys.map((key) => (
             <div
               className={css.button.dark('mr-2 mode-' + mode)}
