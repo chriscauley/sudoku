@@ -1,4 +1,5 @@
 import classnames from 'classnames'
+import { debounce } from 'lodash'
 import React from 'react'
 import { config as ur_config, afterFetch, handleError } from '@unrest/core'
 import css from '@unrest/css'
@@ -46,17 +47,27 @@ class CTC extends React.Component {
   state = {
     answer: {},
     selected: {},
+    cellSize: 24,
   }
+  componentDidMount = () => this.resize()
+
+  resize = debounce(() => {
+    const { current } = clickRef
+    current && this.setState({ cellSize: current.offsetHeight / 10 })
+  }, 100)
+
   constructor(props) {
     super(props)
     this.game_keys = '1234567890'.split('')
     this.allowed_keys = ARROWS.concat(this.game_keys)
     this.listeners = ['keydown', 'mousedown', 'mouseup', 'paste']
     this.listeners.forEach((s) => document.addEventListener(s, this[s]))
+    window.addEventListener('resize', this.resize)
   }
 
   componentWillUnmount() {
     this.listeners.forEach((s) => document.removeEventListener(s, this[s]))
+    window.removeEventListener('resize', this.resize)
   }
 
   paste = (e) => {
@@ -123,7 +134,8 @@ class CTC extends React.Component {
   onMouseMove = (e) => this._move([e.clientX, e.clientY])
 
   mousedown = (e) => {
-    if (e.button === 2) { // right mouse button
+    if (e.button === 2) {
+      // right mouse button
       return
     }
     const index = this.geo.pxy2index([e.clientX, e.clientY])
@@ -214,7 +226,7 @@ class CTC extends React.Component {
           sendKey={this.sendKey}
         />
         <div>
-          <div className="game-area">
+          <div className="game-area" style={{ fontSize: this.state.cellSize }}>
             <div className="board">
               {board.gutters.map((g) => (
                 <div className={g.className} key={g.g}>

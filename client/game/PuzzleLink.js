@@ -25,7 +25,11 @@ const PuzzleLink = (props) => {
   const icon = (s) => css.icon(s + ' text-xl mr-2')
   return (
     <div className="mb-2">
-      <ConstraintBox constraints={constraints} meta={meta} flag_icon={flag_icon} />
+      <ConstraintBox
+        constraints={constraints}
+        meta={meta}
+        flag_icon={flag_icon}
+      />
       {solved ? (
         <i
           className={icon('check text-green-500')}
