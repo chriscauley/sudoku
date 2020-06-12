@@ -1,0 +1,41 @@
+.Game .gutter {
+  $thin: 11.1111111%;
+  $wide: 100%;
+  font-size: 0.6em;
+  display: flex;
+  position: absolute;
+  span {
+    @apply flex justify-center items-center;
+  }
+  &.gutter-left, &.gutter-right {
+    flex-direction: column;
+    height: $wide;
+    top: 0;
+    width: $thin;
+    span {
+      width: $wide;
+      height: $thin;
+    }
+  }
+  &.gutter-top, &.gutter-bottom {
+    height: $thin;
+    right: 0;
+    width: $wide;
+    span {
+      width: $thin;
+      height: $wide;
+    }
+  }
+  &.gutter-top {
+    bottom: 100%;
+  }
+  &.gutter-left {
+    right: 100%;
+  }
+  &.gutter-right {
+    left: 100%;
+  }
+  &.gutter-bottom {
+    top: 100%;
+  }
+}

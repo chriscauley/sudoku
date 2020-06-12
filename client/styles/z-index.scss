@@ -1,0 +1,12 @@
+/* I find it useful to keep all z-indexes together */
+.Game {
+  .colour { z-index: 0; }
+  ._canvas { z-index: 1; }
+  .cage, .hover { z-index: 4; }
+  .selected:before, .selected:after { z-index: 5; }
+  .question, .answer, .corner, .centre { z-index: 20; }
+  .to:after, .from:before { z-index: 10; }
+  .clickMask { z-index: 50; }
+  .cursor { z-index: 60; }
+  .Controls { z-index: 100; }
+}
