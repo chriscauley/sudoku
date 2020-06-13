@@ -5,6 +5,7 @@ import { config as ur_config, afterFetch, handleError } from '@unrest/core'
 import css from '@unrest/css'
 import auth from '@unrest/react-auth'
 
+import keyboard from './keyboard'
 import Index from './Index'
 import withGame from './withGame'
 import Hoverdown from './Hoverdown'
@@ -16,6 +17,7 @@ import PuzzleAdminForm from './PuzzleAdminForm'
 
 const clickRef = React.createRef()
 const gameRef = React.createRef()
+const icon = (s, rest) => css.icon(s, 'px-2', rest)
 
 const getClassName = ({
   xy,
@@ -31,17 +33,6 @@ const getClassName = ({
     answer: answer !== undefined,
     error,
   })
-
-const KEY_MAP = {}
-
-')!@#$%^&*('.split('').forEach((key, i) => (KEY_MAP[key] = i.toString()))
-const ARROWS = ['ArrowUp', 'ArrowRight', 'ArrowLeft', 'ArrowDown']
-
-const icon = (s, rest) => css.icon(s, 'px-2', rest)
-
-'abcdefghijklmnopqrstuvwxyz'
-  .split('')
-  .forEach((key) => (KEY_MAP[key.toUpperCase()] = key))
 
 // this can be GameComponent now (or whatever)
 class CTC extends React.Component {
@@ -65,8 +56,6 @@ class CTC extends React.Component {
 
   constructor(props) {
     super(props)
-    this.game_keys = '1234567890'.split('')
-    this.allowed_keys = ARROWS.concat(this.game_keys)
     this.listeners = ['keydown', 'mousedown', 'mouseup', 'paste']
     this.listeners.forEach((s) => document.addEventListener(s, this[s]))
     window.addEventListener('resize', this.resize)
@@ -98,8 +87,8 @@ class CTC extends React.Component {
   }
   mouseup = () => this.setState({ dragging: false, removing: false })
   keydown = (e) => {
-    const value = KEY_MAP[e.key] || e.key
-    if (this.allowed_keys.includes(value)) {
+    const value = keyboard.key_map[e.key] || e.key
+    if (keyboard.allowed_keys.includes(value)) {
       e.preventDefault()
     }
     if (value === 'z' && e.ctrlKey) {
@@ -111,7 +100,7 @@ class CTC extends React.Component {
       return
     }
     const mode = getMode(e, this.state.mode)
-    if (ARROWS.includes(value)) {
+    if (keyboard.arrows.includes(value)) {
       return this.sendArrow(value, e.ctrlKey)
     }
     this.sendKey(value, mode)
@@ -133,7 +122,7 @@ class CTC extends React.Component {
     const indexes = Object.keys(selected)
     if (value === 'Delete' || value === 'Backspace') {
       mode = 'delete'
-    } else if (!this.allowed_keys.includes(value)) {
+    } else if (!keyboard.allowed_keys.includes(value)) {
       return
     }
     this.props.game.actions.doAction({ mode, indexes, value })
@@ -229,7 +218,6 @@ class CTC extends React.Component {
         <div className="play-area">
           <div className="flex-cell">
             <Controls
-              keys={this.game_keys}
               onClick={this.setMode}
               mode={this.state.mode}
               sendKey={this.sendKey}

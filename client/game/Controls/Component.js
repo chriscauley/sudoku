@@ -1,8 +1,10 @@
 import React from 'react'
 
-import getMode from './getMode'
+import keyboard from '../keyboard'
 import { _withGame } from '../withGame'
+
 import css from './css'
+import getMode from './getMode'
 import ActionButton from './ActionButton'
 import Check from './Check'
 import Reset from './Reset'
@@ -26,7 +28,7 @@ export default class Controls extends React.Component {
 
   keyupdown = ({ shiftKey, ctrlKey }) => this.setState({ shiftKey, ctrlKey })
   render() {
-    const { keys, onClick = noop, sendKey = noop } = this.props
+    const { onClick = noop, sendKey = noop } = this.props
     const mode = getMode(this.state, this.props.mode)
     const modes = ['answer', 'corner', 'centre', 'colour']
     return (
@@ -47,7 +49,7 @@ export default class Controls extends React.Component {
           ))}
         </div>
         <div className={css.row}>
-          {keys.map((key) => (
+          {keyboard.numbers.map((key) => (
             <div
               className={css.button.dark('mr-2 mode-' + mode)}
               data-key={key}
