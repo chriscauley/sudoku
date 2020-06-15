@@ -33,7 +33,7 @@ export default class Controls extends React.Component {
     const modes = ['answer', 'corner', 'centre', 'colour']
     return (
       <div className="Controls" onClick={(e) => e.stopPropagation()}>
-        <div className={css.row}>
+        <div className={css.row + ' pt-2'}>
           <ActionButton name="undo" />
           <ActionButton name="redo" />
           <ActionButton name="replay" />

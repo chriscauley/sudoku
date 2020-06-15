@@ -573,6 +573,11 @@ export default class Board {
       marks: [],
       extras: [{ className: 'colour colour-' + this.colour[index] }],
     }))
+
+    this.is_full = !cells.find(
+      (c) => c.answer === undefined && c.question === undefined,
+    )
+
     this.errors.indexes.forEach((index) => (cells[index].error = true))
     this.extras.cages.forEach((cage) =>
       cage.cells.forEach(

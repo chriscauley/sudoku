@@ -2,6 +2,7 @@ import React from 'react'
 import css from './css'
 
 import { _withGame } from '../withGame'
+import ActionButton from './ActionButton'
 
 export default _withGame(function Reset(props) {
   return props.game.resetting ? (
@@ -12,8 +13,6 @@ export default _withGame(function Reset(props) {
       confirm?
     </div>
   ) : (
-    <div className={css.btn()} onClick={props.game.actions.reset}>
-      reset
-    </div>
+    <ActionButton name="reset" />
   )
 })

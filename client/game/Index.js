@@ -18,7 +18,9 @@ const Index = (props) => {
         </li>
         {puzzles.filter(_filter).map((puzzle) => (
           <li key={puzzle.id}>
-            {puzzle.flag !== 'valid' && <b className="float-left mr-2">[{puzzle.flag.toUpperCase()}] </b>}
+            {puzzle.flag !== 'valid' && (
+              <b className="float-left mr-2">[{puzzle.flag.toUpperCase()}] </b>
+            )}
             <PuzzleLink {...puzzle} />
           </li>
         ))}
