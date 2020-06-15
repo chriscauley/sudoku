@@ -30,13 +30,13 @@ def update_video(video, Puzzle):
 
     puzzle_id = video.puzzle_id
     if _exid in description and not puzzle_id:
-        puzzle_external_id = description.split(_exid)[1].split(' ')[0].split(r'\n')[0].split('\\')[0]
+        puzzle_external_id = description.split(_exid)[1].split(' ')[0].split('\n')[0].split('\\')[0]
         puzzle = Puzzle.objects.filter(external_id=puzzle_external_id).first()
         if not puzzle:
-            print('Puzzle created for ', video.title)
             puzzle = Puzzle(external_id=puzzle_external_id)
             puzzle.publish_date = video.publish_date
             puzzle.save()
+            print('Puzzle created for ', video.title, repr(puzzle.external_id))
         puzzle_id = puzzle.id
 
     values = dict(

@@ -9,6 +9,7 @@
 @import './mark.scss';
 
 .Game {
+  height: 100%;
   user-select: none;
   .game-area {
     width: 100%;

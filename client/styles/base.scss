@@ -1,7 +1,7 @@
 @import "sudoku.scss";
 @import "constraints.scss";
 
-#react-app, body, html, #app-content, .Game {
+#react-app, body, html, #app-content {
   height: 100vh;
 }
 
@@ -16,7 +16,6 @@
 
 .PuzzleAdminForm {
   @apply absolute bottom-0 left-0 p-4 bg-white;
-  z-index: 100;
   .rjsf, .form-group {
     margin-bottom: 0;
   }

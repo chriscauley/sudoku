@@ -15,7 +15,10 @@ function PuzzleAdminForm(props) {
         customButton={true}
         initial={{ flag }}
       />
-      <a href={`/admin/puzzle/puzzle/${puzzle_id}`} className={css.link()} />
+      <a href={`/admin/puzzle/puzzle/${puzzle_id}`} className={css.link()}>
+        <i className={css.icon('database mr-2')} />
+        admin
+      </a>
     </div>
   )
 }

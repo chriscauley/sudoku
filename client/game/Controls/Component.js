@@ -34,11 +34,11 @@ export default class Controls extends React.Component {
     return (
       <div className="Controls" onClick={(e) => e.stopPropagation()}>
         <div className={css.row}>
-          <Reset />
-          <Check />
+          <ActionButton name="undo" />
           <ActionButton name="redo" />
           <ActionButton name="replay" />
-          <ActionButton name="undo" />
+          <Reset />
+          <Check />
           <Submit />
         </div>
         <div className={css.row}>
