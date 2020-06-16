@@ -1,8 +1,12 @@
 @import "sudoku.scss";
 @import "constraints.scss";
 
-#react-app, body, html, #app-content {
+#react-app, body, html {
   height: 100vh;
+}
+
+.app-content {
+  background: white;
 }
 
 .Game {

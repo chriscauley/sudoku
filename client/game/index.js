@@ -18,6 +18,10 @@ import PuzzleAdminForm from './PuzzleAdminForm'
 const clickRef = React.createRef()
 const gameRef = React.createRef()
 const icon = (s, rest) => css.icon(s, 'px-2', rest)
+const noRightClick = e => {
+  e.preventDefault()
+  return false
+}
 
 const getClassName = ({
   xy,
@@ -186,7 +190,7 @@ class CTC extends React.Component {
       cells[hover].extras.push({ className: 'hover' })
     }
     return (
-      <div className="Game theme-ctc">
+      <div className="Game theme-ctc" onContextMenu={noRightClick}>
         <div className="my4 flex justify-between items-center">
           <div className="mr-4">
             {board.solve && 'Victory!'} @ {board.getTime()}
