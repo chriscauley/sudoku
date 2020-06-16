@@ -92,16 +92,8 @@ export default class Checker {
   }
 
   complete() {
-    const allowed = {}
-    range(1, 10).map((i) => (allowed[i] = true))
-    this.geo.indexes.forEach((index) => {
-      const answer = this.answers[index]
-      if (!allowed[answer]) {
-        this.errors.count += 1
-        this.errors.reasons.push(`No final answer can be ${answer}`)
-        this.errors.indexes.push(index)
-      }
-    })
+    const indexes = this.geo.indexes.filter(i => isNaN(this.answers[i]))
+    indexes.length && this.addError(indexes, "All answers must be filled in")
   }
 
   _binAnswers(indexes) {

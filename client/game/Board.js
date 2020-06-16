@@ -601,8 +601,7 @@ export default class Board {
     this.clearErrors()
 
     // to qualify as a win they must check sudoku constraints (row, col, box)
-    const required = ['row', 'col', 'box', 'complete']
-    const valid = !required.find((type) => !constraints.includes(type))
+    const valid = !this.required_constraints.find((type) => !constraints.includes(type))
 
     this.checker.check({ constraints })
     if (valid && this.errors.count === 0) {
@@ -679,7 +678,7 @@ export default class Board {
   }
 
   makeSolve() {
-    this.solve = {
+    this.solve = this.solve || {
       ms: (this.finish || new Date().valueOf()) - this.start,
       constraints: this.constraints,
       answer: this.geo.indexes.map((i) =>
