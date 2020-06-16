@@ -96,3 +96,8 @@
     content: "\f055";
   }
 }
+
+.solved-icon {
+  @apply text-green-500 align-middle;
+  font-size: 1.5em;
+}

@@ -21,21 +21,24 @@ const PuzzleLink = (props) => {
   const solved = solves.find((s) => s.puzzle_id === id)
 
   const title = videos.length ? videos[0].title : '???'
-  const _local_solve = saved_games.keys.includes(external_id)
-  const icon = (s) => css.icon(s + ' text-xl mr-2')
+  const local_solve = saved_games.keys.includes(external_id)
+  const icon = (s) => css.icon(s + ' mr-2')
   return (
-    <div className="mb-2">
+    <div className="mb-2 icons">
+      {solved && (
+        <i
+          className={icon('check solved-icon')}
+          title={`solved ${solved}`}
+        />
+      )}
+      {!solved && local_solve && (
+        <span className={icon('trophy solved-icon')} title="You have solved this puzzle" />
+      )}
       <ConstraintBox
         constraints={constraints}
         meta={meta}
         flag_icon={flag_icon}
       />
-      {solved && (
-        <i
-          className={icon('check text-green-500')}
-          title={`solved ${solved}`}
-        />
-      )}
       <Tag to={`/puzzle/ctc/${external_id}/`} className={css.link()}>
         {title} #{external_id}
       </Tag>
