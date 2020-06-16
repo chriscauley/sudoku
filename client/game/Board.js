@@ -601,7 +601,9 @@ export default class Board {
     this.clearErrors()
 
     // to qualify as a win they must check sudoku constraints (row, col, box)
-    const valid = !this.required_constraints.find((type) => !constraints.includes(type))
+    const valid = !this.required_constraints.find(
+      (type) => !constraints.includes(type),
+    )
 
     this.checker.check({ constraints })
     if (valid && this.errors.count === 0) {

@@ -26,13 +26,13 @@ const PuzzleLink = (props) => {
   return (
     <div className="mb-2 icons">
       {solved && (
-        <i
-          className={icon('check solved-icon')}
-          title={`solved ${solved}`}
-        />
+        <i className={icon('check solved-icon')} title={`solved ${solved}`} />
       )}
       {!solved && local_solve && (
-        <span className={icon('trophy solved-icon')} title="You have solved this puzzle" />
+        <span
+          className={icon('trophy solved-icon')}
+          title="You have solved this puzzle"
+        />
       )}
       <ConstraintBox
         constraints={constraints}

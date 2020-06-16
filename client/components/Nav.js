@@ -10,9 +10,12 @@ export default function Nav() {
           Sudoku
         </Link>
       </section>
-      <section className={css.nav.section('flex items-center')}>
+      <section
+        className={css.nav.section('flex items-center text-3xl text-blue-500')}
+      >
+        <ConfigLink />
         <a
-          className="text-blue-500 fa fa-github text-3xl"
+          className={css.icon('github mx-2')}
           href="https://github.com/chriscauley/sudoku/"
         />
       </section>

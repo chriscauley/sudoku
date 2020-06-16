@@ -18,7 +18,7 @@ import PuzzleAdminForm from './PuzzleAdminForm'
 const clickRef = React.createRef()
 const gameRef = React.createRef()
 const icon = (s, rest) => css.icon(s, 'px-2', rest)
-const noRightClick = e => {
+const noRightClick = (e) => {
   e.preventDefault()
   return false
 }

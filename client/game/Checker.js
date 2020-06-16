@@ -92,8 +92,8 @@ export default class Checker {
   }
 
   complete() {
-    const indexes = this.geo.indexes.filter(i => isNaN(this.answers[i]))
-    indexes.length && this.addError(indexes, "All answers must be filled in")
+    const indexes = this.geo.indexes.filter((i) => isNaN(this.answers[i]))
+    indexes.length && this.addError(indexes, 'All answers must be filled in')
   }
 
   _binAnswers(indexes) {
