@@ -47,15 +47,18 @@ $mark-color: var(--mark-color);
 $mark-transparent: var(--mark-transparent);
 
 .Game {
-  --cage-width: 2px;
   --border-box: 0;
   --border-cell: 0;
-  .display-cells {
+  --cage-width: 1px;
+  &.display_cells {
     --border-cell: 1px;
     --border-box: 1px;
   }
-  .display-boxes, .display-boxes.display-cells {
+  &.display_boxes, &.display_boxes.display_cells {
     --border-box: 3px;
+  }
+  &.heavy_cage {
+    --cage-width: 2px;
   }
 }
 

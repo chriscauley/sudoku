@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import css from '@unrest/css'
+import { ConfigLink } from '../config'
 
 export default function Nav() {
   return (

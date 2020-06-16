@@ -2,6 +2,7 @@ import classnames from 'classnames'
 import { debounce } from 'lodash'
 import React from 'react'
 import { config as ur_config, afterFetch, handleError } from '@unrest/core'
+import config from '../config'
 import css from '@unrest/css'
 import auth from '@unrest/react-auth'
 
@@ -189,8 +190,9 @@ class CTC extends React.Component {
     if (cells[hover]) {
       cells[hover].extras.push({ className: 'hover' })
     }
+    const className = classnames('Game theme-ctc', this.props.config.formData)
     return (
-      <div className="Game theme-ctc" onContextMenu={noRightClick}>
+      <div className={className} onContextMenu={noRightClick}>
         <div className="my4 flex justify-between items-center">
           <div className="mr-4">
             {board.solve && 'Victory!'} @ {board.getTime()}
@@ -288,5 +290,5 @@ class CTC extends React.Component {
 
 export default {
   Index,
-  CTC: auth.connect(withGame(CTC)),
+  CTC: config.connect(auth.connect(withGame(CTC))),
 }

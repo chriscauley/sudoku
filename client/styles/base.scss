@@ -27,7 +27,6 @@
 
 .hoverdown {
   @apply relative;
-  z-index: 300;
   .hoverdown--target {
     background: white;
     @apply absolute right-0 hidden overflow-hidden;
