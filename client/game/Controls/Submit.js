@@ -5,8 +5,9 @@ import { _withGame } from '../withGame'
 import ActionButton from './ActionButton'
 
 function Submit({ game, auth }) {
-  const { solves = [] } = auth.user || {}
+  const { solves = [], is_staff } = auth.user || {}
   if (
+    !is_staff ||
     !game.board.solve ||
     solves.find((s) => s.puzzle_id === game.board.puzzle_id)
   ) {

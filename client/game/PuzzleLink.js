@@ -21,7 +21,7 @@ const PuzzleLink = (props) => {
   const solved = solves.find((s) => s.puzzle_id === id)
 
   const title = videos.length ? videos[0].title : '???'
-  const local_solve = saved_games.keys.includes(external_id)
+  const _local_solve = saved_games.keys.includes(external_id)
   const icon = (s) => css.icon(s + ' text-xl mr-2')
   return (
     <div className="mb-2">
@@ -30,13 +30,11 @@ const PuzzleLink = (props) => {
         meta={meta}
         flag_icon={flag_icon}
       />
-      {solved ? (
+      {solved && (
         <i
           className={icon('check text-green-500')}
           title={`solved ${solved}`}
         />
-      ) : (
-        local_solve && <span className={icon('warning text-yellow-500')} />
       )}
       <Tag to={`/puzzle/ctc/${external_id}/`} className={css.link()}>
         {title} #{external_id}
