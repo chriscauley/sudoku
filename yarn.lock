@@ -1318,10 +1318,10 @@
   resolved "https://registry.yarnpkg.com/@unrest/react-auth/-/react-auth-0.0.3.tgz#afd401b36f6bb72bd3ca365c820194bd9499f4f9"
   integrity sha512-7JZG+bbaM9oXicBr6eePZPbvM5xyLEUH+pZ4SXrdzTxoeU5OcXqFBNAQvstzXafuPF5NrYhiZYv3iZbnA+BpIA==
 
-"@unrest/react-config-hook@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@unrest/react-config-hook/-/react-config-hook-0.0.1.tgz#972da300ae36c03852da01b0db77721daf88bcc3"
-  integrity sha512-5Tx77vt6nf/rBh/YL2duU7qeT0rCRQz8s4DtjUE6tdaUIoHGmAjKxBnh80X8rNr0q6xdZaIh+OFCJqmUDyvXLw==
+"@unrest/react-config-hook@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@unrest/react-config-hook/-/react-config-hook-0.0.3.tgz#10f0a2ff0735af32b17a55ae37aa55772c837a2f"
+  integrity sha512-n5yGh0emGtCmSOSmCN2QF9htMYIBvZ7aoMuVvfSu/bqpOoxioqzDvbI9r4wHlCaYWwJfgOY7S42E6q9DVByYtA==
 
 "@unrest/react-jsonschema-form@^0.0.2":
   version "0.0.2"
@@ -1333,6 +1333,9 @@
   resolved "https://codeload.github.com/chriscauley/unrest-react-rest-hook/tar.gz/9b673599f4d104d0990eb46b0da39b14240a6242"
   dependencies:
     lodash "^4.17.15"
+    react ">=15"
+    react-dom "^16.13.1"
+    react-router-dom "^5.1.2"
     use-global-hook "^0.1.12"
 
 "@unrest/storage@^0.1.0":
@@ -2202,6 +2205,11 @@ clone@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
   integrity sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
+
+clsx@^1.1.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
+  integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
 
 co@^4.6.0:
   version "4.6.0"
@@ -6340,7 +6348,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.4"
 
-prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -6533,6 +6541,14 @@ react-router@5.2.0:
     react-is "^16.6.0"
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
+
+react-tabs@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-tabs/-/react-tabs-3.1.1.tgz#b363a239f76046bb2158875a1e5921b11064052f"
+  integrity sha512-HpySC29NN1BkzBAnOC+ajfzPbTaVZcSWzMSjk56uAhPC/rBGtli8lTysR4CfPAyEE/hfweIzagOIoJ7nu80yng==
+  dependencies:
+    clsx "^1.1.0"
+    prop-types "^15.5.0"
 
 react@>=15:
   version "16.13.1"

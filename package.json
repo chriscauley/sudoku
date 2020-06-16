@@ -19,7 +19,7 @@
     "@unrest/css": "chriscauley/unrest-css",
     "@unrest/random": "^0.0.2",
     "@unrest/react-auth": "^0.0.3",
-    "@unrest/react-config-hook": "^0.0.1",
+    "@unrest/react-config-hook": "^0.0.3",
     "@unrest/react-jsonschema-form": "^0.0.2",
     "@unrest/react-rest-hook": "chriscauley/unrest-react-rest-hook",
     "@unrest/storage": "^0.1.0",
@@ -33,6 +33,7 @@
     "react-jsonschema-form": "^2.0.0-alpha.1",
     "react-markdown": "^4.3.1",
     "react-router-dom": "^5.1.2",
+    "react-tabs": "^3.1.1",
     "tailwindcss": "^1.4.5",
     "use-global-hook": "^0.1.12"
   },
