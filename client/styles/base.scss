@@ -1,12 +1,21 @@
 @import "sudoku.scss";
 @import "constraints.scss";
+@import "cssvariables.scss";
 
 #react-app, body, html {
   height: 100vh;
 }
 
+body {
+  background: var(--dark-bg);
+  color: var(--text);
+}
+
+.navbar {
+  background: var(--border);
+}
 .app-content {
-  background: white;
+  background: var(--bg);
 }
 
 .Game {
@@ -19,7 +28,7 @@
 }
 
 .PuzzleAdminForm {
-  @apply absolute bottom-0 left-0 p-4 bg-white;
+  @apply absolute bottom-0 left-0 p-4 bg--bg;
   .rjsf, .form-group {
     margin-bottom: 0;
   }
@@ -28,9 +37,8 @@
 .hoverdown {
   @apply relative;
   .hoverdown--target {
-    background: white;
     @apply absolute right-0 hidden overflow-hidden;
-    @apply border p-4 pt-8 shadow-lg rounded;
+    @apply border p-4 pt-8 shadow-lg rounded bg--bg;
     max-width: 100vw;
     top: 100%;
     white-space: pre;
@@ -72,7 +80,7 @@
     @apply text-gray-500 top-0 right-0 p-2 text-lg;
     position: absolute;
     a { @apply p-2 }
-    .active { @apply text-black; }
+    .active { @apply text--text; }
   }
   &.fixed .hoverdown--target {
     position: fixed;

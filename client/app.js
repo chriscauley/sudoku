@@ -6,8 +6,10 @@ import { alert } from '@unrest/core'
 import config from './config'
 import Nav from './components/Nav'
 import game from './game'
+import classnames from 'classnames'
 
-const App = () => {
+const App = config.connect((props) => {
+  document.body.className = classnames(props.config.formData)
   return (
     <HashRouter>
       <Nav />
@@ -24,7 +26,7 @@ const App = () => {
       </div>
     </HashRouter>
   )
-}
+})
 
 const domContainer = document.querySelector('#react-app')
 ReactDOM.render(<App />, domContainer)

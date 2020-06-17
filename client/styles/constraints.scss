@@ -8,7 +8,7 @@
   vertical-align: middle;
   width: 1.5em;
   &[data-count]:after {
-    @apply flex justify-center items-center rounded-full absolute text-white bg-black;
+    @apply flex justify-center items-center rounded-full absolute text--bg bg--text;
     content: attr(data-count);
     font-size: 0.7em;
     height: 1.5em;
@@ -35,7 +35,7 @@
 
 .constraint-killer {
   background: none;
-  border: 3px dashed black;
+  border: 3px dashed var(--text);
 }
 
 .constraint-anti_knight {

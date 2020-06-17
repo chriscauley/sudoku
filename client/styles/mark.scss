@@ -19,7 +19,7 @@
   position: absolute;
   width: 100%;
   &.wall {
-    border: black 2px solid;
+    border: var(--text) 2px solid;
     background: $mark;
   }
   &.v-split {
