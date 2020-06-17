@@ -99,20 +99,20 @@
         position: absolute;
         top:0;
         border: $sel solid transparent;
-        width: 100%;
-        height: 100%;
+        height: calc(100% - #{$sel / 2});
+        width: calc(100% - #{$sel / 2});
       }
       &.selected-1:before {
-        border-right: $selected;
+        border-right-color: var(--border-selected);
       }
       &.selected--1:before {
-        border-left: $selected;
+        border-left-color: var(--border-selected);
       }
       &.selected--9:after {
-        border-top: $selected;
+        border-top-color: var(--border-selected);
       }
       &.selected-9:after {
-        border-bottom: $selected;
+        border-bottom-color: var(--border-selected);
       }
     }
   }
@@ -173,7 +173,7 @@
 
 .board .cell {
   $error: inset 0 0 8px red;
-  $hover: inset map.get($pallet, "hover") 0 0 3px 3px;
+  $hover: inset map.get($pallet, "hover") -0.5px -0.5px 3px 3px;
   &.error {
     box-shadow: $error;
   }

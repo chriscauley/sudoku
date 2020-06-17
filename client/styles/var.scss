@@ -14,12 +14,11 @@ $pallet: (
   7: var(--yellow),
   8: var(--blue),
   9: var(--teal),
-  "selected": #888,
-  "hover": #666,
+  "selected": var(--selected),
+  "hover": var(--hover),
 );
 
 $sel: 4px;
-$selected: $sel solid map.get($pallet, "selected");
 $darkenSelected: 5%;
 $mark: rgba(0,0,0,0.15);
 $thermo: #ddd;

@@ -9,7 +9,6 @@
   --teal: rgb(52, 187, 230);
   --blue: rgb(64, 128, 255);
   --orange: #EB7532; /* not useable as a colour */
-  --selected: rgba(0, 0, 0, 0.1);
 }
 
 body {
@@ -32,12 +31,18 @@ body {
   --text: black;
   --bg: white;
   --border: #e2e8f0;
+  --border-selected: #777;
   --dark-bg: #f8f8f8;
+  --selected: rgba(0, 0, 0, 0.1);
+  --hover: #666;
   &.dark_mode {
     --dark-bg: #111;
     --bg: #222;
+    --border-selected: #ddd;
     --text: #ddd;
     --border: #444;
+    --selected: rgba(255, 255, 255, 0.2);
+    --hover: #aaa;
   }
 }
 
