@@ -2,8 +2,9 @@ import classNames from 'classnames'
 import { cloneDeep, range, pick } from 'lodash'
 import Storage from '@unrest/storage'
 
-import Geo, { vector } from './Geo'
+import Animator from './Animator'
 import Checker from './Checker'
+import Geo, { vector } from './Geo'
 
 const css = {
   xy: (xy) => `x-${xy[0]} y-${xy[1]}`,
@@ -295,6 +296,7 @@ export default class Board {
     this.options = options
     this.geo = new Geo({ W: 9 })
     this.checker = new Checker(this)
+    this.animator = new Animator(this)
     this.reset()
 
     // load saved game if exists

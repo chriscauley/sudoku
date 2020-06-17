@@ -17,6 +17,7 @@ import PuzzleAdminForm from './PuzzleAdminForm'
 
 const clickRef = React.createRef()
 const gameRef = React.createRef()
+const animationRef = React.createRef()
 const icon = (s, rest) => css.icon(s, 'px-2', rest)
 const noRightClick = (e) => {
   e.preventDefault()
@@ -177,6 +178,7 @@ class CTC extends React.Component {
     const { user = {} } = this.props.auth
     this.geo = board.geo
     board.geo.element = clickRef.current
+    board.animation_canvas = animationRef.current
     const cells = board.toCells(selected)
     if (cells[cursor]) {
       cells[cursor].extras.push({ className: 'cursor' })
@@ -241,6 +243,7 @@ class CTC extends React.Component {
                     className="_canvas"
                     style={{ backgroundImage: board.bg_image }}
                   />
+                  <canvas ref={animationRef} className="animation_canvas" />
                   {cells.map((cell) => (
                     <div key={cell.index} className={getClassName(cell)}>
                       {cell.question === undefined &&
