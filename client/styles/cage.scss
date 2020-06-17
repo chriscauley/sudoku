@@ -1,14 +1,14 @@
 @import './var.scss';
 
 .board .cell .cage {
-  $color: var(--text);
   position: absolute;
   height: calc(100% - var(--cage-width));
   top: 0;
   left: 0;
   width: calc(100% - var(--cage-width));
   &:before {
-    border: 0 dashed $color;
+    @apply border--text;
+    border: 0 dashed;
     content: "";
     display: block;
     height: 100%;

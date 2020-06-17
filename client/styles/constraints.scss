@@ -21,6 +21,12 @@
   }
 }
 
+.dark_mode .constraint- {
+  &sudoku, &sandwich, &arrow_sudoku, &anti_knight, &anti_king, &anti_queen {
+    filter: invert(1)
+  }
+}
+
 .constraint-sudoku {
   background-image: url('../icons/sudoku.svg'),
 }
@@ -34,8 +40,9 @@
 }
 
 .constraint-killer {
+  @apply border--text;
   background: none;
-  border: 3px dashed var(--text);
+  border: 3px dashed;
 }
 
 .constraint-anti_knight {

@@ -7,12 +7,12 @@
 }
 
 body {
-  background: var(--dark-bg);
+  background: var(--border);
   color: var(--text);
 }
 
 .navbar {
-  background: var(--border);
+  background: var(--dark-bg);
 }
 .app-content {
   background: var(--bg);

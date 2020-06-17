@@ -26,6 +26,13 @@ body {
   &.heavy_cage {
     --cage-width: 2px;
   }
+}
+
+body {
+  --text: black;
+  --bg: white;
+  --border: #e2e8f0;
+  --dark-bg: #f8f8f8;
   &.dark_mode {
     --dark-bg: #111;
     --bg: #222;

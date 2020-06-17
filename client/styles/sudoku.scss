@@ -45,7 +45,8 @@
     width: 11.1111%;
   }
   .sudoku {
-    border: solid var(--text);
+    @apply border--text;
+    border: solid;
     border-width: 3px;
     .cell {
       align-items: center;
@@ -53,11 +54,8 @@
       justify-content: center;
     }
     .cell .number {
-      align-items: center;
-      display: flex;
-      justify-content: center;
-
-      border: var(--text) solid;
+      @apply border--text items-center justify-center flex;
+      border: solid;
       border-width: 0 $border-cell $border-cell 0;
       position: absolute;
       top: 0;
@@ -144,7 +142,6 @@
     top: 0;
     left: 0;
     position: absolute;
-    opacity: 0.5;
   }
   @for $i from 0 through 9 {
     .colour-#{$i} {
