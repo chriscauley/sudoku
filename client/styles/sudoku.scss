@@ -18,11 +18,15 @@
 
 .Game .play-area {
   @apply flex overflow-hidden h-full;
+  .Controls {
+    @apply items-center justify-center;
+    width: 250px;
+  }
   @media (max-aspect-ratio: 1/1) {
     flex-direction: column;
-  }
-  .Controls {
-    @apply items-center justify-center w-full;
+    .Controls {
+      @apply w-full;
+    }
   }
 }
 
