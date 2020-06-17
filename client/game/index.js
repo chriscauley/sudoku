@@ -1,7 +1,7 @@
 import classnames from 'classnames'
 import { debounce } from 'lodash'
 import React from 'react'
-import { config as ur_config, afterFetch, handleError } from '@unrest/core'
+import { postForm } from '@unrest/core'
 import css from '@unrest/css'
 import auth from '@unrest/react-auth'
 
@@ -77,16 +77,11 @@ class CTC extends React.Component {
         console.warn('Discarding non-image paste data')
         continue
       }
-      const file = item.getAsFile()
-      const formData = new FormData()
-      formData.append('screenshot', file)
-      return fetch(`/api/schema/PuzzleDataForm/${this.props.api.puzzle.id}/`, {
-        method: 'POST',
-        body: formData,
-        headers: { 'X-CSRFToken': ur_config.getCSRF() },
-      })
-        .then(afterFetch, handleError)
-        .then(() => this.props.api.refetch(this.props))
+      const screenshot = item.getAsFile()
+      return postForm(
+        `/api/schema/PuzzleDataForm/${this.props.api.puzzle.id}/`,
+        { screenshot },
+      )
     }
   }
   mouseup = () => this.setState({ dragging: false, removing: false })
