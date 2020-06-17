@@ -1,10 +1,12 @@
 import React from 'react'
 import css from '@unrest/css'
 
+import url from '../url'
+
 export default function PuzzleSnapshot(props) {
   const { puzzle } = props
   if (!puzzle.screenshot) {
-    return <iframe src={puzzle.external_url} />
+    return <iframe src={url(puzzle.external_url)} />
   }
   return (
     <>
