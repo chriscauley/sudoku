@@ -1,0 +1,22 @@
+* Who am I
+  I'm a freelance web developer specializing in react and python. I'm currently unemployed, so if you need react or python, hit me up.
+* Why?
+  I started watching Cracking the Cryptic on youtube a few weeks ago. They solve really hard hand crafted puzzles. You can (usually) pull up the puzzle in a web app and play along with them. I noticed the web app was written in react and, since I'm a web developer, I constantly thought of features I would want to add as I played along. I eventually wrote them asking for access to the react soruce code and volunteering to help. I didn't really expect them to respond (they didn't) since they have become quite popular recently
+  So almost immediately started working on an app. Three weeks later I think I have a pretty solid prototype and I plan on promoting it a bit on the discord today. I find this problem fun because I like making video games and the wide variety of rules provide a long set of fun challenges
+* Types of puzzles
+  The CTC do a wide variety of puzzles
+* Features I added
+  index of puzzles
+  larger view area
+  save progress
+  save solution
+  video link/description on puzzle
+  checkers for non-sudoku rules
+  replay
+  dropdown!
+  parity
+  disable right click
+* comming soon
+  help screen (right after this presentation)
+  More rules!
+  user submitted puzzles
