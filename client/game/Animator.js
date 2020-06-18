@@ -1,10 +1,14 @@
+import pride from './pride'
+
 export default class Animator {
   constructor(board) {
     this.lastframe = 0
     this.board = board
     this.queue = []
     this.ms_per_frame = 200
-    this.ms_per_fade = 300
+    this.ms_per_fade = 700
+    this.current_frame_ms = 0
+    this.i_color = 0
   }
 
   init() {
@@ -32,11 +36,20 @@ export default class Animator {
     this.init()
   }
 
-  highlight(indexes, fillStyle = '#008800') {
-    this.queue.push({ indexes, fillStyle })
+  nextColor(scheme) {
+    return pride[scheme][this.i_color++ % pride[scheme].length]
+  }
+
+  add({ indexes, delay = 1, scheme }) {
+    if (scheme !== this.last_scheme) {
+      this.i_color = 0
+      this.last_scheme = scheme
+    }
+    this.queue.push({ indexes, delay, fillStyle: this.nextColor(scheme) })
     cancelAnimationFrame(this.animationframe)
     this.animationframe = requestAnimationFrame(this.tick)
   }
+
   tick = () => {
     cancelAnimationFrame(this.animationframe)
     this.init()
@@ -45,11 +58,12 @@ export default class Animator {
     const delta_ms = now - this.lastframe
 
     this.ctx.clearRect(0, 0, width, height)
-    this.ctx.globalAlpha = (this.ms_per_fade - delta_ms) / this.ms_per_fade
+    // this.ctx.globalAlpha = (this.ms_per_fade - delta_ms) / this.ms_per_fade
     this.ctx.drawImage(this._last, 0, 0, width, height)
     this.ctx.globalAlpha = 1
-    if (delta_ms > this.ms_per_frame && this.queue.length) {
-      const { indexes, fillStyle } = this.queue.shift()
+    if (delta_ms > this.current_frame_ms && this.queue.length) {
+      const { indexes, fillStyle, delay } = this.queue.shift()
+      this.current_frame_ms = this.ms_per_frame * delay
       const s = width / 9
       this.ctx.fillStyle = fillStyle
       indexes.forEach((index) => {
@@ -65,6 +79,25 @@ export default class Animator {
     if (now - this.lastframe < this.ms_per_fade || this.queue.length) {
       this.animationframe = requestAnimationFrame(this.tick)
       this.live_ctx.drawImage(this.canvas, 0, 0)
+    } else {
+      this._last.getContext('2d').clearRect(0, 0, width, height)
+      this.current_frame_ms = 0
     }
+  }
+
+  animate({ checker, constraints }) {
+    const schemes = {
+      row: 'diversity',
+      col: 'bi',
+      box: 'trans',
+      complete: 'diversity',
+    }
+    constraints.map((name) => {
+      if (checker.checked[name]) {
+        checker.checked[name].forEach((indexes) =>
+          this.add({ indexes, scheme: schemes[name] || 'lgbt' }),
+        )
+      }
+    })
   }
 }

@@ -609,6 +609,7 @@ export default class Board {
 
     this.checker.check({ constraints })
     if (valid && this.errors.count === 0) {
+      this.animator.animate({ constraints, checker: this.checker })
       this.makeSolve()
       this.save()
     }

@@ -18,6 +18,8 @@ export default class Checker {
       indexes: [],
       count: 0,
     }
+
+    this.checked = {}
   }
 
   check(options = {}) {
@@ -34,6 +36,13 @@ export default class Checker {
       }
       this[constraint]()
     })
+  }
+
+  markChecked(name, indexes) {
+    if (!this.checked[name]) {
+      this.checked[name] = []
+    }
+    this.checked[name].push(indexes)
   }
 
   row = () => this.geo.i_rows.forEach((i) => this._checkSudoku('row', i))
@@ -93,7 +102,16 @@ export default class Checker {
 
   complete() {
     const indexes = this.geo.indexes.filter((i) => isNaN(this.answers[i]))
-    indexes.length && this.addError(indexes, 'All answers must be filled in')
+    if (indexes.length) {
+      // don't bother marking these, they should be obvious
+      this.addError([], 'All answers must be filled in')
+    } else {
+      Object.entries(this._binAnswers(this.geo.indexes)).forEach(
+        ([_number, indexes]) => {
+          this.markChecked('complete', indexes)
+        },
+      )
+    }
   }
 
   _binAnswers(indexes) {
@@ -109,14 +127,15 @@ export default class Checker {
   }
 
   _checkSudoku(type, type_no) {
-    const bins = this._binAnswers(this.geo[`${type}2indexes`](type_no))
+    const indexes = this.geo[`${type}2indexes`](type_no)
+    this.markChecked(type, indexes)
+    const bins = this._binAnswers(indexes)
     Object.entries(bins).forEach(([answer, indexes]) => {
       if (indexes.length > 1) {
-        this.errors.count += indexes.length
-        this.errors.reasons.push(
+        this.addError(
+          indexes,
           `There are ${indexes.length} ${answer}s in ${type} ${type_no}`,
         )
-        this.errors.indexes = this.errors.indexes.concat(indexes)
       }
     })
   }

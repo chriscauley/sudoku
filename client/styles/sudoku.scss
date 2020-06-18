@@ -50,7 +50,7 @@
   }
   .sudoku {
     @apply border--text;
-    border: solid;
+    border-style: solid;
     border-width: 3px;
     .cell {
       align-items: center;
@@ -59,7 +59,7 @@
     }
     .cell .number {
       @apply border--text items-center justify-center flex;
-      border: solid;
+      border-style: solid;
       border-width: 0 $border-cell $border-cell 0;
       position: absolute;
       top: 0;
@@ -172,7 +172,7 @@
 }
 
 .board .cell {
-  $error: inset 0 0 8px red;
+  $error: inset -0.5px -0.5px 8px 3px red;
   $hover: inset map.get($pallet, "hover") -0.5px -0.5px 3px 3px;
   &.error {
     box-shadow: $error;
