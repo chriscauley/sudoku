@@ -1,24 +1,10 @@
 import React from 'react'
-import { alert } from '@unrest/core'
 import css from '@unrest/css'
 import ConfigHook from '@unrest/react-config-hook'
 
-// const colors = [
-//   'text',
-//   'border',
-//   'bg',
-//   'green',
-//   'magenta',
-//   'pink',
-//   'red',
-//   'yellow',
-//   'teal',
-//   'blue',
-// ]
-
 const schema = {
   type: 'object',
-  title: 'Application Settings',
+  title: 'Config',
   properties: {
     dark_mode: {
       title: 'Dark Mode',
@@ -33,7 +19,11 @@ const schema = {
       type: 'boolean',
     },
     heavy_cage: {
-      title: 'Thick cages',
+      title: 'Thick killer cages',
+      type: 'boolean',
+    },
+    cage_last: {
+      title: 'Bottom-right cage label',
       type: 'boolean',
     },
   },
@@ -53,24 +43,12 @@ const actions = {
 
 const connect = ConfigHook('site_config', { schema, actions, initial })
 
-export const ConfigLink = connect(function ConfigLink(props) {
-  const { open } = props.config.actions
-  return <i className={css.icon('gear mx-2 cursor-pointer')} onClick={open} />
-})
-
-function BaseConfigForm(props) {
-  if (!props.config.open) {
-    return null
-  }
-  const onSuccess = () => {
-    props.alert.success('Config saved')
-    props.config.actions.close()
-  }
+function BaseHoverdown(props) {
   return (
-    <div className={css.modal.outer()}>
-      <div className={css.modal.mask()} onClick={props.config.actions.close} />
-      <div className={css.modal.content()}>
-        <props.config.Form onSuccess={onSuccess} />
+    <div className="hoverdown">
+      <i className={css.icon('gear')} />
+      <div className="hoverdown--target">
+        <props.config.Form autosubmit={true} customButton={true} />
       </div>
     </div>
   )
@@ -78,5 +56,5 @@ function BaseConfigForm(props) {
 
 export default {
   connect,
-  Form: connect(alert.connect(BaseConfigForm)),
+  Hoverdown: connect(BaseHoverdown),
 }

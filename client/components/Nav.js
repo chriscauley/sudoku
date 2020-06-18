@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import css from '@unrest/css'
-import { ConfigLink } from '../config'
+import config from '../config'
 
 export default function Nav() {
   return (
@@ -11,12 +11,10 @@ export default function Nav() {
           Sudoku
         </Link>
       </section>
-      <section
-        className={css.nav.section('flex items-center text-3xl text-blue-500')}
-      >
-        <ConfigLink />
+      <section className={css.nav.section('flex items-center')}>
+        <config.Hoverdown />
         <a
-          className={css.icon('github mx-2')}
+          className={css.icon('github mx-2 text-blue-500')}
           href="https://github.com/chriscauley/sudoku/"
         />
       </section>

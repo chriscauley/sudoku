@@ -36,7 +36,7 @@
   }
 }
 
-.board .cage-first .cage-first:after {
+.board .cage-first:after {
   @apply bg--bg;
   content: attr(data-text);
   font-size: 0.25em;
@@ -46,12 +46,17 @@
   top: 0;
 }
 
-.board .cage-last .cage-last:after {
-  @apply bg--bg;
-  bottom: 0;
-  content: attr(data-text);
-  position: absolute;
-  font-size: 0.25em;
-  line-height: 1;
-  right: 0;
+body.cage_last .board {
+  .cage-first:after {
+    content: none;
+  }
+  .cage-last:after {
+    @apply bg--bg;
+    bottom: 0;
+    content: attr(data-text);
+    position: absolute;
+    font-size: 0.25em;
+    line-height: 1;
+    right: 0;
+  }
 }

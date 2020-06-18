@@ -14,6 +14,12 @@ body {
 
 .navbar {
   background: var(--dark-bg);
+  .fa {
+    @apply text-3xl ml-4 inline-block;
+  }
+  .rjsf, .form-group:last-child {
+    margin-bottom: 0;
+  }
 }
 .app-content {
   background: var(--bg);
@@ -38,19 +44,25 @@ body {
 .hoverdown {
   @apply relative;
   .hoverdown--target {
-    @apply absolute right-0 hidden overflow-hidden;
+    @apply absolute hidden overflow-hidden;
     @apply border p-4 pt-8 shadow-lg rounded bg--bg;
     max-width: 100vw;
+    margin-top: -0.25rem;
+    right: -1rem;
     top: 100%;
     white-space: pre;
     width: var(--hoverdown-width);
     .btn { border-radius: 0; }
   }
+  &.tight .hoverdown--target {
+    right: 0;
+    margin-top: 0;
+  }
   &.flush .hoverdown--target {
     padding: 0;
   }
   &.left .hoverdown--target {
-    left: 0;
+    left: -1rem;;
     right: unset;
   }
   &:hover .hoverdown--target {
@@ -84,6 +96,8 @@ body {
     .active { @apply text--text; }
   }
   &.fixed .hoverdown--target {
+    max-height: 80vh;
+    overflow-y: scroll;
     position: fixed;
     top: unset;
   }

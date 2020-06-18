@@ -22,7 +22,6 @@ const App = config.connect((props) => {
         />
         <Route exact path="/" component={game.Index} />
         <Route exact path="/puzzle/:source/:slug/" component={game.CTC} />
-        <config.Form />
         <alert.List />
       </div>
     </HashRouter>
