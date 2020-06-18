@@ -134,7 +134,7 @@ export default class Checker {
       if (indexes.length > 1) {
         this.addError(
           indexes,
-          `There are ${indexes.length} ${answer}s in ${type} ${type_no}`,
+          `There are ${indexes.length} ${answer}s in ${type} ${type_no + 1}`,
         )
       }
     })

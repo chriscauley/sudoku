@@ -1,7 +1,7 @@
 @use 'sass:map';
 @use 'sass:color';
 
-$theme_colors: text, border, bg, green, magenta, pink, red, yellow, blue, teal, orange;
+$theme_colors: text, border, bg, green, magenta, red, yellow, blue, teal, orange;
 
 $pallet: (
   0: var(--text),
@@ -9,7 +9,7 @@ $pallet: (
   2: var(--bg),
   3: var(--green),
   4: var(--magenta),
-  5: var(--pink),
+  5: var(--orange),
   6: var(--red),
   7: var(--yellow),
   8: var(--blue),

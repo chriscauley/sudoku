@@ -24,6 +24,8 @@ const noRightClick = (e) => {
   return false
 }
 
+const dark_colors = [8, 0]
+
 const getClassName = ({
   xy,
   hover,
@@ -31,12 +33,14 @@ const getClassName = ({
   selectedNeighbors,
   answer,
   error,
+  colour,
 }) =>
   classnames(`cell x-${xy[0]} y-${xy[1]}`, selectedNeighbors, {
     selected,
     hover,
     answer: answer !== undefined,
     error,
+    darkbg: dark_colors.includes(colour),
   })
 
 // this can be GameComponent now (or whatever)
@@ -86,6 +90,10 @@ class CTC extends React.Component {
     }
   }
   mouseup = () => this.setState({ dragging: false, removing: false })
+  setParity(value) {
+    const indexes = Object.keys(this.state.selected)
+    this.props.game.actions.doAction({ value, mode: 'parity', indexes })
+  }
   keydown = (e) => {
     const value = keyboard.key_map[e.key] || e.key
     if (keyboard.allowed_keys.includes(value)) {
@@ -97,6 +105,14 @@ class CTC extends React.Component {
     }
     if (value === 'y' && e.ctrlKey) {
       this.props.game.actions.redo()
+      return
+    }
+    if (value === 'q') {
+      this.setParity('odd')
+      return
+    }
+    if (value === 'w') {
+      this.setParity('even')
       return
     }
     const mode = getMode(e, this.state.mode)

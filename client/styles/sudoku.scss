@@ -152,6 +152,15 @@
       background: map.get($pallet, $i);
     }
   }
+  .colour-odd {
+    background: var(--yellow);
+  }
+  .colour-even {
+    background: var(--green);
+  }
+  &.darkbg {
+    text-shadow: 0 0 3px white, 0 0 3px white,0 0 3px white, 0 0 3px white;
+  }
 }
 
 .board .cell {
@@ -174,7 +183,7 @@
 .board .cell {
   $error: inset -0.5px -0.5px 8px 3px red;
   $hover: inset map.get($pallet, "hover") -0.5px -0.5px 3px 3px;
-  &.error {
+  &.error .colour {
     box-shadow: $error;
   }
   .hover {

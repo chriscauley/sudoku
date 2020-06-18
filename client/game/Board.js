@@ -10,6 +10,11 @@ const css = {
   xy: (xy) => `x-${xy[0]} y-${xy[1]}`,
 }
 
+const PARITIES = {
+  odd: ['1', '3', '5', '7', '9'],
+  even: ['2', '4', '6', '8'],
+}
+
 export const saved_games = new Storage('saved games')
 // const made_games = new Storage('made games')
 
@@ -297,6 +302,7 @@ export default class Board {
     this.geo = new Geo({ W: 9 })
     this.checker = new Checker(this)
     this.animator = new Animator(this)
+    this.color_mode = 'color'
     this.reset()
 
     // load saved game if exists
@@ -491,7 +497,10 @@ export default class Board {
       delete this.frozen
     }
     const { mode, indexes, value } = action
-    if (mode !== 'delete') {
+    if (mode === 'parity') {
+      this.color_mode = 'parity'
+      action.was = cloneDeep(indexes.map((index) => this.centre[index]))
+    } else if (mode !== 'delete') {
       action.was = cloneDeep(indexes.map((index) => this[mode][index]))
     }
     this.actions.push(action)
@@ -503,13 +512,34 @@ export default class Board {
     } else if (mode === 'centre' || mode === 'corner') {
       this._toggle(mode, indexes, value)
     } else if (mode === 'colour') {
+      this.color_mode = 'colour'
       // color always just sets value
-      indexes.map((index) => (this.colour[index] = value))
+      indexes.forEach((index) => (this.colour[index] = value))
     } else if (mode === 'answer') {
-      indexes.map((index) => {
+      indexes.forEach((index) => {
         // cannot write to sudoku squares
         if (this.sudoku[index] === undefined) {
           this.answer[index] = value
+        }
+      })
+    } else if (mode === 'parity') {
+      const allowed = PARITIES[value]
+      indexes.forEach((index) => {
+        if (
+          this.answer[index] !== undefined ||
+          this.sudoku[index] !== undefined
+        ) {
+          return
+        }
+        const centres = (this.centre[index] || []).filter((i) =>
+          allowed.includes(i),
+        )
+        if (centres.length === 1) {
+          this.answer[index] = centres[0]
+        } else if (centres.length === 0) {
+          this.centre[index] = allowed.slice()
+        } else {
+          this.centre[index] = centres
         }
       })
     }
@@ -529,6 +559,7 @@ export default class Board {
         'frozen',
         'solve',
         'constraints',
+        'color_mode',
       ]),
     )
   }
@@ -573,8 +604,30 @@ export default class Board {
       corner: this.corner[index] || [],
       colour: this.colour[index],
       marks: [],
-      extras: [{ className: 'colour colour-' + this.colour[index] }],
+      extras: [],
     }))
+
+    if (this.color_mode === 'parity') {
+      const names = ['even', 'odd']
+      cells.forEach((cell) => {
+        delete cell.colour
+        const matches = names.filter((name) => {
+          const value = cell.question || cell.answer
+          const values = value === undefined ? cell.centre : [value]
+          return (
+            PARITIES[name].find((num) => values.includes(num)) !== undefined
+          )
+        })
+        if (matches.length === 1) {
+          cell.colour = matches[0]
+        }
+      })
+    }
+    cells.forEach((cell) => {
+      if (cell.colour !== undefined) {
+        cell.extras.push({ className: 'colour colour-' + cell.colour })
+      }
+    })
 
     this.is_full = !cells.find(
       (c) => c.answer === undefined && c.question === undefined,
@@ -644,8 +697,12 @@ export default class Board {
     this.freeze()
     const action = this.actions.pop()
     this.turn--
-    const was =
-      action.mode === 'delete' ? action.was : { [action.mode]: action.was }
+    let was = { [action.mode]: action.was }
+    if (action.mode === 'parity') {
+      was = { centre: action.was }
+    } else if (action.mode === 'delete') {
+      was = action.was
+    }
     Object.entries(was).map(([layer, values]) => {
       action.indexes.forEach((index, i) => {
         const is_empty = Array.isArray(values[i]) && values[i].length === 0

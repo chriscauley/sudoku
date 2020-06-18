@@ -12,6 +12,26 @@ import Submit from './Submit'
 
 const noop = () => {}
 
+const ColorMode = _withGame((props) => {
+  const { color_mode } = props.game.board
+  const set = (color_mode) => () => props.game.actions.saveBoard({ color_mode })
+  return (
+    <div className="hoverdown flush">
+      <div className={css.btn(color_mode === 'parity')} onClick={set('parity')}>
+        parity
+      </div>
+      <div className="hoverdown--target">
+        <div
+          className={css.btn(color_mode !== 'parity')}
+          onClick={set('colour')}
+        >
+          colour
+        </div>
+      </div>
+    </div>
+  )
+})
+
 export default class Controls extends React.Component {
   state = {}
   constructor(props) {
@@ -47,6 +67,7 @@ export default class Controls extends React.Component {
               {m}
             </div>
           ))}
+          <ColorMode />
         </div>
         <div className={css.row}>
           {keyboard.numbers.map((key) => (

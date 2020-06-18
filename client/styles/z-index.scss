@@ -5,7 +5,7 @@
   ._canvas { z-index: 2; }
   .cage, .hover { z-index: 4; }
   .selected:before, .selected:after { z-index: 5; }
-  .question, .answer, .corner, .centre { z-index: 20; }
+  .cell .question, .cell .answer, .corner, .centre { z-index: 20; }
   .to:after, .from:before { z-index: 10; }
   .clickMask { z-index: 50; }
   .cursor { z-index: 60; }
@@ -14,4 +14,5 @@
 }
 .snackbar { z-index: 110; }
 .hoverdown { z-index: 150; }
+.hoverdown:hover { z-index: 151; }
 .modal { z-index: 200; }
