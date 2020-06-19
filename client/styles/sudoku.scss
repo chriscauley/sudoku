@@ -22,7 +22,7 @@
     @apply items-center justify-center;
     width: 250px;
   }
-  @media (max-aspect-ratio: 1/1) {
+  @media #{$portrait} {
     flex-direction: column;
     .Controls {
       @apply w-full;

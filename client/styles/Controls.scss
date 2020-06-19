@@ -3,7 +3,7 @@
 @import './var.scss';
 
 .Controls {
-  @apply mb-8 relative;
+  @apply relative;
   $smaller: 0.75rem;
   $wh: 40px;
   @for $i from 0 through 9 {
@@ -43,8 +43,4 @@
 .highlight-check, .highlight-check:hover {
   @apply bg-green-400;
   box-shadow: 0 0 5px 3px theme('colors.yellow.300');
-}
-
-.Controls .action {
-  @apply mr-2;
 }

@@ -29,3 +29,6 @@ $border-cage: var(--cage-width);
 
 $mark-color: var(--mark-color);
 $mark-transparent: var(--mark-transparent);
+
+$portrait: "(max-aspect-ratio: 1/1)";
+$landscape: "(min-aspect-ratio: 1/1), (aspect-ratio: 1/1)";

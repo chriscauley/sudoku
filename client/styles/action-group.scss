@@ -1,0 +1,45 @@
+@import "var.scss";
+
+.action-group {
+  @apply flex relative mb-1 mr-1;
+  &[data-title]:hover:before {
+    @apply absolute text-xs bg--bg;
+    @apply rounded-md border-4 border-b-0;
+    content: attr(data-title);
+    line-height: 1;
+    margin-left: -4px;
+    bottom: 100%;
+  }
+  .action {
+    border-radius: 0;
+    margin-right: 0;
+  }
+}
+
+.action-group {
+  @media #{$landscape} {
+    flex-direction: column;
+    .action {
+      @apply border-r-4 border-l-4;
+      border-color: red;
+      &:first-child {
+        @apply border-t-4 rounded-t-md;
+      }
+      &:last-child {
+        @apply border-b-4 rounded-b-md;
+      }
+    }
+  }
+  @media #{$portrait} {
+    .action {
+      @apply border-t-4 border-b-4;
+      border-color: pink;
+      &:first-child {
+        @apply border-l-4 rounded-l-md;
+      }
+      &:last-child {
+        @apply border-r-4 rounded-r-md;
+      }
+    }
+  }
+}
