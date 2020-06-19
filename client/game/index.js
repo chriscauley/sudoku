@@ -107,11 +107,11 @@ class CTC extends React.Component {
       this.props.game.actions.redo()
       return
     }
-    if (value === 'q') {
+    if (value === 'q' || value === 'o') {
       this.setParity('odd')
       return
     }
-    if (value === 'w') {
+    if (value === 'w' || value === 'e') {
       this.setParity('even')
       return
     }
@@ -206,7 +206,7 @@ class CTC extends React.Component {
       <div className={'Game theme-ctc'} onContextMenu={noRightClick}>
         <div className="my4 flex justify-between items-center">
           <div className="mr-4">
-            {board.solve && 'Victory!'} @ {board.getTime()}
+            {board.getTime()}
           </div>
           {user.is_superuser && <PuzzleAdminForm />}
           <PuzzleLink {...puzzle} is_superuser={user.is_superuser}>
