@@ -13,10 +13,20 @@ const uiSchema = {}
 const actions = {
   load: debounce((store, slug, props) => {
     if (slug && store.state.slug !== slug) {
-      const { flag, data } = props.api.puzzle
+      const { flag, data, videos = [] } = props.api.puzzle
+      const options = {
+        puzzle_id,
+        slug,
+        flag,
+        ...data,
+        puzzle: props.api.puzzle,
+      }
+      if (videos.length > 0) {
+        options.title = videos[0].title
+      }
       const puzzle_id = props.api.puzzle.id
       store.setState({ slug })
-      store.actions.startGame({ puzzle_id, slug, flag, ...data }, props)
+      store.actions.startGame(options, props)
     }
   }),
   startGame: (store, options) => {

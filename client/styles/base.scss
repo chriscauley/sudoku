@@ -22,7 +22,18 @@ body {
   .rjsf, .form-group:last-child {
     margin-bottom: 0;
   }
+
+  .navbar-section.left {
+    .navbar-brand .fa {
+      @apply ml-0;
+    }
+    .puzzle-title {
+      @apply text-lg truncate inline-block;
+      max-width: 40vw;
+    }
+  }
 }
+
 .app-content {
   background: var(--bg);
 }
