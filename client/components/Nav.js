@@ -8,6 +8,7 @@ import config from '../config'
 import help from '../help'
 
 function Nav(props) {
+  const title = typeof window !== undefined && window.location.hostname
   const { board } = props.game
   //const title = videos.length ? videos[0].title : '???'
 
@@ -15,7 +16,7 @@ function Nav(props) {
     <header className={css.nav.outer()}>
       <section className={css.nav.section('left')}>
         <Link to="/" className={css.nav.brand()}>
-          {board ? <i className={css.icon('arrow-left')} /> : 'Sudoku'}
+          {board ? <i className={css.icon('arrow-left')} /> : title}
         </Link>
         {board && <span className="puzzle-title">{board.title}</span>}
       </section>
