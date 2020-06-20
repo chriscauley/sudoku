@@ -14,6 +14,7 @@ const actions = {
   load: debounce((store, slug, props) => {
     if (slug && store.state.slug !== slug) {
       const { flag, data, videos = [] } = props.api.puzzle
+      const puzzle_id = props.api.puzzle.id
       const options = {
         puzzle_id,
         slug,
@@ -24,7 +25,6 @@ const actions = {
       if (videos.length > 0) {
         options.title = videos[0].title
       }
-      const puzzle_id = props.api.puzzle.id
       store.setState({ slug })
       store.actions.startGame(options, props)
     }
