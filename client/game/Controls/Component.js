@@ -34,26 +34,35 @@ export default class Controls extends React.Component {
     const modes = ['answer', 'corner', 'centre', 'colour']
     return (
       <div className="Controls" onClick={(e) => e.stopPropagation()}>
-        <div className={css.row + ' pt-2'}>
-          <ActionButton name="undo" />
-          <ActionButton name="redo" />
-          <ActionButton name="replay" />
-          <Reset />
-          <Check />
-          <Submit />
+        <div className={'flex flex-wrap pt-2'}>
+          <div className="action-group">
+            <ActionButton name="undo" />
+            <ActionButton name="redo" />
+            <ActionButton name="replay" />
+          </div>
+          <div className="action-group">
+            <Reset />
+            <Check />
+            <Submit />
+          </div>
         </div>
-        <div className={css.row}>
-          {modes.map((m) => (
-            <div className={css.btn(mode === m)} key={m} onClick={onClick(m)}>
-              {m}
-            </div>
-          ))}
+        <div className={'flex flex-wrap'}>
+          <div className="action-group" data-title="Mouse Layer">
+            {modes.map((m) => (
+              <ActionButton
+                key={m}
+                name={m}
+                active={mode === m}
+                onClick={onClick(m)}
+              />
+            ))}
+          </div>
           <ColorMode />
         </div>
-        <div className={css.row}>
+        <div className={'flex flex-wrap'}>
           {keyboard.numbers.map((key) => (
             <div
-              className={css.button.dark('mr-2 mode-' + mode)}
+              className={css.button.dark('mr-1 mb-1 text-lg mode-' + mode)}
               data-key={key}
               key={key}
               onClick={() => sendKey(key, mode)}

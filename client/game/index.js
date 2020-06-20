@@ -205,9 +205,7 @@ class CTC extends React.Component {
     return (
       <div className={'Game theme-ctc'} onContextMenu={noRightClick}>
         <div className="my4 flex justify-between items-center">
-          <div className="mr-4">
-            {board.getTime()}
-          </div>
+          <div className="mr-4">{board.getTime()}</div>
           {user.is_superuser && <PuzzleAdminForm />}
           <PuzzleLink {...puzzle} is_superuser={user.is_superuser}>
             {puzzle.videos.map((video) => (

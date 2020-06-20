@@ -21,7 +21,6 @@
     flex-direction: column;
     .action {
       @apply border-r-4 border-l-4;
-      border-color: red;
       &:first-child {
         @apply border-t-4 rounded-t-md;
       }
@@ -33,7 +32,6 @@
   @media #{$portrait} {
     .action {
       @apply border-t-4 border-b-4;
-      border-color: pink;
       &:first-child {
         @apply border-l-4 rounded-l-md;
       }

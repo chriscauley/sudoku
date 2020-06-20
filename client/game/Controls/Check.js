@@ -45,7 +45,7 @@ function CheckControl(props) {
   )
 
   return (
-    <div className={'hoverdown left flush'}>
+    <div className={'hoverdown left flush action'}>
       <div className={css.btn() + highlight} onClick={check}>
         check
       </div>

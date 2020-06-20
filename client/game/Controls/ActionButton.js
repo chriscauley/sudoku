@@ -3,13 +3,11 @@ import React from 'react'
 import { _withGame } from '../withGame'
 import css from './css'
 
-export default _withGame((props) => {
-  return (
-    <div
-      className={css.btn() + ' action'}
-      onClick={props.game.actions[props.name]}
-    >
-      {props.name}
-    </div>
-  )
-})
+export default _withGame(({ name, game, active, onClick }) => (
+  <div
+    className={css.btn(active) + ' action'}
+    onClick={onClick || game.actions[name]}
+  >
+    {name}
+  </div>
+))

@@ -40,7 +40,7 @@ const PuzzleLink = (props) => {
         flag_icon={flag_icon}
       />
       <Tag to={`/puzzle/ctc/${external_id}/`} className={css.link()}>
-        {title} #{external_id}
+        {title}
       </Tag>
       {children}
     </div>

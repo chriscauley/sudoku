@@ -302,7 +302,7 @@ export default class Board {
     this.geo = new Geo({ W: 9 })
     this.checker = new Checker(this)
     this.animator = new Animator(this)
-    this.color_mode = 'color'
+    this.color_mode = 'colour'
     this.reset()
 
     // load saved game if exists
@@ -736,7 +736,10 @@ export default class Board {
   getTime() {
     const { solve = {}, start } = this
     const seconds = (solve.ms ? solve.ms : new Date().valueOf() - start) / 1000
-    return `${Math.floor(seconds / 60)}m ${Math.floor(seconds % 60)}s`
+    const s = Math.floor(seconds % 60)
+      .toString()
+      .padStart(2, '0')
+    return `${Math.floor(seconds / 60)}:${s}`
   }
 
   makeSolve() {
