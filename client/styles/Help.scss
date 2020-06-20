@@ -1,0 +1,9 @@
+.Help, .About {
+  @apply px-4;
+  section {
+    @apply mb-8;
+    ul {
+      @apply mb-4;
+    }
+  }
+}

@@ -1,7 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import css from '@unrest/css'
+
 import config from '../config'
+import help from '../help'
 
 export default function Nav() {
   return (
@@ -13,6 +15,7 @@ export default function Nav() {
       </section>
       <section className={css.nav.section('flex items-center')}>
         <config.Hoverdown />
+        <help.Hoverdown />
         <a
           className={css.icon('github mx-2 text-blue-500')}
           href="https://github.com/chriscauley/sudoku/"

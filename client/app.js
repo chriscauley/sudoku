@@ -1,12 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import classnames from 'classnames'
 import { HashRouter, Route } from 'react-router-dom'
 import { alert } from '@unrest/core'
 
 import config from './config'
 import Nav from './components/Nav'
 import game from './game'
-import classnames from 'classnames'
+import help from './help'
+import About from './About'
 import './url' // sets root url for @unrest/react-rest-hook and @unrest/core
 
 const App = config.connect((props) => {
@@ -22,6 +24,8 @@ const App = config.connect((props) => {
         />
         <Route exact path="/" component={game.Index} />
         <Route exact path="/puzzle/:source/:slug/" component={game.CTC} />
+        <Route path="/help/" component={help.View} />
+        <Route path="/about/" component={About} />
         <alert.List />
       </div>
     </HashRouter>
