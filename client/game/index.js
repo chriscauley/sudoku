@@ -2,23 +2,17 @@ import classnames from 'classnames'
 import { debounce } from 'lodash'
 import React from 'react'
 import { postForm } from '@unrest/core'
-import css from '@unrest/css'
 import auth from '@unrest/react-auth'
 
 import keyboard from './keyboard'
 import Index from './Index'
 import withGame from './withGame'
-import Hoverdown from './Hoverdown'
-import PuzzleLink from './PuzzleLink'
-import PuzzleSnapshot from './PuzzleSnapshot'
-import VideoDescription from './VideoDescription'
 import Controls, { getMode } from './Controls'
 import PuzzleAdminForm from './PuzzleAdminForm'
 
 const clickRef = React.createRef()
 const gameRef = React.createRef()
 const animationRef = React.createRef()
-const icon = (s, rest) => css.icon(s, 'px-2', rest)
 const noRightClick = (e) => {
   e.preventDefault()
   return false
@@ -189,7 +183,6 @@ class CTC extends React.Component {
 
   render() {
     const { hover, selected, cursor, cellSize, boardStyle } = this.state
-    const { puzzle } = this.props.api
     const { board } = this.props.game
     const { user = {} } = this.props.auth
     this.geo = board.geo
@@ -205,30 +198,7 @@ class CTC extends React.Component {
     return (
       <div className={'Game theme-ctc'} onContextMenu={noRightClick}>
         <div className="my4 flex justify-between items-center">
-          <div className="mr-4">{board.getTime()}</div>
           {user.is_superuser && <PuzzleAdminForm />}
-          <PuzzleLink {...puzzle} is_superuser={user.is_superuser}>
-            {puzzle.videos.map((video) => (
-              <Hoverdown
-                key={video.external_id}
-                className="fixed md right inline-block"
-                loaded={true}
-                content={<VideoDescription video={video} />}
-              >
-                <i className={icon('info')} />
-              </Hoverdown>
-            ))}
-            <Hoverdown
-              className="fixed lg inline-block"
-              content={<PuzzleSnapshot puzzle={puzzle} />}
-            >
-              <i
-                className={icon(
-                  puzzle.screenshot ? 'picture-o' : 'puzzle-piece',
-                )}
-              />
-            </Hoverdown>
-          </PuzzleLink>
         </div>
         <div className="play-area">
           <div className="flex-cell">
@@ -236,6 +206,7 @@ class CTC extends React.Component {
               onClick={this.setMode}
               mode={this.state.mode}
               sendKey={this.sendKey}
+              time={board.getTime()}
             />
           </div>
           <div className="flex-cell flex-grow">

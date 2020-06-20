@@ -29,12 +29,15 @@ export default class Controls extends React.Component {
 
   keyupdown = ({ shiftKey, ctrlKey }) => this.setState({ shiftKey, ctrlKey })
   render() {
-    const { onClick = noop, sendKey = noop } = this.props
+    const { onClick = noop, sendKey = noop, time } = this.props
     const mode = getMode(this.state, this.props.mode)
     const modes = ['answer', 'corner', 'centre', 'colour']
     return (
       <div className="Controls" onClick={(e) => e.stopPropagation()}>
         <div className={'flex flex-wrap pt-2'}>
+          <div className="action-group">
+            <div className={css.btn() + ' action'}>{time}</div>
+          </div>
           <div className="action-group">
             <ActionButton name="undo" />
             <ActionButton name="redo" />

@@ -24,6 +24,7 @@ body {
   }
 
   .navbar-section.left {
+    @apply flex items-center;
     .navbar-brand .fa {
       @apply ml-0;
     }

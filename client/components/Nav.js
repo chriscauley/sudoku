@@ -2,13 +2,10 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import css from '@unrest/css'
 
+import GameMenu from '../game/Menu'
 import { _withGame } from '../game/withGame'
 import config from '../config'
 import help from '../help'
-
-function GameMenu({ board }) {
-  return null
-}
 
 function Nav(props) {
   const { board } = props.game
@@ -23,7 +20,7 @@ function Nav(props) {
         {board && <span className="puzzle-title">{board.title}</span>}
       </section>
       <section className={css.nav.section('flex items-center')}>
-        {board && <GameMenu />}
+        {board && <GameMenu puzzle={board.puzzle} />}
         <config.Hoverdown />
         <help.Hoverdown />
         <a
