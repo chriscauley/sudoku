@@ -37,16 +37,14 @@ export default class Controls extends React.Component {
         <div className={'flex flex-wrap pt-2'}>
           <div className="action-group">
             <div className={css.btn() + ' action'}>{time}</div>
+            <Reset />
+            <Check />
+            <Submit />
           </div>
           <div className="action-group">
             <ActionButton name="undo" />
             <ActionButton name="redo" />
             <ActionButton name="replay" />
-          </div>
-          <div className="action-group">
-            <Reset />
-            <Check />
-            <Submit />
           </div>
         </div>
         <div className={'flex flex-wrap'}>
