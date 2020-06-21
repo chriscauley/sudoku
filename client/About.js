@@ -127,12 +127,27 @@ function Links() {
   )
 }
 
+const TechnicalDetails = () => {
+  return (
+    <section>
+      <h2>Technical Details</h2>
+      <p>
+        This app is written using React on the front end and Django on the
+        backend. The front end client is set up so that you can run it without
+        the backend (it defaults to numbers.wtf as the backend). Any
+        issues/contribution would be greatly appreciated.
+      </p>
+    </section>
+  )
+}
+
 export default function About() {
   return (
     <div className="About">
       <Description />
       <Differences />
       <ComingSoon />
+      <TechnicalDetails />
       <Links />
     </div>
   )
