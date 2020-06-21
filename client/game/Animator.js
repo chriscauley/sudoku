@@ -20,7 +20,6 @@ export default class Animator {
     const canvas = (this.canvas = document.createElement('canvas'))
     const _last = document.createElement('canvas')
     const live_canvas = this.board.animation_canvas
-    document.body.appendChild(canvas)
     canvas.width = _last.width = live_canvas.width = width
     canvas.height = _last.height = live_canvas.height = height
     this.ctx = canvas.getContext('2d')
