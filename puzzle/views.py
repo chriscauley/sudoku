@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.views.decorators.cache import cache_page
 from collections import defaultdict
 
 from puzzle.models import Puzzle, Video
@@ -33,3 +34,8 @@ def user_solves(request):
     return {'solves': [s.to_json(attrs) for s in request.user.solve_set.all()]}
 
 user_json.extras.append(user_solves)
+
+@cache_page(60*60)
+def admin_list(request):
+    puzzles = Puzzle.objects.all()
+    return JsonResponse({ 'puzzles': [p.to_json(list_attrs + ['data']) for p in puzzles]})

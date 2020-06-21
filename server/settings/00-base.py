@@ -36,6 +36,13 @@ TEMPLATES = [
     },
 ]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'sudoku-doku-panic',
+    }
+}
+
 WSGI_APPLICATION = 'server.wsgi.application'
 
 # Database
