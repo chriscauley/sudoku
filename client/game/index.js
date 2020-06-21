@@ -65,6 +65,7 @@ class CTC extends React.Component {
   }
 
   componentWillUnmount() {
+    this.props.game.actions.unmount()
     this.listeners.forEach((s) => document.removeEventListener(s, this[s]))
     window.removeEventListener('resize', this.resize)
   }
