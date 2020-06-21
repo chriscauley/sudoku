@@ -10,11 +10,21 @@ _exid = 'cracking-the-cryptic.web.app/sudoku/'
 match_external_id = re.compile(r'.*cracking-the-cryptic.web.app/sudoku/(\w+)')
 
 CTC_URL = "https://firebasestorage.googleapis.com/v0/b/sudoku-sandbox.appspot.com/o/"
-def fetch_ctc(slug):
-    request = requests.get(f"{CTC_URL}{slug}")
+def _get_ctc(url):
+    request = requests.get(url)
     request.raise_for_status()
     token = request.json()['downloadTokens']
-    return requests.get(f"{CTC_URL}{slug}?alt=media&token={token}").json()
+    return requests.get(f"{url}?alt=media&token={token}").text
+
+def fetch_ctc(slug):
+    data = json.loads(curl(CTC_URL + slug, getter=_get_ctc, name=slug, force=True))
+    for row in data.get('cells', []):
+        for cell in row:
+            if not cell.get('pencilMarks', None):
+                cell.pop('pencilMarks', None)
+            if not cell.get('candidates', None):
+                cell.pop('candidates', None)
+    return data
 
 def update_video(video, Puzzle):
     values = {}

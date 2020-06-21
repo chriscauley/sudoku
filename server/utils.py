@@ -1,17 +1,20 @@
 import os
 import requests
 
-def curl(url, force=False):
-    name = url.split("=")[-1]
+def _get_url(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.text
+
+def curl(url, force=False, getter=_get_url, name=None):
+    name = name or url.split("=")[-1]
     try:
         os.mkdir(".ytcache")
     except FileExistsError:
         pass
     fname = os.path.join(".ytcache", "{}.html".format(name))
     if force or not os.path.exists(fname):
-        response = requests.get(url)
-        response.raise_for_status()
-        text = response.text
+        text = getter(url)
         with open(fname, "w") as _file:
             _file.write(text)
         print("downloading!", url)
