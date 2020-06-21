@@ -19,6 +19,17 @@ export const vector = {
   },
 }
 
+export const dxy2text = {
+  '1,0': 'right',
+  '-1,0': 'left',
+  '0,1': 'down',
+  '0,-1': 'up',
+  '1,1': 'downright',
+  '-1,1': 'downleft',
+  '-1,-1': 'upleft',
+  '1,-1': 'upright',
+}
+
 export default class Geo {
   constructor(options) {
     if (!options.W) {
