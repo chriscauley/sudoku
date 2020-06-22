@@ -27,17 +27,20 @@ export const fromCTC = ({ wayPoints }) => {
 export default (board) => {
   const { arrows = [] } = board.ctc
   const { geo } = board
-  board.extras.arrows = arrows
-    .map((arrow) => {
-      if (arrow.wayPoints.length < 2) {
-        return
-      }
-      const out = fromCTC(arrow)
-      out.index = geo.xy2index(out.xy)
-      if (out.long) {
-        board.ctc.lines.push(arrow)
-      }
-      return out
-    })
-    .filter((a) => a && geo.xyInGrid(a.xy))
+  board.extras.arrows = []
+  arrows.forEach((ctc_arrow) => {
+    if (ctc_arrow.wayPoints.length < 2) {
+      return
+    }
+    const arrow = fromCTC(ctc_arrow)
+    arrow.index = geo.xy2index(arrow.xy)
+    if (arrow.long) {
+      board.ctc.lines.push(ctc_arrow)
+    }
+    if (geo.xyInGrid(arrow.xy)) {
+      board.extras.arrows.push(arrow)
+    } else {
+      console.warn('TODO: gutter arrow at', arrow.xy)
+    }
+  })
 }

@@ -122,8 +122,6 @@ export default class Board {
         row.forEach((cell) => this.sudoku.push(cell.value)),
       )
 
-      buildArrows(this)
-
       this.extras.cages = cages.map((cage) => {
         cage.indexes = []
         cage.first = { index: Infinity }
@@ -167,7 +165,7 @@ export default class Board {
       })
 
       buildGutters(gutter_marks, this)
-
+      buildArrows(this)
       buildLines(lines, this)
     }
 
