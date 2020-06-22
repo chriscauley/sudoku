@@ -34,6 +34,9 @@ export default (board) => {
       }
       const out = fromCTC(arrow)
       out.index = geo.xy2index(out.xy)
+      if (out.long) {
+        board.ctc.lines.push(arrow)
+      }
       return out
     })
     .filter((a) => a && geo.xyInGrid(a.xy))

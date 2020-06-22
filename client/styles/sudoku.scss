@@ -205,15 +205,27 @@
   }
   &.dy-1 {
     bottom: -0.2em;
+    &.long {
+      bottom: 0.6em;
+    }
   }
   &.dy--1 {
     top: -0.2em;
+    &.long {
+      top: 0.6em;
+    }
   }
   &.dx--1 {
     left: -0.2em;
+    &.long {
+      left: 0.6em;
+    }
   }
   &.dx-1 {
     right: -0.2em;
+    &.long {
+      right: 0.6em;
+    }
   }
   &.dx-0.dy-1 {
     transform: rotate(90deg);
