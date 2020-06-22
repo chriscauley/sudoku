@@ -10,6 +10,7 @@ import game from './game'
 import help from './help'
 import About from './About'
 import './url' // sets root url for @unrest/react-rest-hook and @unrest/core
+import AdminTable from './game/AdminTable'
 
 const App = config.connect((props) => {
   document.body.className = classnames(props.config.formData)
@@ -26,6 +27,7 @@ const App = config.connect((props) => {
         <Route exact path="/puzzle/:source/:slug/" component={game.CTC} />
         <Route path="/help/" component={help.View} />
         <Route path="/about/" component={About} />
+        <Route path="/radmin/" component={AdminTable} />
         <alert.List />
       </div>
     </HashRouter>
