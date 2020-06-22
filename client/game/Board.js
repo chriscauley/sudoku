@@ -5,7 +5,7 @@ import Animator from './Animator'
 import Checker from './Checker'
 import Geo from './Geo'
 import { buildGutters } from './Gutter'
-import { buildLines, buildMarks, buildArrows } from './ctc'
+import { buildCages, buildLines, buildMarks, buildArrows } from './ctc'
 
 const PARITIES = {
   odd: ['1', '3', '5', '7', '9'],
@@ -109,46 +109,14 @@ export default class Board {
       'other',
     ]
 
+    this.sudoku = []
+    this.gutter_marks = []
+    this.extras.marks = []
     if (this.ctc) {
-      const { cages = [], cells = [] } = this.ctc
-      this.sudoku = []
-      cells.forEach((row) =>
+      this.ctc.cells.forEach((row) =>
         row.forEach((cell) => this.sudoku.push(cell.value)),
       )
-
-      this.extras.cages = cages.map((cage) => {
-        cage.indexes = []
-        cage.first = { index: Infinity }
-        cage.last = { index: 0 }
-        cage.cells = cage.cells.map((xy) => {
-          xy = xy.reverse()
-          const index = this.geo.xy2index(xy)
-          const cell = { xy, index, className: 'cage' }
-          cage.indexes.push(index)
-          if (cage.first.index > cell.index) {
-            cage.first = cell
-          }
-          if (cage.last.index < cell.index) {
-            cage.last = cell
-          }
-          return cell
-        })
-        cage.first.className += ' cage-first'
-        cage.last.className += ' cage-last'
-        cage.first.text = cage.last.text = cage.value
-        cage.cells.forEach((cell) => {
-          Object.entries(this.geo._text2dindex).forEach(([text, dindex]) => {
-            if (!cage.indexes.includes(cell.index + dindex)) {
-              cell.className += ' cage-' + text
-            }
-            cell._className = cell.className
-          })
-        })
-        return cage
-      })
-
-      this.gutter_marks = []
-      this.extras.marks = []
+      buildCages(this)
       buildMarks(this)
 
       buildGutters(this.gutter_marks, this)

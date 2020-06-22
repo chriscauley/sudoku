@@ -2,12 +2,13 @@
 .Game {
   .colour { z-index: 0; }
   .animation_canvas { z-index: 1; }
-  .arrow, .mark { z-index: 2; }
-  ._canvas { z-index: 3; }
-  .cage, .hover { z-index: 4; }
-  .selected:before, .selected:after { z-index: 5; }
-  .cell .question, .cell .answer, .corner, .centre { z-index: 20; }
+  .mark { z-index: 3; }
+  ._canvas { z-index: 4; }
+  .arrow { z-index: 5; }
+  .cage, .hover { z-index: 6; }
+  .selected:before, .selected:after { z-index: 10; }
   .to:after, .from:before { z-index: 10; }
+  .cell .question, .cell .answer, .corner, .centre { z-index: 20; }
   .clickMask { z-index: 50; }
   .cursor { z-index: 60; }
   .Controls { z-index: 100; }
