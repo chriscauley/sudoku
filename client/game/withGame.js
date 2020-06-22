@@ -29,7 +29,7 @@ const actions = {
       store.actions.startGame(options, props)
     }
   }),
-  unmount: (store) => store.state.board && store.setState({board: null }),
+  unmount: (store) => store.state.board && store.setState({ board: null }),
   startGame: (store, options) => {
     store.setState({ board: new Board(options) })
   },

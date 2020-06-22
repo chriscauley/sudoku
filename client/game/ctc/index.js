@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import { vector, dxy2text } from '../Geo'
+export { default as buildArrows } from './buildArrows'
 
 const css = {
   xy: (xy) => `x-${xy[0]} y-${xy[1]}`,

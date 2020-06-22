@@ -3,9 +3,9 @@ import Storage from '@unrest/storage'
 
 import Animator from './Animator'
 import Checker from './Checker'
-import Geo, { dxy2text } from './Geo'
+import Geo from './Geo'
 import { buildGutters } from './Gutter'
-import { buildLines, buildMarks } from './ctc'
+import { buildLines, buildMarks, buildArrows } from './ctc'
 
 const PARITIES = {
   odd: ['1', '3', '5', '7', '9'],
@@ -111,7 +111,6 @@ export default class Board {
 
     if (this.ctc) {
       const {
-        arrows = [],
         underlays = [],
         overlays = [],
         cages = [],
@@ -123,25 +122,7 @@ export default class Board {
         row.forEach((cell) => this.sudoku.push(cell.value)),
       )
 
-      // #hg764Pd67f has lots of arrows in grid
-      // #p6Pb99bbDr has arrows not in grid
-      this.extras.arrows = arrows
-        .map((arrow) => {
-          const [xy1, xy2] = arrow.wayPoints
-          const xy = xy1.map((n) => Math.floor(n)).reverse()
-          const dxy = [-Math.sign(xy1[1] - xy2[1]), -Math.sign(xy1[0] - xy2[0])]
-          const dir = dxy2text[dxy]
-          return {
-            dindex: dxy[0] + dxy[1] * this.geo.W,
-            index: this.geo.xy2index(xy),
-            xy,
-            dxy,
-            className: `arrow arrow-${dir} dxy-${dxy.join(
-              '',
-            )} fa fa-chevron-${dir}`,
-          }
-        })
-        .filter((a) => this.geo.xyInGrid(a.xy))
+      buildArrows(this)
 
       this.extras.cages = cages.map((cage) => {
         cage.indexes = []

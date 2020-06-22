@@ -1,0 +1,40 @@
+import className from '../className'
+import { vector } from '../Geo'
+import { cloneDeep } from 'lodash'
+
+export const fromCTC = ({ wayPoints }) => {
+  wayPoints = cloneDeep(wayPoints)
+  // waypoints use yx coordinates, so flip them
+  const wp1 = wayPoints[wayPoints.length - 2].reverse()
+  const wp2 = wayPoints[wayPoints.length - 1].reverse()
+  const average = vector.add(wp1, wp2).map((n) => n / 2)
+  const d = vector.subtract(wp1, wp2).map((n) => Math.abs(n))
+
+  const out = {
+    xy: average.map((n) => Math.floor(n)),
+    dxy: [-Math.sign(wp1[0] - wp2[0]), -Math.sign(wp1[1] - wp2[1])],
+  }
+  const long = (out.long = !!d.find((n) => n > 1))
+  if (long) {
+    // spans two cells, average will not work. Use head waypoint as xy and mark as long
+    out.xy = wp2.map((n) => Math.floor(n))
+    out.long = true
+  }
+  out.className = className(out, 'arrow')
+  return out
+}
+
+export default (board) => {
+  const { arrows = [] } = board.ctc
+  const { geo } = board
+  board.extras.arrows = arrows
+    .map((arrow) => {
+      if (arrow.wayPoints.length < 2) {
+        return
+      }
+      const out = fromCTC(arrow)
+      out.index = geo.xy2index(out.xy)
+      return out
+    })
+    .filter((a) => a && geo.xyInGrid(a.xy))
+}

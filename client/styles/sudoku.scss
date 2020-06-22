@@ -197,20 +197,45 @@
 }
 
 .board .cell .arrow {
+  font: normal normal normal 0.5em/1 FontAwesome;
   color: gray;
-  font-size: 0.5em;
-  position: absolute;
-  &.arrow-down {
+    position: absolute;
+  &:before {
+    content: "\f054"; /* chevron-right */
+  }
+  &.dy-1 {
     bottom: -0.2em;
   }
-  &.arrow-up {
+  &.dy--1 {
     top: -0.2em;
   }
-  &.arrow-left {
+  &.dx--1 {
     left: -0.2em;
   }
-  &.arrow-right {
+  &.dx-1 {
     right: -0.2em;
+  }
+  &.dx-0.dy-1 {
+    transform: rotate(90deg);
+  }
+  &.dx-0.dy--1 {
+    transform: rotate(-90deg);
+  }
+  &.dx--1.dy-0 {
+    transform: rotate(180deg);
+  }
+
+  &.dx-1.dy-1 {
+    transform: rotate(45deg);
+  }
+  &.dx--1.dy-1 {
+    transform: rotate(135deg);
+  }
+  &.dx--1.dy--1 {
+    transform: rotate(-135deg);
+  }
+  &.dx-1.dy--1 {
+    transform: rotate(-45deg);
   }
 }
 
