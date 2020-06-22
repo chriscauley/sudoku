@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`wayPointsToArrows 1`] = `"x-4 y--1 dx--1 dy-1 arrow"`;
+
+exports[`wayPointsToArrows 2`] = `"x-2 y-9 dx-1 dy--1 arrow"`;
+
+exports[`wayPointsToArrows 3`] = `"x-6 y-2 dx--1 dy-0 arrow"`;
+
+exports[`wayPointsToArrows 4`] = `"x-0 y-0 dx-1 dy-0 arrow"`;
+
+exports[`wayPointsToArrows 5`] = `"x-4 y-3 dx-0 dy--1 arrow"`;
+
+exports[`wayPointsToArrows 6`] = `"x-3 y-3 dx-0 dy-1 arrow"`;
+
+exports[`wayPointsToArrows 7`] = `"x-6 y-7 dx--1 dy-0 long arrow"`;
+
+exports[`wayPointsToArrows 8`] = `"x-5 y-6 dx-0 dy--1 long arrow"`;
