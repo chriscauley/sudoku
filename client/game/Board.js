@@ -110,13 +110,7 @@ export default class Board {
     ]
 
     if (this.ctc) {
-      const {
-        underlays = [],
-        overlays = [],
-        cages = [],
-        cells = [],
-        lines = [],
-      } = this.ctc
+      const { cages = [], cells = [] } = this.ctc
       this.sudoku = []
       cells.forEach((row) =>
         row.forEach((cell) => this.sudoku.push(cell.value)),
@@ -153,20 +147,13 @@ export default class Board {
         return cage
       })
 
-      const gutter_marks = []
+      this.gutter_marks = []
       this.extras.marks = []
-      // ctc doesn't seem to differentiate much with underlays/overlays
-      buildMarks(underlays.concat(overlays), this.geo).forEach((mark) => {
-        if (mark.type === 'gutter') {
-          gutter_marks.push(mark)
-        } else {
-          this.extras.marks.push(mark)
-        }
-      })
+      buildMarks(this)
 
-      buildGutters(gutter_marks, this)
+      buildGutters(this.gutter_marks, this)
       buildArrows(this)
-      buildLines(lines, this)
+      buildLines(this)
     }
 
     this.turn = this.actions.length

@@ -5,12 +5,12 @@ import extractColor from './extractColor'
 // currently only thermometers & diagonals
 // forked thermometer #H7n7NhH26M
 // lots of theremometers #J7pMMgrLL3
-export default (lines, board) => {
+export default (board) => {
   const thermometer_colors = {}
   const forced_ends = {} // used in "shall we play a game" #Z4gGYPtBWNw
 
   const { W, H } = board.geo
-  const processedLines = lines
+  const processedLines = board.ctc.lines
     .filter((l) => l.wayPoints.length)
     .map((line) => {
       const { wayPoints } = line

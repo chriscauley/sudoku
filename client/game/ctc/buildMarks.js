@@ -4,8 +4,10 @@ import _className from '../className'
 // example puzzles:
 // H7n7NhH26M - crazy thermometers
 // 7Qh3tBm4mj - ceiling and floor
-export default (marks, geo) => {
-  marks = marks.map((mark) => {
+export default (board) => {
+  const { ctc, geo } = board
+  const ctc_marks = ctc.underlays.concat(ctc.overlays)
+  const marks = ctc_marks.map((mark) => {
     const center = mark.center.reverse()
     const ratio = mark.width / mark.height
     const xy = center.map((n) => Math.floor(n))
@@ -49,6 +51,10 @@ export default (marks, geo) => {
       .map((i) => mark_indexes[i])
       .filter(Boolean)
     mark.is_end = mark.next_to.length === 1
+    if (mark.type === 'gutter') {
+      board._gutter_marks.push(mark)
+    } else {
+      board.extras.marks.push(mark)
+    }
   })
-  return marks
 }

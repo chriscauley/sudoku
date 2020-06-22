@@ -2,8 +2,8 @@
 .Game {
   .colour { z-index: 0; }
   .animation_canvas { z-index: 1; }
-  ._canvas { z-index: 2; }
-  .arrow, .mark { z-index: 3; }
+  .arrow, .mark { z-index: 2; }
+  ._canvas { z-index: 3; }
   .cage, .hover { z-index: 4; }
   .selected:before, .selected:after { z-index: 5; }
   .cell .question, .cell .answer, .corner, .centre { z-index: 20; }
