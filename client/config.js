@@ -30,10 +30,12 @@ const schema = {
 }
 
 const initial = {
-  dark_mode: false,
-  display_cells: true,
-  display_boxes: true,
-  heavy_cage: false,
+  formData: {
+    dark_mode: false,
+    display_cells: true,
+    display_boxes: true,
+    heavy_cage: false,
+  }
 }
 
 const actions = {
