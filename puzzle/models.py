@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.contrib.postgres.fields import JSONField
 from unrest.models import BaseModel, _choices
 
 from puzzle.ctc import fetch_ctc, update_ctc
@@ -33,7 +32,7 @@ class Puzzle(BaseModel):
     source = models.CharField(max_length=16, default="ctc")
     external_id = models.CharField(max_length=32, null=True, blank=True)
     publish_date = models.DateField(null=True, blank=True)
-    data = JSONField(default=dict, blank=True)
+    data = models.JSONField(default=dict, blank=True)
     flag = models.CharField(max_length=16, default="new", choices=FLAG_CHOICES)
 
     meta = property(lambda s: s.data.get('meta', {}))
@@ -130,5 +129,5 @@ class Puzzle(BaseModel):
 class Solve(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     puzzle = models.ForeignKey('Puzzle', on_delete=models.CASCADE)
-    data = JSONField(default=dict)
+    data = models.JSONField(default=dict)
     valid = models.BooleanField(default=False)
