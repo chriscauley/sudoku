@@ -5,7 +5,7 @@ import { _withGame } from '../withGame'
 import ActionButton from './ActionButton'
 
 function Submit({ game, auth }) {
-  const { solves = [], is_staff } = auth.user || {}
+  const { solves = [], is_staff } = auth.use().user || {}
   if (
     !is_staff ||
     !game.board.solve ||
@@ -16,4 +16,4 @@ function Submit({ game, auth }) {
   return <ActionButton name="submitSolve" />
 }
 
-export default auth.connect(_withGame(Submit))
+export default _withGame(Submit)

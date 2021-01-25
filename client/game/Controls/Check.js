@@ -7,7 +7,7 @@ import css from './css'
 
 function CheckControl(props) {
   const { actions, board } = props.game
-  const { user = {} } = props.auth
+  const { user = {} } = auth.use()
   const { constraints, required_constraints } = board
   const check = () => actions.check(constraints)
   const clear = () => actions.saveBoard({ constraints: [] })
@@ -89,4 +89,4 @@ function CheckControl(props) {
   )
 }
 
-export default auth.connect(_withGame(CheckControl))
+export default _withGame(CheckControl)

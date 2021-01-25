@@ -6,7 +6,7 @@ export default ({ answer, puzzle, constraints }) => {
     answer,
     puzzle,
     constraints,
-  }).then(() => auth.connect.markStale())
+  }).then(() => auth.markStale())
 }
 
 export const submitPuzzle = (id, data) => {

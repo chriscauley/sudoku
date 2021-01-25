@@ -6,7 +6,7 @@ import css from '@unrest/css'
 import ConstraintBox from './ConstraintBox'
 import { saved_games } from './Board'
 
-const PuzzleLink = (props) => {
+export default function PuzzleLink(props) {
   const {
     external_id,
     videos,
@@ -17,7 +17,7 @@ const PuzzleLink = (props) => {
     children,
     meta,
   } = props
-  const { solves = [] } = props.auth.user || {}
+  const solves = auth.use().user?.solves || []
   const solved = solves.find((s) => s.puzzle_id === id)
 
   const title = videos.length ? videos[0].title : '???'
@@ -47,4 +47,3 @@ const PuzzleLink = (props) => {
   )
 }
 
-export default auth.connect(PuzzleLink)

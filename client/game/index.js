@@ -270,7 +270,11 @@ class CTC extends React.Component {
   }
 }
 
+const connectAuth = (Component) => (props) => {
+  return <Component auth={auth} {...props} />
+}
+
 export default {
   Index,
-  CTC: auth.connect(withGame(CTC)),
+  CTC: connectAuth(withGame(CTC)),
 }

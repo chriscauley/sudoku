@@ -7,7 +7,7 @@ import PuzzleLink from './PuzzleLink'
 
 const Index = (props) => {
   const { puzzles = [] } = props.api
-  const { user = {} } = props.auth
+  const { user = {} } = auth.use()
   const _filter = (puzzle) => user.is_staff || puzzle.flag === 'valid'
   return (
     <>
@@ -29,4 +29,4 @@ const Index = (props) => {
   )
 }
 
-export default auth.connect(withPuzzles(Index))
+export default withPuzzles(Index)

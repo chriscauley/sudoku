@@ -12,8 +12,8 @@ import About from './About'
 import './url' // sets root url for @unrest/react-rest-hook and @unrest/core
 import AdminTable from './game/AdminTable'
 
-const App = config.connect((props) => {
-  document.body.className = classnames(props.config.formData)
+function App() {
+  document.body.className = classnames(config.use().formData)
   return (
     <HashRouter>
       <Nav />
@@ -32,7 +32,7 @@ const App = config.connect((props) => {
       </div>
     </HashRouter>
   )
-})
+}
 
 const domContainer = document.querySelector('#react-app')
 ReactDOM.render(<App />, domContainer)

@@ -43,20 +43,18 @@ const actions = {
   close: (store) => store.setState({ open: false }),
 }
 
-const connect = ConfigHook('site_config', { schema, actions, initial })
+const config = ConfigHook('site_config', { schema, actions, initial })
 
-function BaseHoverdown(props) {
+config.use = config.useConfig
+config.Hoverdown = function Hoverdown(props) {
   return (
     <div className="hoverdown">
       <i className={css.icon('gear')} />
       <div className="hoverdown--target">
-        <props.config.Form autosubmit={true} customButton={true} />
+        <config.Form autosubmit={true} customButton={true} />
       </div>
     </div>
   )
 }
 
-export default {
-  connect,
-  Hoverdown: connect(BaseHoverdown),
-}
+export default config
