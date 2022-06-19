@@ -5,6 +5,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 SITE_ID = 1
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 ALLOWED_HOSTS = ['*']
 
 # Application definition

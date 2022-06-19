@@ -7,7 +7,7 @@ node_modules
 .media
 .static
 server/settings/local.py
-server/settings/.secret_key
+.secret_key
 
 # python specific
 .venv

@@ -15,7 +15,6 @@ INSTALLED_APPS = [
 
     # unrest
     'unrest',
-    'unrest.nopass',
     'unrest.user',
 ]
 
