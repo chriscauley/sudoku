@@ -1,4 +1,4 @@
-import django; import os;os.environ['DJANGO_SETTINGS_MODULE'] = 'server.settings';django.setup()
+import _setup
 
 from bs4 import BeautifulSoup
 import json
