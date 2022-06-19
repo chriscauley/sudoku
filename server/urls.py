@@ -3,7 +3,6 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import path, re_path, include
 
-from unrest.views import spa
 from puzzle.views import list_puzzles, puzzle_detail, admin_list
 
 # /api/schema/SolveForm

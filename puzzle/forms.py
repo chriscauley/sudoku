@@ -3,16 +3,16 @@ from django.core.files.storage import default_storage
 
 from puzzle.models import Solve, Puzzle
 from django.contrib.postgres.forms import SimpleArrayField
-from unrest import schema
+import unrest_schema
 
-@schema.register
+@unrest_schema.register
 class PuzzleAdminForm(forms.ModelForm):
     class Meta:
         model = Puzzle
         fields = ('flag',)
 
 
-@schema.register
+@unrest_schema.register
 class PuzzleDataForm(forms.ModelForm):
     required_constraints = SimpleArrayField(forms.CharField(), required=False)
     screenshot = forms.FileField(required=False)
@@ -37,7 +37,7 @@ class PuzzleDataForm(forms.ModelForm):
         fields = ('required_constraints', 'screenshot')
 
 
-@schema.register
+@unrest_schema.register
 class SolveForm(forms.ModelForm):
     constraints = SimpleArrayField(forms.CharField())
     answer = SimpleArrayField(forms.IntegerField())
