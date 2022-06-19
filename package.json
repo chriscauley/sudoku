@@ -24,6 +24,7 @@
     "@unrest/react-rest-hook": "chriscauley/unrest-react-rest-hook",
     "@unrest/storage": "^0.1.0",
     "@unrest/tailwind": "^0.0.2",
+    "@vue/cli": "^5.0.6",
     "classnames": "^2.2.6",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",

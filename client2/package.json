@@ -9,7 +9,11 @@
     "watch": "yarn build --watch"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.5",
     "@unrest/eslint-config": "^0.0.8",
+    "@unrest/tailwind": "^0.1.18",
+    "@unrest/vue": "^0.2.10",
+    "@unrest/vue-storage": "^0.0.17",
     "core-js": "^3.8.3",
     "vue": "^3.2.13"
   },

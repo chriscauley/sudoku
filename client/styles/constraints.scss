@@ -8,7 +8,9 @@
   vertical-align: middle;
   width: 1.5em;
   &[data-count]:after {
-    @apply flex justify-center items-center rounded-full absolute text--bg bg--text;
+    @apply flex justify-center items-center rounded-full absolute;
+    background: var(--text);
+    color: var(--bg);
     content: attr(data-count);
     font-size: 0.7em;
     height: 1.5em;
@@ -40,7 +42,7 @@
 }
 
 .constraint-killer {
-  @apply border--text;
+  boder-color: var(--text);
   background: none;
   border: 3px dashed;
 }

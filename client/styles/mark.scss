@@ -18,7 +18,7 @@
   position: absolute;
   width: 100%;
   &.wall {
-    @apply border--text;
+    border-color: var(--text);
     border: 2px solid;
     background: $mark;
   }

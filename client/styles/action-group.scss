@@ -3,8 +3,9 @@
 .action-group {
   @apply flex relative mb-1 mr-1;
   &[data-title]:hover:before {
-    @apply absolute text-xs bg--bg;
+    @apply absolute text-xs;
     @apply rounded-md border-4 border-b-0;
+    background: var(--bg);
     content: attr(data-title);
     line-height: 1;
     margin-left: -4px;

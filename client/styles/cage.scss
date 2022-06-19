@@ -1,7 +1,7 @@
 @import './var.scss';
 
 .board .cell .cage {
-  @apply text--text;
+  color: var(--text);
   position: absolute;
   height: calc(100% - var(--cage-width));
   top: 0;
@@ -37,7 +37,7 @@
 }
 
 .board .cage-first:after {
-  @apply bg--bg;
+  background: var(--bg);
   content: attr(data-text);
   font-size: 0.25em;
   left: 0;
@@ -51,7 +51,7 @@ body.cage_last .board {
     content: none;
   }
   .cage-last:after {
-    @apply bg--bg;
+    background: var(--bg);
     bottom: 0;
     content: attr(data-text);
     position: absolute;
