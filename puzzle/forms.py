@@ -6,6 +6,19 @@ from django.contrib.postgres.forms import SimpleArrayField
 import unrest_schema
 
 @unrest_schema.register
+class PuzzleForm(forms.ModelForm):
+    readonly_fields = ['constraints', 'screenshot', 'meta']
+    class Meta:
+        model = Puzzle
+        fields = (
+            'external_id',
+            'publish_date',
+            'flag',
+            'source',
+            'data',
+        )
+
+@unrest_schema.register
 class PuzzleAdminForm(forms.ModelForm):
     class Meta:
         model = Puzzle

@@ -2,7 +2,7 @@
   <div :class="css.nav.outer()">
     <div :class="css.nav.section()">
       <router-link to="/" :class="css.nav.brand()">
-        numbers.wtf
+        Numbers.wtf
       </router-link>
     </div>
     <div class="flex-grow" />

@@ -14,7 +14,6 @@ INSTALLED_APPS = [
     'puzzle',
 
     # unrest
-    'unrest',
     'unrest.user',
 ]
 

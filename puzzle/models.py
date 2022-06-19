@@ -41,6 +41,10 @@ class Puzzle(BaseModel):
 
     get_absolute_url = lambda s: f'/#/puzzle/ctc/{s.external_id}/'
 
+    @property
+    def videos(self):
+        return self.video_set.all().values('id', 'title', 'external_id')
+
     def update_status(self):
         _auto = ['new', 'no_rules']
         if self.flag not in _auto:
