@@ -34,9 +34,9 @@ def update_video(video, Puzzle):
     title = soup.find("meta", {'property': 'og:title'})
     title = title and title['content']
 
-    description = html.split(r'"shortDescription\":\"')[1].split(r'\",')[0]
-    description = json.loads(f'"{description}"').replace('\\n','\n').replace('\\"','"')
-    publish_date = html.split(r'publishDate\":\"')[-1].split(r'\"')[0]
+    description = html.split('"shortDescription":"')[1].split('",')[0]
+    description = json.loads(f'"{description}"').replace('\\n','\n').replace('\"','"')
+    publish_date = html.split('publishDate":"')[-1].split(r'"')[0]
 
     puzzle_id = video.puzzle_id
     if _exid in description and not puzzle_id:
@@ -48,11 +48,11 @@ def update_video(video, Puzzle):
             puzzle.save()
             print('Puzzle created for ', video.title, repr(puzzle.external_id))
         puzzle_id = puzzle.id
-
+    publish_date = datetime.datetime.strptime(publish_date, "%Y-%m-%d").date()
     values = dict(
         description=description,
         title=title,
-        publish_date=datetime.datetime.strptime(publish_date, "%Y-%m-%d").date(),
+        publish_date=publish_date,
         puzzle_id=puzzle_id,
     )
     for key, value in values.items():
