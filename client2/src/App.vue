@@ -2,5 +2,4 @@
   <div>Woo!</div>
 </template>
 
-<script>
-</script>
+<script></script>
