@@ -1,5 +1,14 @@
 <template>
-  <div>Woo!</div>
+  <div>
+    <NavBar />
+    <router-view />
+  </div>
 </template>
 
-<script></script>
+<script>
+import NavBar from '@/components/NavBar'
+
+export default {
+  components: { NavBar },
+}
+</script>
