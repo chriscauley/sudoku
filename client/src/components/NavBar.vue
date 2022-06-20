@@ -7,10 +7,8 @@
           Numbers.wtf
         </template>
       </router-link>
-      <div v-if="$route.params.puzzle_id">
-        {{ $store.board?.title }}
-      </div>
     </div>
+    <game-menu />
     <div class="flex-grow" />
     <div :class="css.nav.section('-right')">
       <config-menu />
@@ -24,11 +22,12 @@
 <script>
 import css from '@unrest/css'
 
-import ConfigMenu from './ConfigMenu'
-import HelpMenu from './HelpMenu'
+import GameMenu from './GameMenu.vue'
+import ConfigMenu from './ConfigMenu.vue'
+import HelpMenu from './HelpMenu.vue'
 
 export default {
-  components: { ConfigMenu, HelpMenu },
+  components: { ConfigMenu, GameMenu, HelpMenu },
   data() {
     return { css, repo: "https://github.com/chriscauley/sudoku/" }
   },

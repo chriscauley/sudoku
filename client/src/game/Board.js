@@ -1,5 +1,4 @@
 import { cloneDeep, range, pick } from 'lodash'
-import Storage from '@unrest/storage'
 
 import Animator from './Animator'
 import Checker from './Checker'
@@ -12,14 +11,23 @@ const PARITIES = {
   even: ['2', '4', '6', '8'],
 }
 
-export const saved_games = new Storage('saved games')
-// const made_games = new Storage('made games')
+
+const arrayToggle = (values, value) => {
+  if (values.includes(value)) {
+    values = values.filter((v) => v !== value)
+  } else {
+    values.push(value)
+    values.sort()
+  }
+  return values
+}
 
 export default class Board {
   constructor(options) {
     window.B = this
     options.required_constraints = options.required_constraints || []
     this.options = options
+    this.id = `local_play__${options.id}`
     this.geo = new Geo({ W: 9 })
     this.checker = new Checker(this)
     this.animator = new Animator(this)
@@ -27,7 +35,7 @@ export default class Board {
     this.reset()
 
     // load saved game if exists
-    Object.assign(this, saved_games.get(this.slug) || {})
+    Object.assign(this, this.options.saved_game || {})
     this.turn = this.actions.length
     if (this.finish) {
       this.makeSolve()
@@ -36,6 +44,11 @@ export default class Board {
     // uncomment to debug
     // this.geo.indexes.forEach((index) => (this.corner[index] = [index]))
     this.draw()
+  }
+
+  bind(component) {
+    this.geo.element = component.$refs.clickMask
+    this.animation_canvas = component.$refs.animation_canvas
   }
 
   draw() {
@@ -135,15 +148,11 @@ export default class Board {
     }
     const json = this.toJson()
     delete json.sudoku
-    saved_games.set(this.slug, json)
-  }
-
-  save_new() {
-    const json = this.toJson()
-    json.sudoku = range(this.geo.AREA).map(() => {})
-    // Object.entries(json.answer).forEach(([key, value]) => {
-    //   console.log(key, value)
-    // })
+    if (this.options.save) {
+      this.options.save(json)
+    } else {
+      console.warn('No save option provided on Board.options')
+    }
   }
 
   doAction(action, safe = false) {
@@ -204,6 +213,7 @@ export default class Board {
   toJson() {
     return cloneDeep(
       pick(this, [
+        'id',
         'start',
         'sudoku',
         'answer',
@@ -298,6 +308,7 @@ export default class Board {
     this.extras.marks.forEach((mark) => cells[mark.index].extras.push(mark))
     return cells
   }
+
   getSelectedNeighbors = (index, selected) => {
     if (!selected[index]) {
       return []
@@ -324,13 +335,10 @@ export default class Board {
   }
 
   clearErrors() {
-    this.extras.marks.forEach((mark) => (mark.className = mark._className))
-    this.extras.lines.forEach((line) =>
-      line.cells.forEach((point) => (point.className = point._className)),
-    )
-    this.extras.cages.forEach((cage) =>
-      cage.cells.forEach((cell) => (cell.className = cell._className)),
-    )
+    const shiftCN = o => ( o.className = o._className )
+    this.extras.marks.forEach(shiftCN)
+    this.extras.lines.forEach((line) => line.cells.forEach(shiftCN))
+    this.extras.cages.forEach((cage) => cage.cells.forEach(shiftCN))
   }
 
   freeze() {
@@ -406,14 +414,4 @@ export default class Board {
       ),
     }
   }
-}
-
-const arrayToggle = (values, value) => {
-  if (values.includes(value)) {
-    values = values.filter((v) => v !== value)
-  } else {
-    values.push(value)
-    values.sort()
-  }
-  return values
 }

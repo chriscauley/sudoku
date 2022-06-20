@@ -1,0 +1,14 @@
+.ur-dropdown .dropdown-items .video-description.dropdown-item {
+  @apply block;
+}
+
+.video-description__link {
+  @apply border-b block flex items-center gap-2 text-2xl mb-4;
+  .fa-youtube {
+    @apply text-black;
+  }
+}
+
+.video-description .unrest-markdown {
+  white-space: pre-line;
+}

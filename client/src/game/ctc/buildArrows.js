@@ -1,6 +1,7 @@
-import className from '../className'
-import { vector } from '../Geo'
 import { cloneDeep } from 'lodash'
+
+import { vector } from '../Geo'
+import css from '@unrest/css'
 
 export const fromCTC = ({ wayPoints }) => {
   wayPoints = cloneDeep(wayPoints)
@@ -20,7 +21,7 @@ export const fromCTC = ({ wayPoints }) => {
     out.xy = wp2.map((n) => Math.floor(n))
     out.long = true
   }
-  out.className = className(out, 'arrow')
+  out.className = css(out, 'arrow')
   return out
 }
 

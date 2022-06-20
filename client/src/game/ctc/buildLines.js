@@ -1,4 +1,5 @@
-import classNames from 'classnames'
+import css from '@unrest/css'
+
 import { vector, dxy2text } from '../Geo'
 import extractColor from './extractColor'
 
@@ -43,7 +44,7 @@ export default (board) => {
           cells: xys.map((xy) => ({
             xy,
             index: board.geo.xy2index(xy),
-            className: classNames('line-diagonal', direction, 'color-' + color),
+            className: css.cell('line-diagonal', direction, 'color-' + color),
           })),
         }
       }
@@ -81,6 +82,7 @@ export default (board) => {
     const color = line.color
     line.cells.forEach((cell) => {
       if (forced_ends[cell.index] === color) {
+        console.warn('potential classname problem #1 in build lines')
         cell.className += ' forced_end'
       }
     })
@@ -97,6 +99,7 @@ export default (board) => {
           thermometer_colors[color][index] || []
         if (last_point) {
           // TODO I think the from/to className is obsolete now that I'm using canvas
+          console.warn('potential calssnmae issue #2 in build lines')
           point.className +=
             ' from from-' +
             dxy2text[vector.sign(vector.subtract(last_point.xy, point.xy))]

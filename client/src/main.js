@@ -13,6 +13,12 @@ import '@unrest/tailwind/dist.css'
 import '@/css/index.css'
 
 css.abtn = (active) => css.button[active ? 'dark' : 'light']('block')
+css.cell = ({ xy, dxy, ...extra1 }, extra2) => [
+  xy && `x-${xy[0]} y-${xy[1]}`,
+  dxy && `dx-${dxy[0]} dy-${dxy[1]}`,
+  extra1,
+  extra2,
+]
 
 const todo = {
   install(app) {

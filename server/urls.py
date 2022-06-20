@@ -9,7 +9,7 @@ from unrest.views import index
 # /api/schema/SolveForm
 from puzzle import forms
 
-app_paths = ['app', 'auth', 'help']
+app_paths = ['app', 'auth', 'help', 'puzzle']
 
 urlpatterns = [
     path('admin/', admin.site.urls),

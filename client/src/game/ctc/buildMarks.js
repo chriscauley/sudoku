@@ -1,5 +1,6 @@
+import css from '@unrest/css'
+
 import extractColor from './extractColor'
-import _className from '../className'
 
 // example puzzles:
 // H7n7NhH26M - crazy thermometers
@@ -22,7 +23,7 @@ export default (board) => {
       orientation = 'v-split'
     }
     const color = extractColor(mark.backgroundColor)
-    const className = _className(
+    const className = css.cell(
       { xy, rounded: mark.rounded },
       `mark ${orientation} ${type} color-${color}`,
     )

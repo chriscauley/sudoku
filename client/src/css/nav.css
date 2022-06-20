@@ -1,4 +1,4 @@
-.navbar__section.-right ._trigger {
+.navbar ._trigger{
   @apply cursor-pointer ml-4 text-3xl;
 }
 
@@ -15,4 +15,8 @@
       @apply bg-transparent;
     }
   }
+}
+
+.navbar .contents {
+  display: contents;
 }
