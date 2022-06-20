@@ -7,7 +7,7 @@
       :meta="puzzle.meta"
       :flag_icon="puzzle.flag_icon"
     />
-    {{ puzzle.title }}
+    <span class="link">{{ title }}</span>
   </router-link>
 </template>
 
@@ -19,5 +19,11 @@ export default {
   props: {
     puzzle: Object,
   },
+  computed: {
+    title() {
+      console.log(this.puzzle)
+      return this.puzzle.videos[0]?.title || "???"
+    }
+  }
 }
 </script>

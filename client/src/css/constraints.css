@@ -1,0 +1,112 @@
+.constraint {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: inline-block;
+  height: 1.5em;
+  position: relative;
+  vertical-align: middle;
+  width: 1.5em;
+  &[data-count]:after {
+    @apply flex justify-center items-center rounded-full absolute;
+    background: var(--text);
+    color: var(--bg);
+    content: attr(data-count);
+    font-size: 0.7em;
+    height: 1.5em;
+    left: 50%;
+    top: 50%;
+    width: 1.5em;
+  }
+  &.constraint-sudoku[data-count="0"]:after {
+    @apply bg-red-600;
+  }
+}
+
+.dark_mode .constraint- {
+  &sudoku, &sandwich, &arrow_sudoku, &anti_knight, &anti_king, &anti_queen {
+    filter: invert(1)
+  }
+}
+
+.constraint-killer {
+  boder-color: var(--text);
+  background: none;
+  border: 3px dashed;
+}
+
+.other_constraint {
+  @apply mx-2 inline-flex items-center justify-center;
+  border: 2px solid;
+  border-radius: 100%;
+  height: 1.5em;
+  width: 1.5em;
+}
+
+.constraint-sudoku {
+  background-image: url('./icons/sudoku.svg');
+}
+
+.constraint-sandwich {
+  background-image: url('./icons/sandwich.svg');
+}
+
+.constraint-arrow_sudoku {
+  background-image: url('./icons/arrow.svg');
+}
+
+.constraint-anti_knight {
+  background-image: url('./icons/Chess_nlt45.svg');
+}
+
+.constraint-anti_king {
+  background-image: url('./icons/Chess_klt45.svg');
+}
+
+.constraint-anti_queen {
+  background-image: url('./icons/Chess_qlt45.svg');
+}
+
+.constraint-bad_render {
+  background-image: url('./icons/broken_image.png');
+}
+
+/* these constraints use font-awesome */
+.constraint- {
+  &thermo, &no_rules, &vanilla, &new, &other {
+    height: 1em;
+    width: unset;
+    &:before {
+      font: normal normal normal 1.5em/0.6 FontAwesome;
+    }
+  }
+
+  &thermo:before {
+    content: "\f2c7";
+  }
+
+  &other:before { /* "labs" icon */
+    @apply text-green-500;
+    content: "\f0c3";
+  }
+
+  &no_rules:before {
+    @apply text-red-500;
+    content: "\f05e";
+  }
+
+  &vanilla:before {
+    content: "\f004";
+    display: inline-block;
+    transform: rotate(90deg);
+  }
+
+  &new:before {
+    content: "\f055";
+  }
+}
+
+.solved-icon {
+  @apply text-green-500 align-middle;
+  font-size: 1.5em;
+}
