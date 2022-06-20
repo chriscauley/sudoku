@@ -43,7 +43,7 @@ class Puzzle(BaseModel):
 
     @property
     def videos(self):
-        return self.video_set.all().values('id', 'title', 'external_id')
+        return list(self.video_set.all().values('id', 'title', 'external_id'))
 
     def update_status(self):
         _auto = ['new', 'no_rules']

@@ -6,6 +6,7 @@ import re
 import requests
 import json
 
+_new_exid = 'app.crackingthecryptic.com/sudoku/'
 _exid = 'cracking-the-cryptic.web.app/sudoku/'
 match_external_id = re.compile(r'.*cracking-the-cryptic.web.app/sudoku/(\w+)')
 
@@ -39,6 +40,7 @@ def update_video(video, Puzzle):
     publish_date = html.split('publishDate":"')[-1].split(r'"')[0]
 
     puzzle_id = video.puzzle_id
+    description = description.replace(_new_exid, _exid)
     if _exid in description and not puzzle_id:
         puzzle_external_id = description.split(_exid)[1].split(' ')[0].split('\n')[0].split('\\')[0]
         puzzle = Puzzle.objects.filter(external_id=puzzle_external_id).first()
@@ -82,10 +84,10 @@ def refresh_ctc(Video, Puzzle):
             print("SKIPPING: Only expected one link but got:", links)
             continue
         video_id = links[0]['href'].split('v=')[-1]
-        if Video.objects.filter(external_id=video_id):
-            continue
-        video = Video(external_id=video_id)
+        video = Video.objects.filter(external_id=video_id).first()
+        if not video:
+            video = Video(external_id=video_id)
+            video.save()
+            print("New video:",video_id)
         update_video(video, Puzzle)
-        video.save()
-        print("New video:",video_id)
 

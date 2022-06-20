@@ -7,7 +7,7 @@ import unrest_schema
 
 @unrest_schema.register
 class PuzzleForm(forms.ModelForm):
-    readonly_fields = ['constraints', 'screenshot', 'meta']
+    readonly_fields = ['constraints', 'screenshot', 'meta', 'videos']
     class Meta:
         model = Puzzle
         fields = (
