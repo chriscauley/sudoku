@@ -19,6 +19,7 @@
     "@unrest/vue-storage": "^0.0.17",
     "autoprefixer": "^10",
     "core-js": "^3.8.3",
+    "postcss-each": "^1.1.0",
     "vue": "^3.2.13",
     "vue-router": "4"
   },
