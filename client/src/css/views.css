@@ -1,0 +1,12 @@
+.app-view {
+  @apply px-4;
+}
+
+.app-view.-help {
+  p {
+    @apply mb-2;
+  }
+  section {
+    @apply mb-8
+  }
+}

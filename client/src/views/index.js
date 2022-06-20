@@ -1,3 +1,4 @@
 import HomeView from './HomeView.vue'
+import HelpView from './HelpView.vue'
 
-export default { HomeView }
+export default { HelpView, HomeView }

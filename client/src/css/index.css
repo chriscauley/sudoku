@@ -1,23 +1,6 @@
 @import './tailwind';
 
 @import './constraints';
+@import './nav';
 @import './puzzle-link';
-
-.navbar__section.-right ._trigger {
-  @apply cursor-pointer ml-4 text-3xl;
-}
-
-.config-menu {
-  @apply select-none;
-}
-
-.navbar .dropdown-items {
-  width: unset;
-  .dropdown-item.table {
-    @apply cursor-default p-0 select-none;
-    display: table;
-    &:hover {
-      @apply bg-transparent;
-    }
-  }
-}
+@import './views';
