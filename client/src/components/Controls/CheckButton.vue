@@ -1,5 +1,5 @@
 <template>
-  <div class="hoverdown left flush action">
+  <div class="hoverdown left flush">
     <div :class="[$css.abtn(), highlight]" @click="check">
       check
     </div>
@@ -40,8 +40,8 @@ export default {
     },
     columns() {
       const per_column = 8
-      return range(Math.ceil(this.options.length / per_column))
-        .map((i) => this.options.slice(i * per_column, (i + 1) * per_column),
+      return range(Math.ceil(this.options.length / per_column)).map((i) =>
+        this.options.slice(i * per_column, (i + 1) * per_column),
       )
     },
     is_staff() {
@@ -50,12 +50,10 @@ export default {
     options() {
       const { board } = this.$store.play
       const { constraints, required_constraints } = board
-      const available = this.is_staff
-        ? board.available_constraints
-        : board.required_constraints
+      const available = this.is_staff ? board.available_constraints : board.required_constraints
       return available.map((slug) => ({
         checked: constraints.includes(slug),
-        onChange: () => actions.toggleConstraint(slug),
+        onChange: () => this.$todo('actions.toggleConstraint(slug)'),
         required: required_constraints.includes(slug),
         slug,
         title: slug.replace(/_/g, ' '),
@@ -63,7 +61,7 @@ export default {
     },
     highlight() {
       const { is_full, solve } = this.$store.play.board
-      const highlight = is_full && !solve ? ' highlight-check' : ' '
+      return is_full && !solve ? ' highlight-check' : ' '
     },
   },
   methods: {

@@ -12,7 +12,7 @@ import store from '@/store'
 import '@unrest/tailwind/dist.css'
 import '@/css/index.scss'
 
-css.abtn = (active) => css.button[active ? 'dark' : 'light']('block')
+css.abtn = (active) => css.button[active ? 'dark' : 'light']()
 css.cell = ({ xy, dxy, ...extra1 }, extra2) => [
   xy && `x-${xy[0]} y-${xy[1]}`,
   dxy && `dx-${dxy[0]} dy-${dxy[1]}`,

@@ -1,12 +1,15 @@
 import { reactive } from 'vue'
 
 export default () => {
-  const state = reactive({})
+  const state = reactive({
+    color_mode: 'color',
+    mode: 'answer',
+  })
   const save = (data) => Object.assign(state, data)
 
   const keyUpDown = (event) => {
     const { ctrlKey, shiftKey } = event
-    state.save({ ctrlKey, shiftKey })
+    Object.assign(state, { ctrlKey, shiftKey })
   }
   document.addEventListener('keyup', keyUpDown)
   document.addEventListener('keydown', keyUpDown)

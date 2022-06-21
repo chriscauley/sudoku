@@ -1,22 +1,22 @@
 <template>
-  <div class="Controls" @click.stop>
+  <div class="controls" @click.stop>
     <div class="flex flex-wrap pt-2">
-      <div class="action-group">
-        <div :class="[$css.abtn, 'action']">
+      <div class="btn-group control-group">
+        <div :class="$css.abtn()">
           {{ $store.play.board.getTime() }}
         </div>
         <reset-button />
         <check-button />
         <submit-button />
       </div>
-      <div class="action-group">
+      <div class="btn-group control-group">
         <div :class="$css.abtn()" @click="game.undo">undo</div>
         <div :class="$css.abtn()" @click="game.redo">redo</div>
         <div :class="$css.abtn()" @click="game.redo">replay</div>
       </div>
     </div>
     <div class="flex flex-wrap">
-      <div class="action-group" data-title="Mouse Layer">
+      <div class="btn-group control-group" data-title="Mouse Layer">
         <div
           v-for="mode in $c.modes"
           :key="mode"

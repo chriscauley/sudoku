@@ -1,0 +1,76 @@
+@use 'sass:map';
+@import "var.scss";
+
+.control-group {
+  @apply border-4 rounded-lg mb-1 mr-1;
+  &[data-title]:hover:before {
+    @apply absolute text-xs;
+    @apply rounded-md border-4 border-b-0;
+    background: var(--bg);
+    content: attr(data-title);
+    line-height: 1;
+    margin-left: -4px;
+    bottom: 100%;
+  }
+}
+
+.control-group {
+  .btn:first-child {
+    @apply rounded-l-lg;
+  }
+  .btn:last-child {
+    @apply rounded-r-lg;
+  }
+  @media #{$landscape} {
+    flex-direction: column;
+    .btn:first-child {
+      @apply rounded-none rounded-t-lg;
+    }
+    .btn:last-child {
+      @apply rounded-none rounded-b-lg;
+    }
+  }
+}
+
+.controls {
+  @apply relative;
+  $smaller: 0.75rem;
+  $wh: 40px;
+  @for $i from 0 through 9 {
+    [data-key="#{$i}"]:before {
+      content: "#{$i}";
+    }
+    [data-key="#{$i}"].mode-colour:before {
+      content: "";
+      background: map.get($pallet, $i);
+    }
+  }
+  [data-key] {
+    align-items: center;
+    display: flex;
+    font-size: 1.5rem;
+    height: $wh;
+    justify-content: center;
+    padding: 0;
+    width: $wh;
+  }
+  [data-key].mode-corner:before {
+    font-size: $smaller;
+    position: relative;
+    top: -1em;
+    left: -1em;
+  }
+  [data-key].mode-centre:before {
+    font-size: $smaller;
+  }
+  [data-key].mode-colour:before {
+    display: block;
+    height: 50%;
+    width: 50%;
+  }
+}
+
+.highlight-check, .highlight-check:hover {
+  @apply bg-green-400;
+  box-shadow: 0 0 5px 3px theme('colors.yellow.300');
+}

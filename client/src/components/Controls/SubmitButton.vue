@@ -1,6 +1,6 @@
 <template>
   <div v-if="show" :class="$css.abtn()" @click="$todo('submitSolve')">
-    Submit
+    submit
   </div>
 </template>
 
