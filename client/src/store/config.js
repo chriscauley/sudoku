@@ -36,5 +36,15 @@ export default () => {
 
   const storage = ReactiveLocalStorage({ LS_KEY: 'SUDOKU_CONFIG', initial })
   storage.schema = schema
+
+  storage.onChange = () => {
+    Object.entries(storage.state).forEach(([key, value]) => {
+      const cls = `-${key}`
+      const action = value ? 'add' : 'remove'
+      document.body.classList[action](cls)
+    })
+  }
+
+  storage.init = storage.onChange
   return storage
 }

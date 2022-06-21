@@ -10,7 +10,7 @@ import router from '@/router'
 import store from '@/store'
 
 import '@unrest/tailwind/dist.css'
-import '@/css/index.css'
+import '@/css/index.scss'
 
 css.abtn = (active) => css.button[active ? 'dark' : 'light']('block')
 css.cell = ({ xy, dxy, ...extra1 }, extra2) => [
