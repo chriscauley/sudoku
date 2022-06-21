@@ -14,11 +14,11 @@
         </div>
       </div>
       <div class="border-double border-t-4 border-gray-600 flex flex-wrap">
-        <div :class="css.btn()" @click="reset">Select All {{ is_staff && 'Required' }}</div>
-        <div :class="css.btn()" @click="clear">
+        <div :class="$css.abtn()" @click="reset">Select All {{ is_staff && 'Required' }}</div>
+        <div :class="$css.abtn()" @click="clear">
           Select None
         </div>
-        <div v-if="is_staff" :class="css.abtn()" @click="saveConstraints">
+        <div v-if="is_staff" :class="$css.abtn()" @click="saveConstraints">
           <span>Save Constraints</span>
           <span>{{ diff }}</span>
         </div>
@@ -28,24 +28,29 @@
 </template>
 
 <script>
+import { range } from 'lodash'
+
 export default {
   computed: {
     diff() {
-      const { required_constraints } = this.$store.board
-      const _add = constraints.filter((c) => !required.includes(c)).length
-      const _remove = required.filter((c) => !constraints.includes(c)).length
+      const { required_constraints, constraints } = this.$store.play.board
+      const _add = constraints.filter((c) => !required_constraints.includes(c)).length
+      const _remove = required_constraints.filter((c) => !constraints.includes(c)).length
       return `(+${_add} / -${_remove})`
     },
     columns() {
       const per_column = 8
-      return range(Math.ceil(this.options.length / per_column)).map((i) =>
-        options.slice(i * per_column, (i + 1) * per_column),
+      return range(Math.ceil(this.options.length / per_column))
+        .map((i) => this.options.slice(i * per_column, (i + 1) * per_column),
       )
     },
+    is_staff() {
+      return this.$auth.user?.is_staff
+    },
     options() {
-      const { board } = this.$store
+      const { board } = this.$store.play
       const { constraints, required_constraints } = board
-      const available = this.$auth.user?.is_staff
+      const available = this.is_staff
         ? board.available_constraints
         : board.required_constraints
       return available.map((slug) => ({
@@ -57,7 +62,7 @@ export default {
       }))
     },
     highlight() {
-      const { is_full, solve } = this.$store.board
+      const { is_full, solve } = this.$store.play.board
       const highlight = is_full && !solve ? ' highlight-check' : ' '
     },
   },

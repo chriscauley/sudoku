@@ -1,5 +1,5 @@
 <template>
-  <div @click="resetting = true" :class="css.abtn()">
+  <div @click="resetting = true" :class="$css.abtn()">
     reset
     <unrest-modal v-if="resetting" @close="resetting = false">
       Are you sure you want to restart the game?

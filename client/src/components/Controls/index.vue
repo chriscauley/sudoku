@@ -2,15 +2,17 @@
   <div class="Controls" @click.stop>
     <div class="flex flex-wrap pt-2">
       <div class="action-group">
-        <div :class="[$css.abtn, 'action']">{time}</div>
+        <div :class="[$css.abtn, 'action']">
+          {{ $store.play.board.getTime() }}
+        </div>
         <reset-button />
         <check-button />
         <submit-button />
       </div>
       <div class="action-group">
-        <div :class="$btn.abtn()" @click="game.undo">undo</div>
-        <div :class="$btn.abtn()" @click="game.redo">redo</div>
-        <div :class="$btn.abtn()" @click="game.redo">replay</div>
+        <div :class="$css.abtn()" @click="game.undo">undo</div>
+        <div :class="$css.abtn()" @click="game.redo">redo</div>
+        <div :class="$css.abtn()" @click="game.redo">replay</div>
       </div>
     </div>
     <div class="flex flex-wrap">
@@ -18,7 +20,7 @@
         <div
           v-for="mode in $c.modes"
           :key="mode"
-          :class="$abtn.abtn($store.ui.getMode() === mode)"
+          :class="$css.abtn($store.ui.getMode() === mode)"
           @click="$store.ui.save({ mode })"
         >
           {{ mode }}
