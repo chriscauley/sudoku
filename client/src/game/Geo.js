@@ -55,10 +55,7 @@ export default class Geo {
     const { left, top, height } = this.element.getBoundingClientRect()
     const w_px = height / this.W
     const h_px = height / this.H
-    return [
-      Math.floor((pxy[0] - left) / h_px),
-      Math.floor((pxy[1] - top) / w_px),
-    ]
+    return [Math.floor((pxy[0] - left) / h_px), Math.floor((pxy[1] - top) / w_px)]
   }
 
   pxy2index = (pxy) => this.xy2index(this.pxy2xy(pxy))
@@ -81,21 +78,13 @@ export default class Geo {
     this.i_boxes = range(H)
 
     // sudoku specific, change to y2indexes and x2indexes
-    this._row2indexes = range(H).map((y) =>
-      this.i_rows.map((x) => xy2index([x, y])),
-    )
-    this._col2indexes = range(W).map((x) =>
-      this.i_cols.map((y) => xy2index([x, y])),
-    )
+    this._row2indexes = range(H).map((y) => this.i_rows.map((x) => xy2index([x, y])))
+    this._col2indexes = range(W).map((x) => this.i_cols.map((y) => xy2index([x, y])))
 
     this._index2row = {}
     this._index2col = {}
-    this._row2indexes.map((row) =>
-      row.map((index) => (this._index2row[index] = row)),
-    )
-    this._col2indexes.map((col) =>
-      col.map((index) => (this._index2col[index] = col)),
-    )
+    this._row2indexes.map((row) => row.map((index) => (this._index2row[index] = row)))
+    this._col2indexes.map((col) => col.map((index) => (this._index2col[index] = col)))
 
     this.cacheDiagonals()
 
@@ -106,9 +95,7 @@ export default class Geo {
       const x0 = (box % box_count) * box_width
       const y0 = Math.floor(box / box_count) * box_width
       return flatten(
-        range(box_width).map((bx) =>
-          range(box_width).map((by) => xy2index([x0 + bx, y0 + by])),
-        ),
+        range(box_width).map((bx) => range(box_width).map((by) => xy2index([x0 + bx, y0 + by]))),
       )
     })
     this._text2dindex = {
@@ -147,9 +134,7 @@ export default class Geo {
   cacheKing = () => {
     const distances = [-1, 0, 1]
     const dxys = []
-    distances.forEach((dx) =>
-      distances.forEach((dy) => (dx || dy) && dxys.push([dx, dy])),
-    )
+    distances.forEach((dx) => distances.forEach((dy) => (dx || dy) && dxys.push([dx, dy])))
     this._index2king = this._mapdxys(dxys)
   }
 
@@ -238,9 +223,7 @@ export default class Geo {
       const _name = `_index2${name}diagonal`
       col_diagonals
         .concat(row_diagonals)
-        .forEach((diagonal) =>
-          diagonal.forEach((index) => (this[_name][index] = diagonal)),
-        )
+        .forEach((diagonal) => diagonal.forEach((index) => (this[_name][index] = diagonal)))
     })
   }
 }

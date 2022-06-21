@@ -24,14 +24,7 @@ const diversity = [
   '#990099',
 ]
 
-const bimoon = [
-  '#034EA2',
-  '#303A99',
-  '#5E2390',
-  '#8B0D88',
-  '#C00384',
-  '#F10080',
-]
+const bimoon = ['#034EA2', '#303A99', '#5E2390', '#8B0D88', '#C00384', '#F10080']
 
 const pride = {
   trans,

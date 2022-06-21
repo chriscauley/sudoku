@@ -25,9 +25,7 @@ export default class Checker {
   check(options = {}) {
     this.reset()
     this.answers = this.geo.indexes.map(
-      (index) =>
-        parseInt(this.board.sudoku[index]) ||
-        parseInt(this.board.answer[index]),
+      (index) => parseInt(this.board.sudoku[index]) || parseInt(this.board.answer[index]),
     )
     const { constraints = [] } = options
     constraints.forEach((constraint) => {
@@ -59,17 +57,13 @@ export default class Checker {
       const index2 = index - (orientation === 'h-split' ? 1 : this.geo.W)
       const diff = Math.abs(this.answers[index] - this.answers[index2])
       if (!isNaN(diff) && diff !== 1) {
-        this.addError(
-          [index, index2],
-          'Cells separated by bars must be consecutive pairs',
-        )
+        this.addError([index, index2], 'Cells separated by bars must be consecutive pairs')
       }
     })
   }
 
   thermo() {
-    const reason =
-      'All numbers in thermometer should get larger from bulb to tip'
+    const reason = 'All numbers in thermometer should get larger from bulb to tip'
     this.board.extras.thermometers.forEach((thermometer) => {
       Object.entries(thermometer).forEach(([index, lessers]) => {
         lessers.forEach((lesser_index) => {
@@ -106,11 +100,9 @@ export default class Checker {
       // don't bother marking these, they should be obvious
       this.addError([], 'All answers must be filled in')
     } else {
-      Object.entries(this._binAnswers(this.geo.indexes)).forEach(
-        ([_number, indexes]) => {
-          this.markChecked('complete', indexes)
-        },
-      )
+      Object.entries(this._binAnswers(this.geo.indexes)).forEach(([_number, indexes]) => {
+        this.markChecked('complete', indexes)
+      })
     }
   }
 
@@ -132,10 +124,7 @@ export default class Checker {
     const bins = this._binAnswers(indexes)
     Object.entries(bins).forEach(([answer, indexes]) => {
       if (indexes.length > 1) {
-        this.addError(
-          indexes,
-          `There are ${indexes.length} ${answer}s in ${type} ${type_no + 1}`,
-        )
+        this.addError(indexes, `There are ${indexes.length} ${answer}s in ${type} ${type_no + 1}`)
       }
     })
   }
@@ -159,9 +148,7 @@ export default class Checker {
       const bins = this._binAnswers(cage.indexes)
       Object.entries(bins).forEach(([answer, indexes]) => {
         if (indexes.length > 1) {
-          this.errors.reasons.push(
-            `There are ${indexes.length} ${answer}s in a killer cage.`,
-          )
+          this.errors.reasons.push(`There are ${indexes.length} ${answer}s in a killer cage.`)
           this.errors.count++
           _err(cage)
         }
@@ -182,9 +169,7 @@ export default class Checker {
       const bins = this._binAnswers(line.cells.map((p) => p.index))
       Object.entries(bins).forEach(([answer, indexes]) => {
         if (!isNaN(answer) && indexes.length > 1) {
-          this.errors.reasons.push(
-            `There are ${indexes.length} ${answer}s on a diagonal.`,
-          )
+          this.errors.reasons.push(`There are ${indexes.length} ${answer}s on a diagonal.`)
           this.errors.count++
           indexes.forEach((i) => this.errors.indexes.push(i))
         }
@@ -226,10 +211,7 @@ export default class Checker {
 
   consecutive_regions() {
     this.getRegionIndexes().forEach((indexes) => {
-      this.validateConsecutive(
-        indexes,
-        'Regions can only contain consecutive digits',
-      )
+      this.validateConsecutive(indexes, 'Regions can only contain consecutive digits')
     })
   }
 
@@ -241,9 +223,7 @@ export default class Checker {
 
   getRegionIndexes() {
     if (this.board.extras.cages.length > 0) {
-      return this.board.extras.cages.map((cage) =>
-        cage.cells.map((cell) => cell.index),
-      )
+      return this.board.extras.cages.map((cage) => cage.cells.map((cell) => cell.index))
     }
     const ends = this.board.extras.marks.filter((u) => u.is_end)
     const checked = {}
@@ -290,9 +270,7 @@ export default class Checker {
         last = next
         i++
       }
-      const answers = indexes
-        .map((i) => this.answers[i])
-        .filter((a) => !isNaN(a))
+      const answers = indexes.map((i) => this.answers[i]).filter((a) => !isNaN(a))
       if (answers.length < 2) {
         return
       }
@@ -305,9 +283,7 @@ export default class Checker {
       if (Math.abs(sum(signs)) !== signs.length) {
         this.errors.indexes = this.errors.indexes.concat(indexes)
         this.errors.count += 1
-        this.errors.reasons.push(
-          'Not all numbers in a region are increasing or decreasing',
-        )
+        this.errors.reasons.push('Not all numbers in a region are increasing or decreasing')
       }
     })
   }
@@ -316,10 +292,7 @@ export default class Checker {
   validateMagicSquare(indexes) {
     const index_sets = [
       ['row', range(3).map((i) => indexes.slice(i * 3, (i + 1) * 3))],
-      [
-        'column',
-        range(3).map((i) => [indexes[i], indexes[i + 3], indexes[i + 6]]),
-      ],
+      ['column', range(3).map((i) => [indexes[i], indexes[i + 3], indexes[i + 6]])],
       [
         'diagonal',
         [
@@ -332,10 +305,7 @@ export default class Checker {
       index_set.forEach((indexes) => {
         const total = sum(indexes.map((i) => this.answers[i]))
         if (!isNaN(total) && total !== 15) {
-          this.addError(
-            indexes,
-            `A ${name} in the magic square does not sum to 15`,
-          )
+          this.addError(indexes, `A ${name} in the magic square does not sum to 15`)
         }
       })
     })
@@ -359,12 +329,7 @@ export default class Checker {
 
     // TODO the first part of this is figuring out which which regions to check and should be cached on board
     marked_indexes.filter(this.hasAnswer).forEach((index) => {
-      const slices = [
-        'index2row',
-        'index2col',
-        'index2updiagonal',
-        'index2downdiagonal',
-      ]
+      const slices = ['index2row', 'index2col', 'index2updiagonal', 'index2downdiagonal']
       slices.forEach((name) => {
         let indexes = this.geo[name](index)
         indexes = indexes.slice(indexes.indexOf(index) + 1)
@@ -385,9 +350,7 @@ export default class Checker {
         if (answers.find((a) => isNaN(a)) !== undefined) {
           return
         }
-        const matched_index = indexes.find((index) =>
-          inRange(this.answers[index], a1, a2),
-        )
+        const matched_index = indexes.find((index) => inRange(this.answers[index], a1, a2))
         if (matched_index === undefined) {
           this.addError(
             [index, index2, ...indexes],

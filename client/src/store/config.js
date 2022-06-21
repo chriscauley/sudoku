@@ -12,26 +12,26 @@ export default () => {
     type: 'object',
     properties: {
       dark_mode: {
-        title: "Dark Mode",
-        type: "boolean",
+        title: 'Dark Mode',
+        type: 'boolean',
       },
       display_cells: {
-        title: "Cell Dividers",
-        type: "boolean",
+        title: 'Cell Dividers',
+        type: 'boolean',
       },
       display_boxes: {
-        title: "Box Dividers",
-        type: "boolean",
+        title: 'Box Dividers',
+        type: 'boolean',
       },
       heavy_cage: {
-        title: "Thick Cages (Killer Sudoku)",
-        type: "boolean",
+        title: 'Thick Cages (Killer Sudoku)',
+        type: 'boolean',
       },
       cage_last: {
-        title: "Bottom Label (Killer Sudoku)",
-        type: "boolean",
+        title: 'Bottom Label (Killer Sudoku)',
+        type: 'boolean',
       },
-    }
+    },
   }
 
   const storage = ReactiveLocalStorage({ LS_KEY: 'SUDOKU_CONFIG', initial })

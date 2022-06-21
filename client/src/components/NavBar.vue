@@ -29,7 +29,7 @@ import HelpMenu from './HelpMenu.vue'
 export default {
   components: { ConfigMenu, GameMenu, HelpMenu },
   data() {
-    return { css, repo: "https://github.com/chriscauley/sudoku/" }
+    return { css, repo: 'https://github.com/chriscauley/sudoku/' }
   },
 }
 </script>

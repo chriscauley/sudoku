@@ -4,15 +4,15 @@
     <i
       v-for="video in puzzle.videos"
       :key="video.id"
-      @click="show_video=video"
+      @click="show_video = video"
       class="fa fa-youtube-play _trigger"
       title="Description from youtube video"
     />
-    <unrest-modal v-if="show_video" @close="show_video=null">
+    <unrest-modal v-if="show_video" @close="show_video = null">
       <video-description :video="show_video" />
     </unrest-modal>
-    <i class="fa fa-puzzle-piece _trigger" @click="show_snapshot=true" />
-    <unrest-modal v-if="show_snapshot" @close="show_snapshot=false">
+    <i class="fa fa-puzzle-piece _trigger" @click="show_snapshot = true" />
+    <unrest-modal v-if="show_snapshot" @close="show_snapshot = false">
       <puzzle-snapshot :puzzle="puzzle" />
     </unrest-modal>
   </div>
@@ -29,7 +29,6 @@ export default {
   },
   computed: {
     puzzle() {
-      console.log(this.$store.play.puzzle)
       return this.$store.play.puzzle
     },
     visible() {

@@ -1,10 +1,8 @@
-import { debounce } from 'lodash'
-
 import Board from '@/game/Board'
 
 import { LocalStorage } from '@unrest/vue-storage'
 
-export default ({ store }) => {
+export default ({ _store }) => {
   const storage = LocalStorage('LOCAL_PLAYS')
   const save = (data) => storage.save(data)
 
@@ -27,7 +25,7 @@ export default ({ store }) => {
         storage._state.__board = new Board(options)
         return storage._state.board
       })
-    }
+    },
   }
 }
 

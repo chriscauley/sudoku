@@ -18,7 +18,7 @@
         <div
           v-for="mode in $c.modes"
           :key="mode"
-          :class="$abtn.abtn($store.ui.getMode()===mode)"
+          :class="$abtn.abtn($store.ui.getMode() === mode)"
           @click="$store.ui.save({ mode })"
         >
           {{ mode }}
@@ -26,7 +26,7 @@
       </div>
       <color-mode />
     </div>
-    <div class={'flex flex-wrap'}>
+    <div class="flex flex-wrap">
       <div
         v-for="key in $c.keyboard.numbers"
         :key="key"
@@ -34,7 +34,6 @@
         :class="$css.button.dark('mr-1 mb-1 text-lg mode-' + $store.ui.getMode())"
         @click="$todo('sendKey(key)')"
       />
-      </div>
     </div>
   </div>
 </template>
@@ -46,7 +45,7 @@ import ResetButton from './ResetButton.vue'
 import SubmitButton from './SubmitButton.vue'
 
 export default {
-  name: "GameControls",
+  name: 'GameControls',
   components: { CheckButton, ColorMode, ResetButton, SubmitButton },
 }
 </script>

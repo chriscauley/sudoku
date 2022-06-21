@@ -8,7 +8,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="row, i in rows" :key="i" :class="row[2]">
+      <tr v-for="(row, i) in rows" :key="i" :class="row[2]">
         <td>{{ row[0] }}</td>
         <td>
           <parity-link v-if="row[1].parity" :name="row[1].parity" />
@@ -22,14 +22,15 @@
 </template>
 
 <script>
-    const ParityLink = ({ name }) => (
-      <div>
-        {`Mark ${name.replace('parity:', '')} `}
-        (<router-link class="link" to="/help/parity/">
-          see parity
-        </router-link>)
-      </div>
+const ParityLink = ({ name }) => (
+  <div>
+    {`Mark ${name.replace('parity:', '')} `}(
+    <router-link class="link" to="/help/parity/">
+      see parity
+    </router-link>
     )
+  </div>
+)
 
 export default {
   components: { ParityLink },
@@ -43,14 +44,14 @@ export default {
         ['ctrl + z', 'Undo last move'],
         ['ctrl + y', 'Redo last move'],
         ['delete', 'Clear selected'],
-        ['o or q', {parity: 'odd'}],
-        ['e or w', {parity: 'even'}],
+        ['o or q', { parity: 'odd' }],
+        ['e or w', { parity: 'even' }],
         ['arrows', 'Move cursor around puzzle'],
         ['ctrl + arrows', 'Select multiple cells'],
         ['click', 'Select square'],
         ['ctrl + click', 'Add/remove cells from selection'],
-      ]
+      ],
     }
-  }
+  },
 }
 </script>

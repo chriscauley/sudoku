@@ -21,9 +21,8 @@ export default {
   },
   computed: {
     title() {
-      console.log(this.puzzle)
-      return this.puzzle.videos[0]?.title || "???"
-    }
-  }
+      return this.puzzle.videos[0]?.title || '???'
+    },
+  },
 }
 </script>

@@ -5,18 +5,18 @@
 </template>
 
 <script>
-import KeyTable from "./KeyTable.vue"
+import KeyTable from './KeyTable.vue'
 
 export default {
   setup() {
     return {
       items: [
-        { text: "How to Play", to: "/help/" },
-        { text: "Differences from CTC", to: "/about/ctc-differences/" },
-        { text: "About", to: "/about/" },
+        { text: 'How to Play', to: '/help/' },
+        { text: 'Differences from CTC', to: '/about/ctc-differences/' },
+        { text: 'About', to: '/about/' },
         { tagName: KeyTable },
-      ]
+      ],
     }
-  }
+  },
 }
 </script>

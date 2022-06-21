@@ -11,7 +11,6 @@ const PARITIES = {
   even: ['2', '4', '6', '8'],
 }
 
-
 const arrayToggle = (values, value) => {
   if (values.includes(value)) {
     values = values.filter((v) => v !== value)
@@ -86,12 +85,7 @@ export default class Board {
       colour: {},
       actions: [],
       extras: {},
-      constraints: this.required_constraints || [
-        'row',
-        'col',
-        'box',
-        'complete',
-      ],
+      constraints: this.required_constraints || ['row', 'col', 'box', 'complete'],
     })
     delete this.solve
 
@@ -126,9 +120,7 @@ export default class Board {
     this.gutter_marks = []
     this.extras.marks = []
     if (this.ctc) {
-      this.ctc.cells.forEach((row) =>
-        row.forEach((cell) => this.sudoku.push(cell.value)),
-      )
+      this.ctc.cells.forEach((row) => row.forEach((cell) => this.sudoku.push(cell.value)))
       buildCages(this)
       buildMarks(this)
 
@@ -189,15 +181,10 @@ export default class Board {
     } else if (mode === 'parity') {
       const allowed = PARITIES[value]
       indexes.forEach((index) => {
-        if (
-          this.answer[index] !== undefined ||
-          this.sudoku[index] !== undefined
-        ) {
+        if (this.answer[index] !== undefined || this.sudoku[index] !== undefined) {
           return
         }
-        const centres = (this.centre[index] || []).filter((i) =>
-          allowed.includes(i),
-        )
+        const centres = (this.centre[index] || []).filter((i) => allowed.includes(i))
         if (centres.length === 1) {
           this.answer[index] = centres[0]
         } else if (centres.length === 0) {
@@ -232,10 +219,7 @@ export default class Board {
   _toggle(mode, indexes, value) {
     indexes.map((index) => {
       // cannot write to sudoku or answer squares
-      if (
-        this.sudoku[index] === undefined &&
-        this.answer[index] === undefined
-      ) {
+      if (this.sudoku[index] === undefined && this.answer[index] === undefined) {
         this[mode][index] = arrayToggle(this[mode][index] || [], value)
       }
     })
@@ -279,9 +263,7 @@ export default class Board {
         const matches = names.filter((name) => {
           const value = cell.question || cell.answer
           const values = value === undefined ? cell.centre : [value]
-          return (
-            PARITIES[name].find((num) => values.includes(num)) !== undefined
-          )
+          return PARITIES[name].find((num) => values.includes(num)) !== undefined
         })
         if (matches.length === 1) {
           cell.colour = matches[0]
@@ -294,15 +276,11 @@ export default class Board {
       }
     })
 
-    this.is_full = !cells.find(
-      (c) => c.answer === undefined && c.question === undefined,
-    )
+    this.is_full = !cells.find((c) => c.answer === undefined && c.question === undefined)
 
     this.errors.indexes.forEach((index) => (cells[index].error = true))
     this.extras.cages.forEach((cage) =>
-      cage.cells.forEach(
-        (cage_cell) => (cells[cage_cell.index].cage = cage_cell),
-      ),
+      cage.cells.forEach((cage_cell) => (cells[cage_cell.index].cage = cage_cell)),
     )
     this.extras.arrows.forEach((arrow) => cells[arrow.index].extras.push(arrow))
     this.extras.marks.forEach((mark) => cells[mark.index].extras.push(mark))
@@ -322,9 +300,7 @@ export default class Board {
     this.clearErrors()
 
     // to qualify as a win they must check sudoku constraints (row, col, box)
-    const valid = !this.required_constraints.find(
-      (type) => !constraints.includes(type),
-    )
+    const valid = !this.required_constraints.find((type) => !constraints.includes(type))
 
     this.checker.check({ constraints })
     if (valid && this.errors.count === 0) {
@@ -335,7 +311,7 @@ export default class Board {
   }
 
   clearErrors() {
-    const shiftCN = o => ( o.className = o._className )
+    const shiftCN = (o) => (o.className = o._className)
     this.extras.marks.forEach(shiftCN)
     this.extras.lines.forEach((line) => line.cells.forEach(shiftCN))
     this.extras.cages.forEach((cage) => cage.cells.forEach(shiftCN))
@@ -409,9 +385,7 @@ export default class Board {
     this.solve = this.solve || {
       ms: (this.finish || new Date().valueOf()) - this.start,
       constraints: this.constraints,
-      answer: this.geo.indexes.map((i) =>
-        parseInt(this.answer[i] || this.sudoku[i]),
-      ),
+      answer: this.geo.indexes.map((i) => parseInt(this.answer[i] || this.sudoku[i])),
     }
   }
 }

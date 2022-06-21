@@ -13,7 +13,7 @@ export default {
       // TODO solves.find((s) => s.puzzle_id === game.board.puzzle_id)
       const current_solve = true
       return is_staff && !is_solved && current_solve
-    }
-  }
+    },
+  },
 }
 </script>

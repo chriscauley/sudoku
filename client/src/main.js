@@ -25,7 +25,7 @@ const todo = {
     app.config.globalProperties.$todo = (text) => {
       throw 'TODO: ' + text
     }
-  }
+  },
 }
 
 createApp(App)

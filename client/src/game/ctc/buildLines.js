@@ -95,17 +95,14 @@ export default (board) => {
       let last_point
       line.cells.forEach((point) => {
         const { index } = point
-        thermometer_colors[color][index] =
-          thermometer_colors[color][index] || []
+        thermometer_colors[color][index] = thermometer_colors[color][index] || []
         if (last_point) {
           // TODO I think the from/to className is obsolete now that I'm using canvas
           console.warn('potential calssnmae issue #2 in build lines')
           point.className +=
-            ' from from-' +
-            dxy2text[vector.sign(vector.subtract(last_point.xy, point.xy))]
+            ' from from-' + dxy2text[vector.sign(vector.subtract(last_point.xy, point.xy))]
           last_point.className +=
-            ' to to-' +
-            dxy2text[vector.sign(vector.subtract(point.xy, last_point.xy))]
+            ' to to-' + dxy2text[vector.sign(vector.subtract(point.xy, last_point.xy))]
           thermometer_colors[color][index].push(last_point.index)
           thermometer_colors[color][last_point.index].push(index)
         }
