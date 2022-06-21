@@ -20,6 +20,9 @@ class PuzzleForm(forms.ModelForm):
 
 @unrest_schema.register
 class PuzzleAdminForm(forms.ModelForm):
+    @staticmethod
+    def get_one(external_id):
+        return Puzzle.objects.get(external_id=external_id)
     class Meta:
         model = Puzzle
         fields = ('flag',)

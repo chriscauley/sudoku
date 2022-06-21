@@ -2,6 +2,7 @@
   <div>
     <NavBar />
     <router-view />
+    <unrest-ui />
   </div>
 </template>
 
