@@ -1,0 +1,34 @@
+@use 'sass:map';
+@use 'sass:color';
+
+$theme_colors: text, border, bg, green, magenta, red, yellow, blue, teal, orange;
+
+$pallet: (
+  0: var(--text),
+  1: var(--border),
+  2: var(--bg),
+  3: var(--green),
+  4: var(--magenta),
+  5: var(--orange),
+  6: var(--red),
+  7: var(--yellow),
+  8: var(--blue),
+  9: var(--teal),
+  "selected": var(--selected),
+  "hover": var(--hover),
+);
+
+$sel: 4px;
+$darkenSelected: 5%;
+$mark: rgba(0,0,0,0.15);
+$thermo: #ddd;
+
+$border-box: var(--border-box);
+$border-cell: var(--border-cell);
+$border-cage: var(--cage-width);
+
+$mark-color: var(--mark-color);
+$mark-transparent: var(--mark-transparent);
+
+$portrait: "(max-aspect-ratio: 1/1)";
+$landscape: "(min-aspect-ratio: 1/1), (aspect-ratio: 1/1)";

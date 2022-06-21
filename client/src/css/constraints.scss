@@ -48,8 +48,8 @@
 }
 
 @each $icon in sudoku, sandwich, arrow_sudoku, anti_knight, anti_king, anti_queen {
-  .constraint-$(icon) {
-    background-image: url("./icons/$(icon).svg");
+  .constraint-#{$icon} {
+    background-image: url("./icons/#{$icon}.svg");
   }
 }
 
