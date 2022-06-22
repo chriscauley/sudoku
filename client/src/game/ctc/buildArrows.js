@@ -26,7 +26,7 @@ export const fromCTC = ({ wayPoints }) => {
 }
 
 export default (board) => {
-  const { arrows = [] } = board.ctc
+  const { arrows = [] } = board.options.ctc
   const { geo } = board
   board.extras.arrows = []
   arrows.forEach((ctc_arrow) => {
@@ -36,7 +36,7 @@ export default (board) => {
     const arrow = fromCTC(ctc_arrow)
     arrow.index = geo.xy2index(arrow.xy)
     if (arrow.long) {
-      board.ctc.lines.push(ctc_arrow)
+      board.options.ctc.lines.push(ctc_arrow)
     }
     if (geo.xyInGrid(arrow.xy)) {
       board.extras.arrows.push(arrow)

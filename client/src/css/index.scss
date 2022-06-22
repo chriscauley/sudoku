@@ -1,6 +1,7 @@
 @import './tailwind';
 @import './cssvariables';
 
+@import './board/index.scss';
 @import './constraints';
 @import './controls';
 @import './hoverdown';
@@ -9,3 +10,8 @@
 @import './puzzle-link';
 @import './video-description';
 @import './views';
+@import './z-index';
+
+.app-content {
+  @apply flex flex-col flex-grow;
+}

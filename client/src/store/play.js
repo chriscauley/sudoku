@@ -1,20 +1,25 @@
-import Board from '@/game/Board'
-
+import { reactive } from 'vue'
 import { LocalStorage } from '@unrest/vue-storage'
 
-export default ({ _store }) => {
+import Board from '@/game/Board'
+
+export default ({ store }) => {
+  const _state = reactive({})
   const storage = LocalStorage('LOCAL_PLAYS')
-  const save = (data) => storage.save(data)
+  const save = (data) => {
+    storage.save(data)
+    store.ui.save({ hash: Math.random() })
+  }
 
   return {
     get board() {
-      return storage._state.__board
+      return _state.__board
     },
     get puzzle() {
-      return storage._state.__puzzle
+      return _state.__puzzle
     },
     startGame: (puzzle) => {
-      storage._state.__puzzle = puzzle
+      _state.__puzzle = puzzle
       return storage.fetchOne(puzzle.external_id).then((play) => {
         const options = {
           ...puzzle.data,
@@ -22,8 +27,8 @@ export default ({ _store }) => {
           saved_game: play,
           save,
         }
-        storage._state.__board = new Board(options)
-        return storage._state.board
+        _state.__board = new Board(options)
+        return _state.board
       })
     },
   }

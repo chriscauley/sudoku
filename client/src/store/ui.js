@@ -4,6 +4,8 @@ export default () => {
   const state = reactive({
     color_mode: 'color',
     mode: 'answer',
+    selected: {},
+    hash: 0,
   })
   const save = (data) => Object.assign(state, data)
 
@@ -17,6 +19,7 @@ export default () => {
   return {
     state,
     save,
+    watch: () => state.hash, // this is a bit of an anti-pattern
     getMode() {
       if (state.ctrlKey && state.shiftKey) {
         return 'colour'

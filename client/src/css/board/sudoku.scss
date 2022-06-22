@@ -1,0 +1,252 @@
+@use 'sass:map';
+@use 'sass:color';
+
+@import '../var';
+
+.app-view.-game {
+  @apply flex flex-grow h-full overflow-hidden select-none;
+  .game-area {
+    @apply w-full;
+  }
+  .controls {
+    @apply items-center justify-center;
+    width: 250px;
+  }
+  @media #{$portrait} {
+    @apply flex-col;
+    .controls {
+      @apply w-full;
+    }
+  }
+}
+
+.flex-cell {
+  @apply flex;
+}
+
+.board {
+  position: relative;
+  .sudoku, .clickmask {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  .cell {
+    height: 11.1111%;
+    width: 11.1111%;
+  }
+  .sudoku {
+    border-color: var(--text);
+    border-style: solid;
+    border-width: 3px;
+    .cell {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+    }
+    .cell .number {
+      @apply items-center justify-center flex;
+      border-color: var(--text);
+      border-style: solid;
+      border-width: 0 $border-cell $border-cell 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .cell {
+      &.x-2, &.x-5 {
+        .number {
+          border-right-width: $border-box;
+        }
+      }
+      &.y-2, &.y-5 {
+        .number {
+          border-bottom-width: $border-box;
+        }
+      }
+      &.x-8 {
+        .number {
+          border-right-width: 0;
+        }
+      }
+      &.y-8 {
+        .number {
+          border-bottom-width: 0;
+        }
+      }
+      &.selected-1:before,
+      &.selected--1:before,
+      &.selected--9:after,
+      &.selected-9:after {
+        box-sizing: content-box;
+        content: "";
+        left: 0;
+        margin: - $sel;
+        position: absolute;
+        top:0;
+        border: $sel solid transparent;
+        height: calc(100% - #{$sel / 2});
+        width: calc(100% - #{$sel / 2});
+      }
+      &.selected-1:before {
+        border-right-color: var(--border-selected);
+      }
+      &.selected--1:before {
+        border-left-color: var(--border-selected);
+      }
+      &.selected--9:after {
+        border-top-color: var(--border-selected);
+      }
+      &.selected-9:after {
+        border-bottom-color: var(--border-selected);
+      }
+    }
+  }
+}
+
+.board .cell .cursor {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 20%;
+    width: 60%;
+    height: 90%;
+    border-bottom: var(--text) 3px solid;
+}
+
+.board .cell {
+  position: relative;
+  &.selected {
+    border-color: $mark;
+    .number {
+      background-color: var(--selected);
+    }
+  }
+  .corner {
+    @apply top-0 left-0 absolute;
+    line-height: 1;
+  }
+  .colour {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+  }
+  @for $i from 0 through 9 {
+    .colour-#{$i} {
+      background: map.get($pallet, $i);
+    }
+  }
+  .colour-odd {
+    background: var(--yellow);
+  }
+  .colour-even {
+    background: var(--green);
+  }
+  &.darkbg {
+    text-shadow: 0 0 3px white, 0 0 3px white,0 0 3px white, 0 0 3px white;
+  }
+}
+
+.board .cell {
+  &.answer,
+  .corner, .centre {
+    @apply text-blue-700;
+  }
+  &.colour-0, &.colour-6 {
+    color: var(--bg);
+    &.answer,
+    .corner, .centre {
+      color: var(--bg);
+    }
+  }
+  .corner, .centre {
+    font-size: 0.3em;
+  }
+}
+
+.board .cell {
+  $error: inset -0.5px -0.5px 8px 3px red;
+  $hover: inset map.get($pallet, "hover") -0.5px -0.5px 3px 3px;
+  &.error {
+    box-shadow: $error;
+  }
+  .hover {
+    box-shadow: $hover;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
+.board .cell .arrow {
+  font: normal normal normal 0.5em/1 FontAwesome;
+  color: gray;
+    position: absolute;
+  &:before {
+    content: "\f054"; /* chevron-right */
+  }
+  &.dy-1 {
+    bottom: -0.2em;
+    &.long {
+      bottom: 0.6em;
+    }
+  }
+  &.dy--1 {
+    top: -0.2em;
+    &.long {
+      top: 0.6em;
+    }
+  }
+  &.dx--1 {
+    left: -0.2em;
+    &.long {
+      left: 0.6em;
+    }
+  }
+  &.dx-1 {
+    right: -0.2em;
+    &.long {
+      right: 0.6em;
+    }
+  }
+  &.dx-0.dy-1 {
+    transform: rotate(90deg);
+  }
+  &.dx-0.dy--1 {
+    transform: rotate(-90deg);
+  }
+  &.dx--1.dy-0 {
+    transform: rotate(180deg);
+  }
+
+  &.dx-1.dy-1 {
+    transform: rotate(45deg);
+  }
+  &.dx--1.dy-1 {
+    transform: rotate(135deg);
+  }
+  &.dx--1.dy--1 {
+    transform: rotate(-135deg);
+  }
+  &.dx-1.dy--1 {
+    transform: rotate(-45deg);
+  }
+}
+
+.board ._canvas {
+  background-size: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

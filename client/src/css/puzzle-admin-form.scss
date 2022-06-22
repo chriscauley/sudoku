@@ -1,0 +1,7 @@
+.puzzle-admin-form {
+  @apply absolute bottom-0 left-0 p-4;
+  background: var(--bg);
+  .rjsf, .form-group {
+    margin-bottom: 0;
+  }
+}

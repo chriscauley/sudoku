@@ -32,6 +32,10 @@
   }
 }
 
+.control-row {
+  @apply flex flex-wrap items-start pt-2;
+}
+
 .controls {
   @apply relative;
   $smaller: 0.75rem;

@@ -11,7 +11,7 @@ export default (board) => {
   const forced_ends = {} // used in "shall we play a game" #Z4gGYPtBWNw
 
   const { W, H } = board.geo
-  const processedLines = board.ctc.lines
+  const processedLines = board.options.ctc.lines
     .filter((l) => l.wayPoints.length)
     .map((line) => {
       const { wayPoints } = line

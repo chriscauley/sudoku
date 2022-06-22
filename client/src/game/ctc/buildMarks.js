@@ -6,7 +6,8 @@ import extractColor from './extractColor'
 // H7n7NhH26M - crazy thermometers
 // 7Qh3tBm4mj - ceiling and floor
 export default (board) => {
-  const { ctc, geo } = board
+  const { geo } = board
+  const { ctc } = board.options
   const ctc_marks = ctc.underlays.concat(ctc.overlays)
   const marks = ctc_marks.map((mark) => {
     const center = mark.center.reverse()

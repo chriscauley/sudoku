@@ -1,6 +1,6 @@
 <template>
   <div class="controls" @click.stop>
-    <div class="flex flex-wrap pt-2">
+    <div class="control-row">
       <div class="btn-group control-group">
         <div :class="$css.abtn()">
           {{ $store.play.board.getTime() }}
@@ -15,7 +15,7 @@
         <div :class="$css.abtn()" @click="game.redo">replay</div>
       </div>
     </div>
-    <div class="flex flex-wrap">
+    <div class="control-row">
       <div class="btn-group control-group" data-title="Mouse Layer">
         <div
           v-for="mode in $c.modes"
@@ -28,7 +28,7 @@
       </div>
       <color-mode />
     </div>
-    <div class="flex flex-wrap">
+    <div class="control-row">
       <div
         v-for="key in $c.keyboard.numbers"
         :key="key"

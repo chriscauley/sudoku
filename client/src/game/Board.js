@@ -21,6 +21,23 @@ const arrayToggle = (values, value) => {
   return values
 }
 
+const JSON_ATTRS = [
+  'id',
+  'start',
+  'sudoku',
+  'answer',
+  'corner',
+  'centre',
+  'colour',
+  'actions',
+  'frozen',
+  'solve',
+  'constraints',
+  'color_mode',
+]
+
+const toJson = (o) => cloneDeep(pick(o, JSON_ATTRS))
+
 export default class Board {
   constructor(options) {
     window.B = this
@@ -58,7 +75,7 @@ export default class Board {
     const ctx = canvas.getContext('2d')
     ctx.lineWidth = sx / 7
     ctx.lineCap = 'round'
-    this.ctc.lines.forEach((line) => {
+    this.options.ctc.lines.forEach((line) => {
       const wayPoints = line.wayPoints.map((wp) => wp.reverse())
       const wp0 = wayPoints[0]
       if (!wp0) {
@@ -77,7 +94,8 @@ export default class Board {
 
   reset() {
     this.checker.reset()
-    Object.assign(this, cloneDeep(this.options), {
+    this.required_constraints = this.options.required_constraints
+    Object.assign(this, toJson(this.options), {
       start: new Date().valueOf(),
       answer: {},
       corner: {},
@@ -119,8 +137,8 @@ export default class Board {
     this.sudoku = []
     this.gutter_marks = []
     this.extras.marks = []
-    if (this.ctc) {
-      this.ctc.cells.forEach((row) => row.forEach((cell) => this.sudoku.push(cell.value)))
+    if (this.options.ctc) {
+      this.options.ctc.cells.forEach((row) => row.forEach((cell) => this.sudoku.push(cell.value)))
       buildCages(this)
       buildMarks(this)
 
@@ -138,7 +156,7 @@ export default class Board {
     if (this.frozen) {
       return
     }
-    const json = this.toJson()
+    const json = toJson(this)
     delete json.sudoku
     if (this.options.save) {
       this.options.save(json)
@@ -195,25 +213,6 @@ export default class Board {
       })
     }
     this.save()
-  }
-
-  toJson() {
-    return cloneDeep(
-      pick(this, [
-        'id',
-        'start',
-        'sudoku',
-        'answer',
-        'corner',
-        'centre',
-        'colour',
-        'actions',
-        'frozen',
-        'solve',
-        'constraints',
-        'color_mode',
-      ]),
-    )
   }
 
   _toggle(mode, indexes, value) {
@@ -352,6 +351,7 @@ export default class Board {
         }
       })
     })
+    this.save()
   }
 
   replay(callback) {

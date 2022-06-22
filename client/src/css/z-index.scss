@@ -1,0 +1,21 @@
+/* I find it useful to keep all z-indexes together */
+.app-view.-game {
+  .colour { z-index: 0; }
+  .animation_canvas { z-index: 1; }
+  .mark { z-index: 3; }
+  ._canvas { z-index: 4; }
+  .arrow { z-index: 5; }
+  .cage, .hover { z-index: 6; }
+  .selected:before, .selected:after { z-index: 10; }
+  .to:after, .from:before { z-index: 10; }
+  .cell .question, .cell .answer, .corner, .centre { z-index: 20; }
+  .clickmask { z-index: 50; }
+  .cursor { z-index: 60; }
+  .Controls { z-index: 100; }
+  .PuzzleAdminForm { z-index: 101; }
+}
+.snackbar { z-index: 110; }
+.hoverdown { z-index: 150; }
+.control-group[data-title]:hover:before { z-index: 155; }
+.hoverdown:hover { z-index: 160; }
+.modal { z-index: 200; }

@@ -1,5 +1,5 @@
 export default (board) => {
-  board.extras.cages = board.ctc.cages.map((cage) => {
+  board.extras.cages = board.options.ctc.cages.map((cage) => {
     cage.indexes = []
     cage.first = { index: Infinity }
     cage.last = { index: 0 }
