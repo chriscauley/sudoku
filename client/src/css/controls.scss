@@ -78,3 +78,9 @@
   @apply bg-green-400;
   box-shadow: 0 0 5px 3px theme('colors.yellow.300');
 }
+
+.game-controls__check-button {
+  .btn {
+    @apply block;
+  }
+}

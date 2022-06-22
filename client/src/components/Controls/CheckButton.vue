@@ -1,5 +1,5 @@
 <template>
-  <div class="hoverdown left flush">
+  <div class="hoverdown left flush game-controls__check-button">
     <div :class="[$css.abtn(), highlight]" @click="check">
       check
     </div>
@@ -8,7 +8,7 @@
         <div v-for="(column, i) in columns" :key="i" class="flex-grow">
           <label v-for="c in column" :key="c.slug" :class="$css.abtn(c.checked)">
             <input type="checkbox" @change="c.onChange" :checked="c.checked" />
-            {{ c.required && '* ' }}
+            {{ c.required ? '* ' : '' }}
             {{ c.title }}
           </label>
         </div>
@@ -53,7 +53,7 @@ export default {
       const available = this.is_staff ? board.available_constraints : board.required_constraints
       return available.map((slug) => ({
         checked: constraints.includes(slug),
-        onChange: () => this.$todo('actions.toggleConstraint(slug)'),
+        onChange: () => this.$store.play.board.toggleConstraint(slug),
         required: required_constraints.includes(slug),
         slug,
         title: slug.replace(/_/g, ' '),
@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     check() {
-      this.$todo('const check = () => actions.check(constraints)')
+      this.$store.play.board.check()
     },
     clear() {
       this.$todo('const clear = () => actions.saveBoard({ constraints: [] })')

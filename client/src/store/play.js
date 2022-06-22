@@ -6,9 +6,11 @@ import Board from '@/game/Board'
 export default ({ store }) => {
   const _state = reactive({})
   const storage = LocalStorage('LOCAL_PLAYS')
+  const update = () => store.ui.save({ hash: Math.random() })
+
   const save = (data) => {
     storage.save(data)
-    store.ui.save({ hash: Math.random() })
+    update()
   }
 
   return {
@@ -26,6 +28,7 @@ export default ({ store }) => {
           id: puzzle.external_id,
           saved_game: play,
           save,
+          update,
         }
         _state.__board = new Board(options)
         return _state.board

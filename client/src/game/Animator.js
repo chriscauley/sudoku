@@ -16,10 +16,10 @@ export default class Animator {
     if (this.ctx) {
       return
     }
-    const { width, height } = this.board.geo.element.getBoundingClientRect()
+    const { width, height } = document.querySelector('.clickmask').getBoundingClientRect()
     const canvas = (this.canvas = document.createElement('canvas'))
     const _last = document.createElement('canvas')
-    const live_canvas = this.board.animation_canvas
+    const live_canvas = document.querySelector('.animation_canvas')
     canvas.width = _last.width = live_canvas.width = width
     canvas.height = _last.height = live_canvas.height = height
     this.ctx = canvas.getContext('2d')

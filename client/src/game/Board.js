@@ -150,6 +150,7 @@ export default class Board {
     this.turn = this.actions.length
     this.sudoku = this.sudoku || range(this.geo.AREA).map(() => {})
     this.clearErrors()
+    this.options.update()
   }
 
   save() {
@@ -296,6 +297,7 @@ export default class Board {
   }
 
   check(constraints) {
+    constraints = constraints || this.constraints
     this.clearErrors()
 
     // to qualify as a win they must check sudoku constraints (row, col, box)
@@ -305,8 +307,8 @@ export default class Board {
     if (valid && this.errors.count === 0) {
       this.animator.animate({ constraints, checker: this.checker })
       this.makeSolve()
-      this.save()
     }
+    this.save()
   }
 
   clearErrors() {
@@ -387,5 +389,14 @@ export default class Board {
       constraints: this.constraints,
       answer: this.geo.indexes.map((i) => parseInt(this.answer[i] || this.sudoku[i])),
     }
+  }
+
+  toggleConstraint(slug) {
+    if (this.constraints.includes(slug)) {
+      this.constraints = this.constraints.filter((c) => c !== slug)
+    } else {
+      this.constraints.push(slug)
+    }
+    this.save()
   }
 }
