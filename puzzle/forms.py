@@ -37,14 +37,10 @@ class PuzzleDataForm(forms.ModelForm):
         if screenshot:
             saved = default_storage.save('screenshots/' + screenshot.name, screenshot)
             return default_storage.url(saved)
-    def clean(self):
-        if not self.request.user.is_staff:
-            raise ValidationError("Only staff are allowed to save puzzles")
 
     def save(self, commit=True):
         for attr, value in self.cleaned_data.items():
-            print('saving', attr, value)
-            if value:
+            if value is not None:
                 self.instance.data[attr] = value
         return super().save(commit=commit)
 

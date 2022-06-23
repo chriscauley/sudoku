@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="border-double border-t-4 border-gray-600 flex flex-wrap">
-        <div :class="$css.abtn()" @click="reset">Select All {{ is_staff && 'Required' }}</div>
+        <div :class="$css.abtn()" @click="reset">Select All {{ is_staff ? 'Required' : '' }}</div>
         <div :class="$css.abtn()" @click="clear">
           Select None
         </div>
@@ -29,6 +29,7 @@
 
 <script>
 import { range } from 'lodash'
+import { getClient } from '@unrest/vue-storage'
 
 export default {
   computed: {
@@ -69,15 +70,23 @@ export default {
       this.$store.play.board.check()
     },
     clear() {
-      this.$todo('const clear = () => actions.saveBoard({ constraints: [] })')
+      const { board } = this.$store.play
+      board.constraints = []
+      board.save()
     },
     saveConstraints() {
-      this.$todo(
-        'const saveConstraints = (required_constraints = constraints) => actions.savePuzzle({ required_constraints })',
-      )
+      const { board, puzzle } = this.$store.play
+      const { constraints } = board
+      const data = { required_constraints: constraints }
+      const url = `schema/puzzle-data/${puzzle.id}/`
+      getClient()
+        .post(url, data)
+        .then(() => this.$ui.toast.success('Puzzle saved'))
     },
     reset() {
-      this.$todo('const reset = () => actions.saveBoard({ constraints: required_constraints })')
+      const { board } = this.$store.play
+      board.constraints = board.required_constraints.slice()
+      board.save()
     },
   },
 }
