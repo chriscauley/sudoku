@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash'
 import css from '@unrest/css'
 
 import { vector, dxy2text } from '../Geo'
@@ -11,7 +12,7 @@ export default (board) => {
   const forced_ends = {} // used in "shall we play a game" #Z4gGYPtBWNw
 
   const { W, H } = board.geo
-  const processedLines = board.options.ctc.lines
+  const processedLines = cloneDeep(board.options.ctc.lines)
     .filter((l) => l.wayPoints.length)
     .map((line) => {
       const { wayPoints } = line

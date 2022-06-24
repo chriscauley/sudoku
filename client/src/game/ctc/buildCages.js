@@ -1,5 +1,7 @@
+import { cloneDeep } from 'lodash'
+
 export default (board) => {
-  board.extras.cages = board.options.ctc.cages.map((cage) => {
+  board.extras.cages = cloneDeep(board.options.ctc.cages).map((cage) => {
     cage.indexes = []
     cage.first = { index: Infinity }
     cage.last = { index: 0 }

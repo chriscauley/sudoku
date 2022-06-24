@@ -76,6 +76,7 @@ export default class Board {
     ctx.lineWidth = sx / 7
     ctx.lineCap = 'round'
     this.options.ctc.lines.forEach((line) => {
+      line = cloneDeep(line)
       const wayPoints = line.wayPoints.map((wp) => wp.reverse())
       const wp0 = wayPoints[0]
       if (!wp0) {
