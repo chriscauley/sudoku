@@ -1,9 +1,10 @@
 <template>
-  <div class="hoverdown left flush game-controls__check-button">
-    <div :class="[$css.abtn(), highlight]" @click="check">
-      check
-    </div>
-    <div class="hoverdown--target -ml-14">
+  <div
+    :class="[$css.abtn(), highlight, 'hoverdown left flush game-controls__check-button']"
+    @click="check"
+  >
+    check
+    <div class="hoverdown--target">
       <div class="flex w-full">
         <div v-for="(column, i) in columns" :key="i" class="flex-grow">
           <label v-for="c in column" :key="c.slug" :class="$css.abtn(c.checked)">
@@ -61,8 +62,11 @@ export default {
       }))
     },
     highlight() {
-      const { is_full, solve } = this.$store.play.board
-      return is_full && !solve ? ' highlight-check' : ' '
+      const b = this.$store.play.board
+      const { user_solve } = this.$store.play.board
+      const first_empty = b.geo.indexes.find((i) => !b.sudoku[i] && !b.answer[i])
+      const no_empty = first_empty === undefined
+      return !user_solve && no_empty ? 'highlight-check' : ''
     },
   },
   methods: {
