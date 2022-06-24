@@ -1,6 +1,6 @@
 import { range } from 'lodash'
 
-export default class Gutter {
+class Gutter {
   constructor(options) {
     this.board = options.board
     this.g = options.g
@@ -15,7 +15,7 @@ export default class Gutter {
 }
 
 // this may need to be in ctc.js
-export const buildGutters = (marks, board) => {
+export default (marks, board) => {
   board.gutters = range(4).map((g) => new Gutter({ board, g }))
   marks.forEach((mark) => {
     const xy = mark.xy

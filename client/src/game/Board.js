@@ -3,8 +3,7 @@ import { cloneDeep, range, pick } from 'lodash'
 import Animator from './Animator'
 import Checker from './Checker'
 import Geo from './Geo'
-import { buildGutters } from './Gutter'
-import { buildCages, buildLines, buildMarks, buildArrows } from './ctc'
+import { buildCages, buildGutters, buildLines, buildMarks, buildArrows } from './ctc'
 
 const PARITIES = {
   odd: ['1', '3', '5', '7', '9'],
