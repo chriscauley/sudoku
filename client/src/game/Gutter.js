@@ -8,7 +8,7 @@ export default class Gutter {
     this.is_column = this.g % 2 === 0
     this.SIZE = this.board.geo[this.is_column ? 'H' : 'W']
     this.values = range(this.SIZE).map(() => undefined)
-    this.className = 'gutter gutter-' + this.name
+    this.class = 'gutter gutter-' + this.name
   }
   get = (index) => this.values[index]
   set = (index, value) => (this.values[index] = value)

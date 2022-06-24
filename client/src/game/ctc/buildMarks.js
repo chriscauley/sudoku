@@ -45,6 +45,7 @@ export default (board) => {
   marks.forEach((u) => (mark_indexes[u.index] = u))
   marks.forEach((mark) => {
     if (!geo.xyInGrid(mark.xy)) {
+      board.gutter_marks.push(mark)
       mark.type = 'gutter'
       return
     }
@@ -54,7 +55,7 @@ export default (board) => {
       .filter(Boolean)
     mark.is_end = mark.next_to.length === 1
     if (mark.type === 'gutter') {
-      board._gutter_marks.push(mark)
+      board.gutter_marks.push(mark)
     } else {
       board.extras.marks.push(mark)
     }

@@ -17,5 +17,5 @@
 .snackbar { z-index: 110; }
 .hoverdown { z-index: 150; }
 .control-group[data-title]:hover:before { z-index: 155; }
-.hoverdown:hover { z-index: 160; }
+.ur-popper, .hoverdown:hover { z-index: 160; }
 .modal { z-index: 200; }

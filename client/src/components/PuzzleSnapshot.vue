@@ -20,7 +20,7 @@ export default {
       return `https://app.crackingthecryptic.com/sudoku/${this.puzzle.external_id}`
     },
     style() {
-      return 'width: 600px; min-height: 400px;'
+      return 'width: 800px; min-height: 550px;'
     },
   },
 }

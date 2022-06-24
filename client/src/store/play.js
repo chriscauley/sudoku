@@ -34,6 +34,10 @@ export default ({ store }) => {
         return _state.board
       })
     },
+    unmount: () => {
+      _state.__board = null
+      _state.__puzzle = null
+    },
   }
 }
 

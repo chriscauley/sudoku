@@ -31,7 +31,7 @@ const JSON_ATTRS = [
   'colour',
   'actions',
   'frozen',
-  'solve',
+  'user_solve',
   'constraints',
   'color_mode',
 ]
@@ -48,6 +48,7 @@ export default class Board {
     this.checker = new Checker(this)
     this.animator = new Animator(this)
     this.color_mode = 'colour'
+    this.answers = []
     this.reset()
 
     // load saved game if exists
@@ -105,7 +106,7 @@ export default class Board {
       extras: {},
       constraints: this.required_constraints || ['row', 'col', 'box', 'complete'],
     })
-    delete this.solve
+    delete this.user_solve
 
     this.available_constraints = [
       'row',
@@ -154,6 +155,8 @@ export default class Board {
   }
 
   save() {
+    const empty_index = this.geo.indexes.find((i) => !this.sudoku[i] && !this.answers[i])
+    this.is_full = empty_index === undefined
     if (this.frozen) {
       return
     }
@@ -276,8 +279,6 @@ export default class Board {
       }
     })
 
-    this.is_full = !cells.find((c) => c.answer === undefined && c.question === undefined)
-
     this.errors.indexes.forEach((index) => (cells[index].error = true))
     this.extras.cages.forEach((cage) =>
       cage.cells.forEach((cage_cell) => (cells[cage_cell.index].cage = cage_cell)),
@@ -319,7 +320,7 @@ export default class Board {
   }
 
   freeze() {
-    this.frozen = this.frozen || this.toJson()
+    this.frozen = this.frozen || toJson(this)
   }
 
   redo() {
@@ -375,8 +376,8 @@ export default class Board {
   }
 
   getTime() {
-    const { solve = {}, start } = this
-    const seconds = (solve.ms ? solve.ms : new Date().valueOf() - start) / 1000
+    const ms = this.user_solve?.ms
+    const seconds = (ms ? ms : new Date().valueOf() - this.start) / 1000
     const s = Math.floor(seconds % 60)
       .toString()
       .padStart(2, '0')
@@ -384,7 +385,7 @@ export default class Board {
   }
 
   makeSolve() {
-    this.solve = this.solve || {
+    this.user_solve = this.user_solve || {
       ms: (this.finish || new Date().valueOf()) - this.start,
       constraints: this.constraints,
       answer: this.geo.indexes.map((i) => parseInt(this.answer[i] || this.sudoku[i])),

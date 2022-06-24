@@ -1,4 +1,13 @@
 .hoverdown {
+  &:hover .ur-popper {
+    display: flex;
+  }
+  .ur-popper {
+    display: none;
+  }
+}
+
+.hoverdown {
   @apply relative;
   .hoverdown--target {
     @apply absolute hidden overflow-hidden;

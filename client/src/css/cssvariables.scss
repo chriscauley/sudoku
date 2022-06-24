@@ -46,7 +46,7 @@ body {
   }
 }
 
-.Game {
+.app-view.game {
   --mark-transparent: rgba(255, 255, 255, 0.2);
   --mark-color: var(--border);
   @each $color in $theme_colors {

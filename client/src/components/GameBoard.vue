@@ -67,7 +67,7 @@ export default {
   unmounted() {
     window.removeEventListener('resize', this.resize)
     listeners.forEach((s) => document.removeEventListener(s, this[s]))
-    this.game.actions.unmount()
+    this.$store.play.unmount()
   },
   methods: {
     resize: debounce(function () {
