@@ -30,7 +30,7 @@ export default {
     pages() {
       const { page_no } = this
       return range(page_no, page_no + 1).map((page) =>
-        this.$store.puzzle.getPage({ query: { page } }),
+        this.$store.puzzle.getPage({ query: { page, per_page: 50 } }),
       )
     },
   },

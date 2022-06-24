@@ -18,7 +18,7 @@
             </span>
             <span v-else class="answer number">{{ cell.answer }}</span>
             <span v-if="cell.cage" :class="cell.cage.className" :data-text="cell.cage.text" />
-            <span v-for="(extra, i) in cell.extras" :key="i" class="extra.className" />
+            <span v-for="(extra, i) in cell.extras" :key="i" :class="extra.className" />
           </div>
         </div>
         <div class="clickmask" @mousemove="mousemove" ref="clickmask" />
