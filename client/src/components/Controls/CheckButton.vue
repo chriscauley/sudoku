@@ -4,7 +4,7 @@
     @click="check"
   >
     check
-    <div class="hoverdown--target">
+    <div class="hoverdown--target" @click.stop>
       <div class="flex w-full">
         <div v-for="(column, i) in columns" :key="i" class="flex-grow">
           <label v-for="c in column" :key="c.slug" :class="$css.abtn(c.checked)">

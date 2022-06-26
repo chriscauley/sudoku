@@ -97,8 +97,7 @@ export default class Checker {
   complete() {
     const indexes = this.geo.indexes.filter((i) => isNaN(this.answers[i]))
     if (indexes.length) {
-      // don't bother marking these, they should be obvious
-      this.addError([], 'All answers must be filled in')
+      this.addError(indexes, 'All answers must be filled in')
     } else {
       Object.entries(this._binAnswers(this.geo.indexes)).forEach(([_number, indexes]) => {
         this.markChecked('complete', indexes)
@@ -123,7 +122,7 @@ export default class Checker {
     this.markChecked(type, indexes)
     const bins = this._binAnswers(indexes)
     Object.entries(bins).forEach(([answer, indexes]) => {
-      if (indexes.length > 1) {
+      if (answer !== 'NaN' && indexes.length > 1) {
         this.addError(indexes, `There are ${indexes.length} ${answer}s in ${type} ${type_no + 1}`)
       }
     })
