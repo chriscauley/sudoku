@@ -5,6 +5,7 @@ import json
 import os
 import re
 import requests
+import sys
 
 from puzzle.ctc import update_ctc, refresh_ctc, update_video
 from puzzle.models import Puzzle, Video
@@ -14,6 +15,19 @@ def print_counts():
     print("Videos:", Video.objects.count())
 
 print("start")
+
+
+if '-ids' in sys.argv:
+    external_ids = sys.argv[sys.argv.index('-ids')+1].split(',')
+    for external_id in external_ids:
+        video = Video.objects.filter(external_id=external_id).first()
+        if not video:
+            video = Video(external_id=external_id)
+            video.save()
+            print("New video:",external_id)
+        update_video(video, Puzzle)
+    exit()
+
 
 for video in Video.objects.filter(publish_date__isnull=True):
     print(video.id)
@@ -55,3 +69,4 @@ print(count, Puzzle.objects.count())
 refresh_ctc(Video, Puzzle)
 print("done")
 print_counts()
+

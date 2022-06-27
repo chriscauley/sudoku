@@ -65,6 +65,7 @@ def update_video(video, Puzzle):
             else:
                 print("updating", key, getattr(video, key), value)
             setattr(video, key, value)
+    video.save()
 
 def update_ctc(puzzle):
     if puzzle.external_id and not puzzle.data.get('ctc'):
@@ -77,7 +78,7 @@ def update_ctc(puzzle):
 def refresh_ctc(Video, Puzzle):
     response = requests.get('https://www.youtube.com/feeds/videos.xml?channel_id=UCC-UOdK8-mIjxBQm_ot1T-Q')
     text = response.text
-    soup = BeautifulSoup(text, features="html.parser")
+    soup = BeautifulSoup(text, features="xml")
     for entry in soup.find_all('entry'):
         links = entry.find_all('link')
         if len(links) != 1:
@@ -90,4 +91,3 @@ def refresh_ctc(Video, Puzzle):
             video.save()
             print("New video:",video_id)
         update_video(video, Puzzle)
-

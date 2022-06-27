@@ -21,7 +21,7 @@ export const fromCTC = ({ wayPoints }) => {
     out.xy = wp2.map((n) => Math.floor(n))
     out.long = true
   }
-  out.className = css(out, 'arrow')
+  out.className = [out, 'arrow']
   return out
 }
 
