@@ -2,7 +2,7 @@
   <span
     v-for="icon in icons"
     :key="icon"
-    :class="`constraint constraint-${icon} mr-2`"
+    :class="`constraint constraint-${icon}`"
     :data-count="getConstraintCount(icon)"
     :title="getTitle(icon)"
   />

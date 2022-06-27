@@ -1,12 +1,9 @@
 <template>
   <router-link :to="`/puzzle/ctc/${puzzle.external_id}/`" class="puzzle-link">
+    <b v-if="show_flag">[{{ puzzle.flag.toUpperCase() }}]</b>
     <i v-if="puzzle.solved" class="fa fa-check -solved" :solved="solved" />
     <i v-else-if="puzzle.local_solve" class="icon -torphy" title="You have solved this puzzle" />
-    <constraint-box
-      :constraints="puzzle.constraints"
-      :meta="puzzle.meta"
-      :flag_icon="puzzle.flag_icon"
-    />
+    <constraint-box :constraints="puzzle.constraints" :meta="puzzle.meta" />
     <span class="link">{{ title }}</span>
   </router-link>
 </template>
@@ -22,6 +19,9 @@ export default {
   computed: {
     title() {
       return this.puzzle.videos[0]?.title || '???'
+    },
+    show_flag() {
+      return this.$auth.user?.is_superuser && this.puzzle.flag !== 'valid'
     },
   },
 }
