@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-view">
     Home!
     <div v-for="(page, i) in pages" :key="i">
       <div v-if="page?.items">
@@ -8,6 +8,10 @@
       <div v-else>
         Loading...
       </div>
+    </div>
+    <div class="btn -primary" @click="page_no++">
+      <i class="fa fa-plus" />
+      Load more
     </div>
   </div>
 </template>
@@ -29,9 +33,8 @@ export default {
   computed: {
     pages() {
       const { page_no } = this
-      return range(page_no, page_no + 1).map((page) =>
-        this.$store.puzzle.getPage({ query: { page, per_page: 50 } }),
-      )
+      const { getPage } = this.$store.puzzle
+      return range(1, page_no + 1).map((page) => getPage({ query: { page, per_page: 50 } }))
     },
   },
 }

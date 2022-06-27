@@ -1,7 +1,6 @@
 import { cloneDeep } from 'lodash'
 
 import { vector } from '../Geo'
-import css from '@unrest/css'
 
 export const fromCTC = ({ wayPoints }) => {
   wayPoints = cloneDeep(wayPoints)
