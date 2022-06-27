@@ -3,16 +3,16 @@
     <div class="control-row">
       <div class="btn-group control-group">
         <div :class="$css.abtn()">
-          {{ $store.play.board.getTime() }}
+          {{ time }}
         </div>
         <reset-button />
         <check-button />
         <submit-button />
       </div>
       <div class="btn-group control-group">
-        <div :class="$css.abtn()" @click="game.undo">undo</div>
-        <div :class="$css.abtn()" @click="game.redo">redo</div>
-        <div :class="$css.abtn()" @click="game.redo">replay</div>
+        <div :class="$css.abtn()" @click="$store.play.board.undo">undo</div>
+        <div :class="$css.abtn()" @click="$store.play.board.redo">redo</div>
+        <div :class="$css.abtn()" @click="$store.play.board.replay">replay</div>
       </div>
     </div>
     <div class="control-row">
@@ -49,5 +49,14 @@ import SubmitButton from './SubmitButton.vue'
 export default {
   name: 'GameControls',
   components: { CheckButton, ColorMode, ResetButton, SubmitButton },
+  data() {
+    const interval = setInterval(() => {
+      this.time = this.$store.play.board.getTime()
+    }, 100)
+    return { time: null, interval }
+  },
+  unmounted() {
+    clearInterval(this.interval)
+  },
 }
 </script>

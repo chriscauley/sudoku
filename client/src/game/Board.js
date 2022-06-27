@@ -357,9 +357,8 @@ export default class Board {
     this.save()
   }
 
-  replay(callback) {
+  replay() {
     this.freeze()
-    this.step_callback = callback
     this.reset()
     clearTimeout(this.timeout)
     this.timeout = setTimeout(this.stepReplay, 200)
@@ -371,8 +370,8 @@ export default class Board {
     }
     clearTimeout(this.timeout)
     this.redo()
-    this.step_callback()
     this.timeout = setTimeout(this.stepReplay, 200)
+    this.options.update()
   }
 
   getTime() {
