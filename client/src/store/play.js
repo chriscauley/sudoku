@@ -1,5 +1,6 @@
 import { reactive } from 'vue'
-import { LocalStorage } from '@unrest/vue-storage'
+import { LocalStorage, getClient } from '@unrest/vue-storage'
+import auth from '@unrest/vue-auth'
 
 import Board from '@/game/Board'
 
@@ -15,13 +16,13 @@ export default ({ store }) => {
 
   return {
     get board() {
-      return _state.__board
+      return _state.board
     },
     get puzzle() {
-      return _state.__puzzle
+      return _state.puzzle
     },
     startGame: (puzzle) => {
-      _state.__puzzle = puzzle
+      _state.puzzle = puzzle
       return storage.fetchOne(puzzle.external_id).then((play) => {
         const options = {
           ...puzzle.data,
@@ -30,13 +31,23 @@ export default ({ store }) => {
           save,
           update,
         }
-        _state.__board = new Board(options)
+        _state.board = new Board(options)
         return _state.board
       })
     },
     unmount: () => {
-      _state.__board = null
-      _state.__puzzle = null
+      _state.board = null
+      _state.puzzle = null
+    },
+    submitSolve: () => {
+      const { board } = _state
+      const answer = board.geo.indexes.map((i) => parseInt(board.answer[i] || board.sudoku[i]))
+      const { constraints } = board
+      const puzzle_id = _state.puzzle.id
+      const client = getClient()
+      const data = { constraints, puzzle: puzzle_id, answer }
+      const url = 'schema/solve/'
+      client.post(url, data).then(auth.refetch)
     },
   }
 }

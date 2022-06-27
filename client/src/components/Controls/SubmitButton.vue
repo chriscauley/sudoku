@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" :class="$css.abtn()" @click="$todo('submitSolve')">
+  <div v-if="show" :class="$css.abtn()" @click="$store.play.submitSolve">
     submit
   </div>
 </template>

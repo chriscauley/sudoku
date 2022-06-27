@@ -34,7 +34,7 @@
         :key="key"
         :data-key="key"
         :class="$css.button.dark('mr-1 mb-1 text-lg mode-' + $store.ui.getMode())"
-        @click="$todo('sendKey(key)')"
+        @click="sendKey(key)"
       />
     </div>
   </div>
@@ -57,6 +57,19 @@ export default {
   },
   unmounted() {
     clearInterval(this.interval)
+  },
+  methods: {
+    sendKey(value) {
+      const { selected } = this.$store.ui.state
+      const indexes = Object.keys(selected)
+      let mode = this.$store.ui.getMode()
+      if (value === 'Delete' || value === 'Backspace') {
+        mode = 'delete'
+      } else if (!this.$c.keyboard.allowed_keys.includes(value)) {
+        return
+      }
+      this.$store.play.board.doAction({ mode, indexes, value })
+    },
   },
 }
 </script>
