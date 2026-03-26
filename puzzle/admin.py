@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from puzzle.models import Puzzle, Solve, Video
@@ -16,11 +17,13 @@ class PuzzleAdmin(admin.ModelAdmin):
     list_filter = ["flag"]
     def _links(self, obj):
         videos = obj.video_set.all()
-        link = '<a href="https://www.youtube.com/watch?v={}" target="_new">{}</a>'
-        links = [f'<b><a href="{obj.get_absolute_url()}" target="_new">View on Site</a></b>']
-        links += [link.format(v.external_id, v.title) for v in videos]
-        links = ''.join([f'<li>{l}</li>' for l in links])
-        return mark_safe(f'<ul>{links}</ul>')
+        items = [format_html('<li><b><a href="{}" target="_new">View on Site</a></b></li>', obj.get_absolute_url())]
+        for v in videos:
+            items.append(format_html(
+                '<li><a href="https://www.youtube.com/watch?v={}" target="_new">{}</a></li>',
+                v.external_id, v.title
+            ))
+        return format_html('<ul>{}</ul>', mark_safe(''.join(items)))
     readonly_fields = ['_links',]
 
 @admin.register(Solve)

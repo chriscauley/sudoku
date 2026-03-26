@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 
 from puzzle.models import Solve, Puzzle
